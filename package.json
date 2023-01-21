@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "node dist/init.js",
     "build": "tsc",
     "test": "vitest --coverage"
   },
@@ -13,7 +13,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/tmi.js": "^1.8.2",
     "@vitest/coverage-c8": "^0.27.2",
     "vitest": "^0.27.2"
+  },
+  "dependencies": {
+    "tmi.js": "^1.8.5"
   }
 }
