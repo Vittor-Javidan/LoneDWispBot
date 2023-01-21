@@ -9,7 +9,6 @@
         "rootDir": "src/",
         "removeComments": true,
         "noEmitOnError": true,
-        "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noImplicitReturns": true
     }
