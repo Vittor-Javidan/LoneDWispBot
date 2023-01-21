@@ -1,7 +1,7 @@
 import websiteRewardListeners from "../../BotModules/Website/rewardListenersHandler.js"
-import { twitchDataPayload } from "../../types.js"
+import { TwitchDataPayload } from "../types.js"
 
-export default function rewardListeners(data: twitchDataPayload): void {
+export default function rewardListeners(data: TwitchDataPayload): void {
 
 	if(!data.rewardIdentifier) {
         return

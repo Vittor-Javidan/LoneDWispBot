@@ -1,7 +1,7 @@
 import websiteChatListeners from "../../BotModules/Website/chatListenersHandler.js";
-import { twitchDataPayload } from "../../types.js";
+import { TwitchDataPayload } from "../types.js";
 
-export default function chatListeners(data: twitchDataPayload): void {
+export default function chatListeners(data: TwitchDataPayload): void {
 
     websiteChatListeners(data)
 }

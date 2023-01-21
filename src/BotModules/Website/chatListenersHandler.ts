@@ -1,8 +1,8 @@
 import env from "../../env.js"
-import { twitchDataPayload } from "../../types.js"
+import { TwitchDataPayload } from "../../Twitch/types.js"
 import giveURL from "./Scripts/giveURL.js"
 
-export default function websiteChatListeners(data: twitchDataPayload): void {
+export default function websiteChatListeners(data: TwitchDataPayload): void {
 
 	const message = data.message.toLowerCase()
 	const websiteCommands = env.TWITCH.MODULES.WEBSITE.COMMANDS

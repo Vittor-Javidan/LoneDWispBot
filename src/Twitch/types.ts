@@ -1,4 +1,4 @@
-export type twitchDataPayload = {
+export type TwitchDataPayload = {
     channelName?: string,
     userName?: string,
     rewardIdentifier?: string,

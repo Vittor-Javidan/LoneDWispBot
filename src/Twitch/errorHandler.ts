@@ -1,8 +1,8 @@
 import { ChatUserstate } from "tmi.js"
-import { twitchDataPayload } from "../types.js"
 import sendMessage from "./sendMessageHandler.js"
+import { TwitchDataPayload } from "./types.js"
 
-function errorHandler(err: unknown, data: twitchDataPayload, userstate: ChatUserstate) {
+function errorHandler(err: unknown, data: TwitchDataPayload, userstate: ChatUserstate) {
 	
     console.log(err)
     console.log(userstate)
