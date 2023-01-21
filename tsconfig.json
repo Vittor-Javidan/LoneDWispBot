@@ -11,5 +11,8 @@
         "noEmitOnError": true,
         "noUnusedParameters": true,
         "noImplicitReturns": true
-    }
+    },
+    "exclude": [
+        "**/*.test.ts"
+    ]
 }
