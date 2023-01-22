@@ -10,7 +10,10 @@
         "removeComments": true,
         "noEmitOnError": true,
         "noUnusedParameters": true,
-        "noImplicitReturns": true
+        "noImplicitReturns": true,
+        "allowUnreachableCode": false,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitAny": true
     },
     "exclude": [
         "**/*.test.ts"

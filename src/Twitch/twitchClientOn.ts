@@ -12,6 +12,8 @@ export default function twitchClientOn(): void {
 
 	client.on('message', (channelName, userstate, message) => {
 
+		if(userstate.username === undefined) return
+
 		const data: TwitchDataPayload = {
             channelName: channelName,
 			userName: userstate.username,

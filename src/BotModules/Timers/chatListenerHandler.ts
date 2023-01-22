@@ -6,6 +6,8 @@ import showTimers from "./Scripts/showTimers.js";
 
 export default function timerChatListeners(data: TwitchDataPayload) {
 
+    if(data.userName === undefined) return
+
     const userName = data.userName
     const message = data.message
 	const timerCommands = env.TWITCH.MODULES.TIMER.COMMANDS
