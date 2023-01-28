@@ -1,8 +1,8 @@
 import Battle from "../../Classes/Battle.js";
-import sendMessage_UI_Battle from "../../FrontEnd/sendMessage/sendMessage_UI_Battle.js";
 import { CS_DataPayload } from "../../Types/moduleTypes.js";
-import attack from "./attack/attack.js";
-import flee from "./flee/flee.js";
+import attack from "../../UserInterface/UI_Battle/attack/attack.js";
+import flee from "../../UserInterface/UI_Battle/flee/flee.js";
+import sendMessage_UI_Battle from "../sendMessage/sendMessage_UI_Battle.js";
 
 export default function UI_Battle(data: CS_DataPayload, o: {
     fleeWeight: number,

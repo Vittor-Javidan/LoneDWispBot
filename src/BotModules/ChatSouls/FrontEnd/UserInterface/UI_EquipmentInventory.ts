@@ -1,10 +1,10 @@
 import to_EquipmentMenu from "../../backEnd/sendTo/to_EquipmentMenu.js"
 import Player from "../../Classes/EntityChilds/Player.js"
-import { sendMessage_UI_EquipmentInventory } from "../../FrontEnd/sendMessage/sendMessage_UI_EquipmentInventory.js"
 import { CS_DataPayload } from "../../Types/moduleTypes.js"
 import { return_CS_EquipmentTypes } from "../../Types/typesUtilsFunctions.js"
-import equipAndReturnToEquipmentTypeMenu from "./equip.js"
-import returnMenuEquipmentMessageByType from "./returnMenuEquipmentMessageByType.js"
+import equipAndReturnToEquipmentTypeMenu from "../../UserInterface/UI_EquipmentsMenu/equip.js"
+import returnMenuEquipmentMessageByType from "../../UserInterface/UI_EquipmentsMenu/returnMenuEquipmentMessageByType.js"
+import { sendMessage_UI_EquipmentInventory } from "../sendMessage/sendMessage_UI_EquipmentInventory.js"
 
 /**
  * Handle !cs play commands when the player has a primary state of "RESTING" and secondary state of "EQUIPMENT_BOOTS_INVENTORY"

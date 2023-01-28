@@ -1,8 +1,8 @@
 import to_Equipments from "../../backEnd/sendTo/to_Equipments.js"
 import to_Explore from "../../backEnd/sendTo/to_Explore.js"
 import to_StatisticsMenu from "../../backEnd/sendTo/to_StatisticsMenu.js"
-import { sendMessage_UI_FirePit } from "../../FrontEnd/sendMessage/sendMessage_UI_firePit.js"
 import { CS_DataPayload } from "../../Types/moduleTypes.js"
+import { sendMessage_UI_FirePit } from "../sendMessage/sendMessage_UI_firePit.js"
 
 export default function UI_firePit(data: CS_DataPayload): void {
 

@@ -1,7 +1,7 @@
 import to_FirePit from "../../backEnd/sendTo/to_FirePit.js"
-import { sendMessage_UI_Equipments } from "../../FrontEnd/sendMessage/sendMessage_UI_Equipments.js"
 import { CS_DataPayload } from "../../Types/moduleTypes.js"
-import checkCurrentEquipments from "./checkCurrentEquipments.js"
+import checkCurrentEquipments from "../../UserInterface/UI_EquipmentsMenu/checkCurrentEquipments.js"
+import { sendMessage_UI_Equipments } from "../sendMessage/sendMessage_UI_Equipments.js"
 
 import {
     to_BodyArmorMenu,
