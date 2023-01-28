@@ -1,12 +1,12 @@
-import Battle from "../../../Classes/Battle.js";
-import Enemie from "../../../Classes/EntityChilds/Enemie.js";
-import Player from "../../../Classes/EntityChilds/Player.js";
-import sendMessage_UI_Battle from "../../../FrontEnd/sendMessage/sendMessage_UI_Battle.js";
+import Battle from "../../Classes/Battle.js";
+import Enemie from "../../Classes/EntityChilds/Enemie.js";
+import Player from "../../Classes/EntityChilds/Player.js";
+import sendMessage_UI_Battle from "../../FrontEnd/sendMessage/sendMessage_UI_Battle.js";
 
 /**
  * @param {Player} player 
  */
-export default function startBattle(player: Player) {
+export default function to_Battle(player: Player) {
     
     player.setCurrentState({
         primary: "EXPLORING",

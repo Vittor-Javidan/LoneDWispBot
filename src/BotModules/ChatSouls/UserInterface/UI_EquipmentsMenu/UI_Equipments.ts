@@ -1,16 +1,16 @@
+import to_FirePit from "../../backEnd/sendTo/to_FirePit.js"
 import { sendMessage_UI_Equipments } from "../../FrontEnd/sendMessage/sendMessage_UI_Equipments.js"
 import { CS_DataPayload } from "../../Types/moduleTypes.js"
-import to_FirePit from "../UI_FirePit/to_FirePit.js"
 import checkCurrentEquipments from "./checkCurrentEquipments.js"
 
 import {
-	to_BodyArmorMenu,
-	to_BootsMenu,
-	to_GlovesMenu,
-	to_HelmetMenu,
-	to_LongRangeMenu,
-	to_MeleeMenu
-} from "./to_EquipmentMenu.js"
+    to_BodyArmorMenu,
+    to_BootsMenu,
+    to_GlovesMenu,
+    to_HelmetMenu,
+    to_LongRangeMenu,
+    to_MeleeMenu
+} from "../../backEnd/sendTo/to_EquipmentMenu.js"
 
 export default function UI_Equipments(data: CS_DataPayload) {
 

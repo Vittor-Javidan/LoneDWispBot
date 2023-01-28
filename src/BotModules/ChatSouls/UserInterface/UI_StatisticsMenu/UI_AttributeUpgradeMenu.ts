@@ -1,7 +1,7 @@
+import to_StatisticsMenu from "../../backEnd/sendTo/to_StatisticsMenu.js"
 import { sendMessage_UI_AttributeUpgradeMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_AttributeUpgradeMenu.js"
 import { CS_DataPayload } from "../../Types/moduleTypes.js"
 import consultAttributesDescription from "./consultAttributesDescription.js"
-import to_StatisticsMenu from "./to_StatisticsMenu.js"
 import upgradeAttributeByType from "./upgradeAttributeByType.js"
 
 export default function UI_AttributeUpgradeMenu(data: CS_DataPayload): void {

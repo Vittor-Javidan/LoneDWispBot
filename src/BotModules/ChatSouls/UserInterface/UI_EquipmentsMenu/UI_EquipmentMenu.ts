@@ -1,8 +1,8 @@
+import to_EquipmentInventory from "../../backEnd/sendTo/to_EquipmentInventory.js"
+import to_Equipments from "../../backEnd/sendTo/to_Equipments.js"
 import { sendMessage_UI_EquipmentMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_EquipmentMenu.js"
 import { CS_DataPayload } from "../../Types/moduleTypes.js"
 import checkEquipmentDetais from "./checkEquipmentDetais.js"
-import to_EquipmentInventory from "./to_EquipmentInventory.js"
-import to_Equipments from "./to_Equipments.js"
 import unequip from "./unequip.js"
 
 export default function UI_EquipmentMenu(data: CS_DataPayload) {
