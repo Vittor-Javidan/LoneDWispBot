@@ -1,6 +1,6 @@
 import { getHelmet_Description } from "../../database/equipment/descriptions.js"
 import { getHelmet_Multipliers } from "../../database/equipment/multipliers.js"
-import { CS_HelmetData } from "../../Types/moduleTypes.js"
+import { CS_HelmetData } from "../../Globals/moduleTypes.js"
 import Armor from "./Armor.js"
 
 export default class Helmet extends Armor {

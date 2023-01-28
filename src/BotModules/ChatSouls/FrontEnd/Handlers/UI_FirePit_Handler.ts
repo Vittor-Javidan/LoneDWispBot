@@ -1,4 +1,4 @@
-import { CS_DataPayload } from "../../Types/moduleTypes.js";
+import { CS_DataPayload } from "../../Globals/moduleTypes.js";
 import UI_AttributeUpgradeMenu from "../UserInterface/UI_AttributeUpgradeMenu.js";
 import UI_EquipmentInventory from "../UserInterface/UI_EquipmentInventory.js";
 import UI_EquipmentMenu from "../UserInterface/UI_EquipmentMenu.js";

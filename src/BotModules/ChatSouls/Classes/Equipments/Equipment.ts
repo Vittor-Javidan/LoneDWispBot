@@ -1,4 +1,4 @@
-import { CS_Attributes } from "../../Types/moduleTypes.js"
+import { CS_Attributes } from "../../Globals/moduleTypes.js"
 
 export default class Equipment {
 

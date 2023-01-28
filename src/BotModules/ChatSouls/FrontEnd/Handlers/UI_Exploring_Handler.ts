@@ -1,4 +1,4 @@
-import { CS_DataPayload } from "../../Types/moduleTypes.js";
+import { CS_DataPayload } from "../../Globals/moduleTypes.js";
 import UI_Battle from "../UserInterface/UI_Battle.js";
 import UI_Idle from "../UserInterface/UI_Idle.js";
 

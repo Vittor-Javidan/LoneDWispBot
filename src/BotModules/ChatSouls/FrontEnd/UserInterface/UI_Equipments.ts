@@ -1,5 +1,5 @@
 import to_FirePit from "../../backEnd/sendTo/to_FirePit.js"
-import { CS_DataPayload } from "../../Types/moduleTypes.js"
+import { CS_DataPayload } from "../../Globals/moduleTypes.js"
 import checkCurrentEquipments from "../../UserInterface/UI_EquipmentsMenu/checkCurrentEquipments.js"
 import { sendMessage_UI_Equipments } from "../sendMessage/sendMessage_UI_Equipments.js"
 

@@ -1,4 +1,4 @@
-import { CS_EquipmentTypes } from "../../Types/moduleTypes.js";
+import { CS_EquipmentTypes } from "../../Globals/moduleTypes.js";
 
 export default function returnMenuEquipmentMessageByType(equipmentType: CS_EquipmentTypes): string {
 

@@ -6,7 +6,7 @@ import {
     GLOVES_ARRAY,
     HELMET_ARRAY,
     LONG_RANGE_ARRAY, MELEE_ARRAY
-} from "../Globals/EQUIPMENTS_ENTRY.js"
+} from "./EQUIPMENTS_ENTRY.js"
 
 //=============================================================================================
 // UI PAYLOAD TYPE ============================================================================

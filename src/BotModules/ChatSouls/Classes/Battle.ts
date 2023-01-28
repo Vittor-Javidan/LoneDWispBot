@@ -1,4 +1,4 @@
-import { CS_ResourceData } from '../Types/moduleTypes.js';
+import { CS_ResourceData } from '../Globals/moduleTypes.js';
 import Entity from './Entity.js';
 import Enemie from './EntityChilds/Enemie.js';
 import Player from './EntityChilds/Player.js';

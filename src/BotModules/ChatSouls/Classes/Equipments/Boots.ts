@@ -1,6 +1,6 @@
 import { getBoots_Description } from "../../database/equipment/descriptions.js"
 import { getBoots_Multipliers } from "../../database/equipment/multipliers.js"
-import { CS_BootsData } from "../../Types/moduleTypes.js"
+import { CS_BootsData } from "../../Globals/moduleTypes.js"
 import Armor from "./Armor.js"
 
 export default class Boots extends Armor {

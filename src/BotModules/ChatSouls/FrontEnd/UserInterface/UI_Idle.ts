@@ -1,5 +1,5 @@
 import to_FirePit from "../../backEnd/sendTo/to_FirePit.js";
-import { CS_DataPayload } from "../../Types/moduleTypes.js";
+import { CS_DataPayload } from "../../Globals/moduleTypes.js";
 import { explorationEvent } from "../Handlers/explorationEvent_Handler.js";
 import { sendMessage_UI_Idle } from "../sendMessage/sendMessage_UI_Idle.js";
 

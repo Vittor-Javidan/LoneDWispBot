@@ -1,5 +1,5 @@
 import DbSystem from '../../../DbSystem/DbSystem.js'
-import { CS_EntityData } from '../Types/moduleTypes.js'
+import { CS_EntityData } from '../Globals/moduleTypes.js'
 
 export default class CS_DbSystem extends DbSystem {
 

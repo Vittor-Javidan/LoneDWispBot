@@ -1,7 +1,7 @@
 import sendMessage from "../../../../Twitch/sendMessageHandler.js"
 import Player from "../../Classes/EntityChilds/Player.js"
 import { sendMessage_UI_AttributeUpgradeMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_AttributeUpgradeMenu.js"
-import { CS_AttributeTypes } from "../../Types/moduleTypes.js"
+import { CS_AttributeTypes } from "../../Globals/moduleTypes.js"
 import notEnoughSoulsToLevelUp from "./notEnoughSoulsToLevelUp.js"
 
 export default function upgradeAttributeByType(

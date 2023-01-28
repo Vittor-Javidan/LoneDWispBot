@@ -1,4 +1,4 @@
-import { CS_Attributes, CS_Catalog_MapAreas, CS_Equipments, CS_PlayerState } from "../Types/moduleTypes.js"
+import { CS_Attributes, CS_Catalog_MapAreas, CS_Equipments, CS_PlayerState } from "./moduleTypes.js"
 
 export const PLAYER_DEFAULT: {
     ATTRIBUTES: CS_Attributes,

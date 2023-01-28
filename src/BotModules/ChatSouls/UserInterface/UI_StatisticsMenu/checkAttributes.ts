@@ -1,5 +1,5 @@
 import { sendMessage_UI_StatisticsMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_StatisticsMenu.js"
-import { CS_DataPayload } from "../../Types/moduleTypes.js"
+import { CS_DataPayload } from "../../Globals/moduleTypes.js"
 
 
 export default function consultAttributes(data: CS_DataPayload, menuMessage: string): void {

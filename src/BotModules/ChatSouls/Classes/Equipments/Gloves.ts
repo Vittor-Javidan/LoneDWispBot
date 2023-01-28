@@ -1,6 +1,6 @@
 import { getGloves_Description } from "../../database/equipment/descriptions.js"
 import { getGloves_Multipliers } from "../../database/equipment/multipliers.js"
-import { CS_GlovesData } from "../../Types/moduleTypes.js"
+import { CS_GlovesData } from "../../Globals/moduleTypes.js"
 import Armor from "./Armor.js"
 
 export default class Gloves extends Armor {

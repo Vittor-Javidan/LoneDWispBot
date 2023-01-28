@@ -1,6 +1,6 @@
 import { getBodyArmor_Description } from "../../database/equipment/descriptions.js"
 import { getBodyArmor_Multipliers } from "../../database/equipment/multipliers.js"
-import { CS_BodyArmorData } from "../../Types/moduleTypes.js"
+import { CS_BodyArmorData } from "../../Globals/moduleTypes.js"
 import Armor from "./Armor.js"
 
 export default class BodyArmor extends Armor {

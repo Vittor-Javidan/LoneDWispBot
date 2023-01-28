@@ -22,7 +22,7 @@ import {
     CS_Inventory_Equipments,
     CS_Inventory_Resources, CS_ResourceData,
     CS_Stats
-} from '../Types/moduleTypes.js'
+} from '../Globals/moduleTypes.js'
 
 export default class Entity {
 

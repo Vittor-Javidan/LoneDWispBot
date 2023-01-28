@@ -1,4 +1,4 @@
-import { CS_Catalog_TestArea_Enemies, CS_Catalog_TheWoods_Enemies, CS_EntityData } from "../../Types/moduleTypes.js"
+import { CS_Catalog_TestArea_Enemies, CS_Catalog_TheWoods_Enemies, CS_EntityData } from "../../Globals/moduleTypes.js"
 import { enemiesDataBase } from "./enemiesData.js"
 
 export default function getEnemie(options: {

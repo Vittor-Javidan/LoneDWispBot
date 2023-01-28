@@ -6,7 +6,7 @@ import {
     CS_Catalog_Helmet,
     CS_Catalog_LongRange,
     CS_Catalog_Melee
-} from "../../Types/moduleTypes.js";
+} from "../../Globals/moduleTypes.js";
 
 export const equipments_Multipliers: {
     longRangeWeapon: Record<CS_Catalog_LongRange, CS_Attributes>,

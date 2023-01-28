@@ -1,6 +1,6 @@
 import { sendMessage_UI_Equipments } from "../../FrontEnd/sendMessage/sendMessage_UI_Equipments.js";
 import { EQUIPMENT_TYPES_ARRAY } from "../../Globals/EQUIPMENTS_ENTRY.js";
-import { CS_DataPayload, CS_Equipments } from "../../Types/moduleTypes.js";
+import { CS_DataPayload, CS_Equipments } from "../../Globals/moduleTypes.js";
 
 export default function checkCurrentEquipments(data: CS_DataPayload, menuMessage: string): void {  
 

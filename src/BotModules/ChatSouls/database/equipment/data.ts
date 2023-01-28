@@ -18,7 +18,7 @@ import {
     CS_HelmetData,
     CS_LongRangeData,
     CS_MeleeData
-} from '../../Types/moduleTypes.js'
+} from '../../Globals/moduleTypes.js'
 
 export const equipmentDataBase: CS_DataBase_Equipments = {
 

@@ -1,4 +1,4 @@
-import { CS_Attributes, CS_Equipments, CS_Inventory, CS_Stats } from "../Types/moduleTypes.js"
+import { CS_Attributes, CS_Equipments, CS_Inventory, CS_Stats } from "./moduleTypes.js"
 
 export const ENTITY_DEFAULT: {
     SOULS: number,

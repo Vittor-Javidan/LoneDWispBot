@@ -1,5 +1,5 @@
 import { sendMessage_UI_AttributeUpgradeMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_AttributeUpgradeMenu.js"
-import { CS_DataPayload } from "../../Types/moduleTypes.js"
+import { CS_DataPayload } from "../../Globals/moduleTypes.js"
 
 export default function consultAttributesDescription(data: CS_DataPayload, menuMessage: string): void {
 

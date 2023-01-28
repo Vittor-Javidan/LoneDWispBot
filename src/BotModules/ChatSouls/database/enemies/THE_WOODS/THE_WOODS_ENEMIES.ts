@@ -1,4 +1,4 @@
-import { CS_Catalog_TheWoods_Enemies, CS_EntityData } from "../../../Types/moduleTypes.js"
+import { CS_Catalog_TheWoods_Enemies, CS_EntityData } from "../../../Globals/moduleTypes.js"
 
 export default function get_THE_WOODS_ENEMIES_DATA(): Record<CS_Catalog_TheWoods_Enemies, CS_EntityData> {
     return {

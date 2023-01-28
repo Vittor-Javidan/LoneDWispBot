@@ -1,5 +1,5 @@
 import to_StatisticsMenu from "../../backEnd/sendTo/to_StatisticsMenu.js"
-import { CS_DataPayload } from "../../Types/moduleTypes.js"
+import { CS_DataPayload } from "../../Globals/moduleTypes.js"
 import consultAttributesDescription from "../../UserInterface/UI_StatisticsMenu/consultAttributesDescription.js"
 import upgradeAttributeByType from "../../UserInterface/UI_StatisticsMenu/upgradeAttributeByType.js"
 import { sendMessage_UI_AttributeUpgradeMenu } from "../sendMessage/sendMessage_UI_AttributeUpgradeMenu.js"

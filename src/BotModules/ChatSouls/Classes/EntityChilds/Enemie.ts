@@ -1,5 +1,5 @@
 import { enemiesDataBase } from '../../database/enemies/enemiesData.js'
-import { CS_EntityData } from '../../Types/moduleTypes.js'
+import { CS_EntityData } from '../../Globals/moduleTypes.js'
 import Entity from '../Entity.js'
 import Player from './Player.js'
 

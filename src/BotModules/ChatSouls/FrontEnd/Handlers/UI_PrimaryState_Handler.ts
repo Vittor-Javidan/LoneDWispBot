@@ -1,5 +1,5 @@
 import Battle from "../../Classes/Battle.js";
-import { CS_DataPayload } from "../../Types/moduleTypes.js";
+import { CS_DataPayload } from "../../Globals/moduleTypes.js";
 import { sendMessage_UI_FirePit } from "../sendMessage/sendMessage_UI_firePit.js";
 import UI_Exploring_Handler from "./UI_Exploring_Handler.js";
 import UI_FirePit_Handler from "./UI_FirePit_Handler.js";

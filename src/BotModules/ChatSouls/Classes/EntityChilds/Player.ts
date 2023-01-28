@@ -1,6 +1,6 @@
 import CS_DbSystem from "../../database/CS_DbSystem.js"
+import { CS_AttributeTypes, CS_Catalog_MapAreas, CS_PlayerState } from "../../Globals/moduleTypes.js"
 import { PLAYER_DEFAULT } from "../../Globals/PLAYER_DEFAULT.js"
-import { CS_AttributeTypes, CS_Catalog_MapAreas, CS_PlayerState } from "../../Types/moduleTypes.js"
 import Entity from "../Entity.js"
 
 export default class Player extends Entity {

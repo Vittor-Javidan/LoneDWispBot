@@ -4,7 +4,7 @@ import Gloves from "../../Classes/Equipments/Gloves.js";
 import Helmet from "../../Classes/Equipments/Helmet.js";
 import LongRangeWeapon from "../../Classes/Equipments/LongRangeWeapon.js";
 import MeleeWeapon from "../../Classes/Equipments/MeleeWeapon.js";
-import { CS_EquipmentData } from "../../Types/moduleTypes.js";
+import { CS_EquipmentData } from "../../Globals/moduleTypes.js";
 
 export default function returnEquipmentDetails(currentEquipment: CS_EquipmentData) {
 

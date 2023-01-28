@@ -1,4 +1,4 @@
-import { CS_Catalog_BodyArmor, CS_Catalog_Boots, CS_Catalog_Gloves, CS_Catalog_Helmet, CS_Catalog_LongRange, CS_Catalog_Melee, CS_EquipmentTypes } from "../../Types/moduleTypes.js";
+import { CS_Catalog_BodyArmor, CS_Catalog_Boots, CS_Catalog_Gloves, CS_Catalog_Helmet, CS_Catalog_LongRange, CS_Catalog_Melee, CS_EquipmentTypes } from "../../Globals/moduleTypes.js";
 
 export const equipments_Description: Record<CS_EquipmentTypes, Record<string, string>> | {
     longRangeWeapon: Record<CS_Catalog_LongRange, string>,
