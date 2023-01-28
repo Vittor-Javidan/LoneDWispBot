@@ -1,6 +1,7 @@
 node_modules
 package-lock.json
-LoneDWispBot.code-workspace
 dist
 coverage
 env.ts
+databaseFiles
+.VSCodeCounter
