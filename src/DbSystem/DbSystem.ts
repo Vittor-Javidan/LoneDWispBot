@@ -24,7 +24,8 @@ export default class DbSystem {
 
         if (!fs.existsSync(fileDir)){
 
-            console.log("===================================")
+            sendMessage(`a pasta "${folderName}" não não existe`)
+            console.log("======================================")
             throw Error(`ERROR: DbSystem: file doesn't exist`)
         }
 
@@ -36,7 +37,7 @@ export default class DbSystem {
         } catch (error) {
 
             sendMessage(`o arquivo de "${fileDir}" não foi carregado ou não existe`)
-            console.log("=======================================================")
+            console.log("=========================================================")
             throw Error("ERROR: DbSystem class: file did not load or don't exist")
         }
     }
@@ -45,17 +46,11 @@ export default class DbSystem {
 
         const fileDir = `${__dataBaseFolder}/${folderName}/${fileName}`
 
-        fs.unlink(fileDir, (err) => {
+        fs.unlink(fileDir, (error) => {
 			
-            console.log("=========================")
-            console.log(`${folderName}/${fileName}`)
-            console.log("=========================")
-			console.log(err)
-            console.log("=========================")
-
 			sendMessage(`Ocorreu um erro ao deletar o arquivo "${folderName}/${fileName}"`)
-
-			throw err
+            console.log("================================================================")
+			throw error
 		})
     }
 }
