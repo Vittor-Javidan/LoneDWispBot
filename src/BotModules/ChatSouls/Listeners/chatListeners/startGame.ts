@@ -1,6 +1,6 @@
 import sendMessage from "../../../../Twitch/sendMessageHandler.js"
 import Player from "../../Classes/EntityChilds/Player.js"
-import { sendMessage_UI_FirePit } from "../../UserInterface/UI_FirePit/sendMessage_UI_firePit.js"
+import { sendMessage_UI_FirePit } from "../../FrontEnd/sendMessage/sendMessage_UI_firePit.js"
 
 export default function startGame(userName: string): void {
     

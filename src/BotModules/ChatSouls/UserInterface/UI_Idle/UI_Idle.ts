@@ -1,7 +1,7 @@
+import { sendMessage_UI_Idle } from "../../FrontEnd/sendMessage/sendMessage_UI_Idle.js";
 import { CS_DataPayload } from "../../Types/moduleTypes.js";
 import to_FirePit from "../UI_FirePit/to_FirePit.js";
 import { explorationEvent } from "./explorationEvent.js";
-import { sendMessage_UI_Idle } from "./sendMessage_UI_Idle.js";
 
 export default function UI_Idle(data: CS_DataPayload): void {
 

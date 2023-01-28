@@ -1,7 +1,7 @@
 import Player from "../../Classes/EntityChilds/Player.js"
+import { sendMessage_UI_EquipmentMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_EquipmentMenu.js"
 import { CS_EquipmentTypes } from "../../Types/moduleTypes.js"
 import { return_CS_EquipmentTypes } from "../../Types/typesUtilsFunctions.js"
-import { sendMessage_UI_EquipmentMenu } from "./sendMessage_UI_EquipmentMenu.js"
 
 export default function unequip(player: Player): void {
 

@@ -1,5 +1,5 @@
 import Player from "../../Classes/EntityChilds/Player.js";
-import { sendMessage_UI_StatisticsMenu } from "./sendMessage_UI_StatisticsMenu.js";
+import { sendMessage_UI_StatisticsMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_StatisticsMenu.js";
 
 export default function to_StatisticsMenu(player: Player, menuMessage: string) {
     

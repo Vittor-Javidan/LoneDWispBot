@@ -1,5 +1,5 @@
 import Player from "../../Classes/EntityChilds/Player.js";
-import { sendMessage_UI_Equipments } from "./sendMessage_UI_Equipments.js";
+import { sendMessage_UI_Equipments } from "../../FrontEnd/sendMessage/sendMessage_UI_Equipments.js";
 
 export default function to_Equipments(playerInstance: Player, menuMessage: string): void {
 

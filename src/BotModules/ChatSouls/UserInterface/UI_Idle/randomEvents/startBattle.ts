@@ -1,7 +1,7 @@
 import Battle from "../../../Classes/Battle.js";
 import Enemie from "../../../Classes/EntityChilds/Enemie.js";
 import Player from "../../../Classes/EntityChilds/Player.js";
-import sendMessage_UI_Battle from "../../UI_Battle/sendMessage_UI_Battle.js";
+import sendMessage_UI_Battle from "../../../FrontEnd/sendMessage/sendMessage_UI_Battle.js";
 
 /**
  * @param {Player} player 

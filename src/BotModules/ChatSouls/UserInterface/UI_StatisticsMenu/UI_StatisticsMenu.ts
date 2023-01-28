@@ -1,7 +1,7 @@
+import { sendMessage_UI_StatisticsMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_StatisticsMenu.js";
 import { CS_DataPayload } from "../../Types/moduleTypes.js";
 import to_FirePit from "../UI_FirePit/to_FirePit.js";
 import consultAttributes from "./checkAttributes.js";
-import { sendMessage_UI_StatisticsMenu } from "./sendMessage_UI_StatisticsMenu.js";
 import to_AttributeUpgradeMenu from "./to_AttributeUpgradeMenu.js";
 
 export default function UI_StatisticsMenu(data: CS_DataPayload): void {

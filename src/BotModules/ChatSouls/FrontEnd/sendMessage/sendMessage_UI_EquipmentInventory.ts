@@ -1,6 +1,6 @@
 import sendMessage from "../../../../Twitch/sendMessageHandler.js";
 import Player from "../../Classes/EntityChilds/Player.js";
-import returnInventoryEquipmentCodes from "./returnInventoryEquipmentCodes.js";
+import returnInventoryEquipmentCodes from "../../UserInterface/UI_EquipmentsMenu/returnInventoryEquipmentCodes.js";
 
 export function sendMessage_UI_EquipmentInventory(player: Player, menuMessage: string): void {
 

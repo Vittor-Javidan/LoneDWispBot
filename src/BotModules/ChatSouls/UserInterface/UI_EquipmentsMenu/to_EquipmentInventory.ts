@@ -1,7 +1,7 @@
 import Player from "../../Classes/EntityChilds/Player.js"
+import { sendMessage_UI_EquipmentInventory } from "../../FrontEnd/sendMessage/sendMessage_UI_EquipmentInventory.js"
+import { sendMessage_UI_EquipmentMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_EquipmentMenu.js"
 import { return_CS_EquipmentTypes, return_CS_SecondaryStates_EQUIPMENT_INVENTORY } from "../../Types/typesUtilsFunctions.js"
-import { sendMessage_UI_EquipmentInventory } from "./sendMessage_UI_EquipmentInventory.js"
-import { sendMessage_UI_EquipmentMenu } from "./sendMessage_UI_EquipmentMenu.js"
 
 export default function to_EquipmentInventory(player: Player, menuMessage: string): void {
 

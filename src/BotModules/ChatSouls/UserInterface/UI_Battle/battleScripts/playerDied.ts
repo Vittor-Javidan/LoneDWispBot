@@ -1,6 +1,6 @@
 import sendMessage from "../../../../../Twitch/sendMessageHandler.js";
 import Battle from "../../../Classes/Battle.js";
-import { sendMessage_UI_FirePit } from "../../UI_FirePit/sendMessage_UI_firePit.js";
+import { sendMessage_UI_FirePit } from "../../../FrontEnd/sendMessage/sendMessage_UI_firePit.js";
 
 export default function playerDied(battle: Battle, finalMessage: string): void {
 

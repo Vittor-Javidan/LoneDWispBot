@@ -1,6 +1,6 @@
 import Battle from "../../../Classes/Battle.js"
 import Player from "../../../Classes/EntityChilds/Player.js"
-import { sendMessage_UI_Idle } from "../../UI_Idle/sendMessage_UI_Idle.js"
+import { sendMessage_UI_Idle } from "../../../FrontEnd/sendMessage/sendMessage_UI_Idle.js"
 
 /**
  * @param {Battle} battle 

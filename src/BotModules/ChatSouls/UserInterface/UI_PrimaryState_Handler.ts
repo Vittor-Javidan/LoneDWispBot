@@ -1,8 +1,8 @@
 import Battle from "../Classes/Battle.js";
+import { sendMessage_UI_FirePit } from "../FrontEnd/sendMessage/sendMessage_UI_firePit.js";
 import { CS_DataPayload } from "../Types/moduleTypes.js";
 import UI_Exploring_Handler from "./secondaryState_Handlers/UI_Exploring_Handler.js";
 import UI_FirePit_Handler from "./secondaryState_Handlers/UI_FirePit_Handler.js";
-import { sendMessage_UI_FirePit } from "./UI_FirePit/sendMessage_UI_firePit.js";
 
 export default function gameUIHandler(data: CS_DataPayload): void {
 

@@ -1,5 +1,5 @@
 import Player from "../../Classes/EntityChilds/Player.js"
-import { sendMessage_UI_FirePit } from "./sendMessage_UI_firePit.js"
+import { sendMessage_UI_FirePit } from "../../FrontEnd/sendMessage/sendMessage_UI_firePit.js"
 
 export default function to_FirePit(player: Player, menuMessage: string): void {
     

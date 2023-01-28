@@ -1,8 +1,8 @@
 import Battle from "../../../Classes/Battle.js"
+import sendMessage_UI_Battle from "../../../FrontEnd/sendMessage/sendMessage_UI_Battle.js"
 import attackAttempt from "../battleScripts/attackAttempt.js"
 import playerDied from "../battleScripts/playerDied.js"
 import playerWon from "../battleScripts/playerWon.js"
-import sendMessage_UI_Battle from "../sendMessage_UI_Battle.js"
 
 export default function enemieAdvantage(battle: Battle, dodgeWeight: number) {
 

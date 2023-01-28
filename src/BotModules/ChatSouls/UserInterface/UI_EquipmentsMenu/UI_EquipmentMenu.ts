@@ -1,6 +1,6 @@
+import { sendMessage_UI_EquipmentMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_EquipmentMenu.js"
 import { CS_DataPayload } from "../../Types/moduleTypes.js"
 import checkEquipmentDetais from "./checkEquipmentDetais.js"
-import { sendMessage_UI_EquipmentMenu } from "./sendMessage_UI_EquipmentMenu.js"
 import to_EquipmentInventory from "./to_EquipmentInventory.js"
 import to_Equipments from "./to_Equipments.js"
 import unequip from "./unequip.js"
