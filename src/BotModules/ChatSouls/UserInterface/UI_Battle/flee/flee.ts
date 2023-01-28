@@ -1,6 +1,6 @@
 import Battle from "../../../Classes/Battle.js"
+import attackAttempt from "../../../FrontEnd/scripts/attackAttempt.js"
 import sendMessage_UI_Battle from "../../../FrontEnd/sendMessage/sendMessage_UI_Battle.js"
-import attackAttempt from "../battleScripts/attackAttempt.js"
 import fleeAttempt from "../battleScripts/fleeAttempt.js"
 import playerDied from "../battleScripts/playerDied.js"
 
