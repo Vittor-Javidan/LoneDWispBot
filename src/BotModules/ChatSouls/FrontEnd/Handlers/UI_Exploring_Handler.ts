@@ -1,6 +1,6 @@
 import { CS_DataPayload } from "../../Types/moduleTypes.js";
-import UI_Battle from "../UI_Battle/UI_Battle.js";
-import UI_Idle from "../UI_Idle/UI_Idle.js";
+import UI_Battle from "../../UserInterface/UI_Battle/UI_Battle.js";
+import UI_Idle from "../../UserInterface/UI_Idle/UI_Idle.js";
 
 export default function UI_Exploring_Handler(data: CS_DataPayload): void {
 

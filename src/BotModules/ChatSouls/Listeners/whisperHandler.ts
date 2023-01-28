@@ -2,7 +2,7 @@ import { TwitchDataPayload } from "../../../Twitch/types.js"
 import Player from "../Classes/EntityChilds/Player.js"
 import { CS_DataPayload } from "../Types/moduleTypes.js"
 
-import gameUIHandler from "../UserInterface/UI_PrimaryState_Handler.js"
+import gameUIHandler from "../FrontEnd/Handlers/UI_PrimaryState_Handler.js"
 import checkSouls from "./whisperListeners/checkSouls.js"
 import exitGame from "./whisperListeners/exitGame.js"
 import help from "./whisperListeners/help.js"
