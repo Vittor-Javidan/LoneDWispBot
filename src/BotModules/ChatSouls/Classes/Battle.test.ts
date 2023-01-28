@@ -1,6 +1,6 @@
 import { afterEach, expect, test } from "vitest";
 import { get_DUMMY_ENEMIE } from "../database/enemies/TEST_AREA/TEST_AREA_ENEMIES";
-import { CS_ResourceData, CS_Stats } from "../Types/moduleTypes";
+import { CS_ResourceData, CS_Stats } from "../Globals/moduleTypes";
 import Battle from './Battle';
 import Enemie from "./EntityChilds/Enemie";
 import Player from "./EntityChilds/Player";

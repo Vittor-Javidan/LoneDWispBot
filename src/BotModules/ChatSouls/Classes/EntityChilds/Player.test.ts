@@ -1,6 +1,6 @@
 import { afterEach, expect, test } from "vitest";
+import { CS_Attributes, CS_Catalog_MapAreas, CS_Equipments, CS_Inventory, CS_PlayerState } from "../../Globals/moduleTypes";
 import { PLAYER_DEFAULT } from "../../Globals/PLAYER_DEFAULT";
-import { CS_Attributes, CS_Catalog_MapAreas, CS_Equipments, CS_Inventory, CS_PlayerState } from "../../Types/moduleTypes";
 import Player from "./Player";
 
 afterEach(() => {

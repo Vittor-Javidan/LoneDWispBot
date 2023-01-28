@@ -8,7 +8,7 @@ import {
     CS_Inventory_Resources,
     CS_ResourceData,
     CS_Stats
-} from '../Types/moduleTypes'
+} from '../Globals/moduleTypes'
 import Entity from './Entity'
 
 //=================================================================================================
