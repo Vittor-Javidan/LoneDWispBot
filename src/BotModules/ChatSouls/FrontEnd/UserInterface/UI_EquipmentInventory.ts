@@ -3,7 +3,7 @@ import Player from "../../Classes/EntityChilds/Player.js"
 import { CS_DataPayload } from "../../Globals/moduleTypes.js"
 import { return_CS_EquipmentTypes } from "../../Globals/typesUtilsFunctions.js"
 import equipAndReturnToEquipmentTypeMenu from "../../UserInterface/UI_EquipmentsMenu/equip.js"
-import returnMenuEquipmentMessageByType from "../../UserInterface/UI_EquipmentsMenu/returnMenuEquipmentMessageByType.js"
+import returnMenuEquipmentMessageByType from "../buildMessages/returnMenuEquipmentMessageByType.js"
 import { sendMessage_UI_EquipmentInventory } from "../sendMessage/sendMessage_UI_EquipmentInventory.js"
 
 /**
