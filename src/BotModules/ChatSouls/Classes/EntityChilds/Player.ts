@@ -1,11 +1,11 @@
-import DbSystem from "../../database/DbSystem.js"
+import CS_DbSystem from "../../database/CS_DbSystem.js"
 import { PLAYER_DEFAULT } from "../../Globals/PLAYER_DEFAULT.js"
 import { CS_AttributeTypes, CS_Catalog_MapAreas, CS_PlayerState } from "../../Types/moduleTypes.js"
 import Entity from "../Entity.js"
 
 export default class Player extends Entity {
 
-    static #registeredPlayers: string[] = DbSystem.loadPlayersEntry()
+    static #registeredPlayers: string[] = CS_DbSystem.loadPlayersEntry()
     static #onlinePlayers: Record<string, Player> = {}
 
     #canPlay: boolean = true
@@ -61,7 +61,7 @@ export default class Player extends Entity {
             return
         }
 
-        DbSystem.deletePlayer(playerName)
+        CS_DbSystem.deletePlayer(playerName)
         this.deletePlayerEntrie(playerName, areYouSure)
     }
 
@@ -78,7 +78,7 @@ export default class Player extends Entity {
 
         const playerIndex: number = registeredPlayers.indexOf(playerName)
         registeredPlayers.splice(playerIndex, 1)
-        DbSystem.savePlayerEntry(registeredPlayers)
+        CS_DbSystem.savePlayerEntry(registeredPlayers)
 
     }
 
@@ -122,7 +122,7 @@ export default class Player extends Entity {
         if(!registeredplayer.includes(playerName)) {
 
             registeredplayer.push(playerName)               
-            DbSystem.savePlayerEntry(registeredplayer)
+            CS_DbSystem.savePlayerEntry(registeredplayer)
             player.save()
         }
     }
@@ -150,7 +150,7 @@ export default class Player extends Entity {
 
     load(): void {
 
-        const playerSavedData = DbSystem.loadPlayer(this.getName())
+        const playerSavedData = CS_DbSystem.loadPlayer(this.getName())
 
         if(!playerSavedData) {
             return
@@ -166,7 +166,7 @@ export default class Player extends Entity {
     save(){
 
         const playerName = this.getName()
-        DbSystem.savePlayer({
+        CS_DbSystem.savePlayer({
             name:       playerName,
             souls:      this.getSouls(),
             level:      this.getlevel(),

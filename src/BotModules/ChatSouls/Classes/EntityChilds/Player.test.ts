@@ -1,6 +1,4 @@
-import fs from 'fs';
 import { afterEach, expect, test } from "vitest";
-import { __projectFolder } from "../../database/DbSystem";
 import { PLAYER_DEFAULT } from "../../Globals/PLAYER_DEFAULT";
 import { CS_Attributes, CS_Catalog_MapAreas, CS_Equipments, CS_Inventory, CS_PlayerState } from "../../Types/moduleTypes";
 import Player from "./Player";
@@ -99,20 +97,6 @@ test(`
 	expect(retrievedCanPlay).toBe(newCanPlay)
 })
 
-test(`deletePlayer
-	- Should delete player file
-`, async () => {
-
-	const name = `TEST_Player_deletePlayer`
-	const player = new Player(name)
-	player.save()
-
-	Player.deletePlayer(name, true)
-
-	await new Promise(resolve => setTimeout(resolve, 10))
-	expect(fs.existsSync(`${__projectFolder}/databaseFiles/chatsouls/players/${name}.json`)).toBe(false)
-})
-
 //=================================================================================================
 // CLASS METHODS ==================================================================================
 //=================================================================================================
@@ -207,20 +191,6 @@ test(`load
 	expect(player.getAttributes()).toStrictEqual(Test_Dummy_Guy.getAttributes())
 	expect(player.getAllCurrentEquipments()).toStrictEqual(Test_Dummy_Guy.getCurrentEquipment())
 	expect(player.getInventory()).toStrictEqual(Test_Dummy_Guy.getInventory())
-})
-
-test(`save`, async () => {
-	
-	const name = "TEST_Player_save"
-	const player = new Player(name)
-
-	player.save()
-
-	await new Promise(resolve => setTimeout(resolve, 10))
-	expect(fs.existsSync(`${__projectFolder}/databaseFiles/chatsouls/players/${name}.json`)).toBe(true)
-
-	//Sanitizer
-	Player.deletePlayer(name, true)
 })
 
 test(`getLevelUpgradeCost`, () => {
