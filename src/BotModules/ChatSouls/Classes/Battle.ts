@@ -265,11 +265,31 @@ export default class Battle {
 
     playerDied(playerState: CS_PlayerState): void {
 
-        this.playerInstance.setSouls(0)
-        this.playerInstance.recoverHP()
-        this.playerInstance.ressurrect()
-        this.playerInstance.save()
-        this.playerInstance.setCurrentState(playerState)
-        Battle.deleteBattle(this.playerInstance.getName())
+        const player = this.playerInstance
+
+        Battle.deleteBattle(player.getName())
+        player.setSouls(0)
+        player.recoverHP()
+        player.ressurrect()
+        player.save()
+        player.setCurrentState(playerState)
+    }
+
+    playerWon(playerState: CS_PlayerState): void {
+
+        const player = this.playerInstance
+        
+        this.calculateRewards()
+        Battle.deleteBattle(player.getName())
+        player.setCurrentState(playerState)
+        player.save()
+    }
+
+    playerFleed(playerState: CS_PlayerState): void {
+
+        const player = this.playerInstance
+
+        Battle.deleteBattle(player.getName())
+        player.setCurrentState(playerState)
     }
 }
