@@ -14,23 +14,28 @@ export default function fleeAttempt(battle: Battle, o: {
     evasionWeight: number
 }): boolean {
 
-    const { evasionWeight, coward } = o
-    const playerInstance = battle.playerInstance
-    const enemieInstance = battle.enemieInstance
+    const player = battle.playerInstance
+    const enemie = battle.enemieInstance
     
     if(!battle.evasionEventSucced({
-        from: playerInstance,
-        against: enemieInstance,
-        evasionWeight: evasionWeight
+        from: player,
+        against: enemie,
+        evasionWeight: o.evasionWeight
     })) return false
 
-    Battle.deleteBattle(coward.getName())
-    coward.setCurrentState({
+    
+    sendMessage_UI_Idle(o.coward,`Fuga bem sucedida!`)
+
+    playerFleed(player)
+    
+    return true
+}
+
+function playerFleed(player: Player): void {
+
+    Battle.deleteBattle(player.getName())
+    player.setCurrentState({
         primary: "EXPLORING",
         secondary: "IDLE"
     })
-
-    sendMessage_UI_Idle(coward,`Fuga bem sucedida!`)
-    
-    return true
 }
