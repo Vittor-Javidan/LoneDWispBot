@@ -1,4 +1,4 @@
-import { CS_ResourceData } from '../Globals/moduleTypes.js';
+import { CS_PlayerState, CS_ResourceData } from '../Globals/moduleTypes.js';
 import Entity from './Entity.js';
 import Enemie from './EntityChilds/Enemie.js';
 import Player from './EntityChilds/Player.js';
@@ -261,5 +261,15 @@ export default class Battle {
         const enemieHPString = `${enemieName}: ${enemieHP}/${enemieMaxHP} HP`
 
         return `${enemieHPString}`
+    }
+
+    playerDied(playerState: CS_PlayerState): void {
+
+        this.playerInstance.setSouls(0)
+        this.playerInstance.recoverHP()
+        this.playerInstance.ressurrect()
+        this.playerInstance.save()
+        this.playerInstance.setCurrentState(playerState)
+        Battle.deleteBattle(this.playerInstance.getName())
     }
 }
