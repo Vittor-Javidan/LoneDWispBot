@@ -1,8 +1,8 @@
-import Battle from "../../../Classes/Battle.js"
-import attackAttempt from "../../../FrontEnd/scripts/attackAttempt.js"
-import sendMessage_UI_Battle from "../../../FrontEnd/sendMessage/sendMessage_UI_Battle.js"
-import fleeAttempt from "../battleScripts/fleeAttempt.js"
-import playerDied from "../battleScripts/playerDied.js"
+import Battle from "../../Classes/Battle.js"
+import sendMessage_UI_Battle from "../sendMessage/sendMessage_UI_Battle.js"
+import attackAttempt from "./attackAttempt.js"
+import fleeAttempt from "./fleeAttempt.js"
+import playerDied from "./playerDied.js"
 
 export default function flee(battle: Battle, o: {
     fleeWeight: number,

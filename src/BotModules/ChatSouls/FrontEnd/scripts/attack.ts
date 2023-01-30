@@ -1,4 +1,4 @@
-import Battle from "../../../Classes/Battle.js";
+import Battle from "../../Classes/Battle.js";
 import enemieAdvantage from "./enemieAdvantage.js";
 import playerAdvantage from "./playerAdvantage.js";
 

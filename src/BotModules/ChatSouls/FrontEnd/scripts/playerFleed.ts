@@ -1,5 +1,5 @@
-import Battle from "../../../Classes/Battle.js"
-import Player from "../../../Classes/EntityChilds/Player.js"
+import Battle from "../../Classes/Battle.js"
+import Player from "../../Classes/EntityChilds/Player.js"
 
 export default function playerFleed(player: Player): void {
 

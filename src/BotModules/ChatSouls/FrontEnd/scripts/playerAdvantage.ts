@@ -1,8 +1,8 @@
-import Battle from "../../../Classes/Battle.js"
-import attackAttempt from "../../../FrontEnd/scripts/attackAttempt.js"
-import sendMessage_UI_Battle from "../../../FrontEnd/sendMessage/sendMessage_UI_Battle.js"
-import playerDied from "../battleScripts/playerDied.js"
-import playerWon from "../battleScripts/playerWon.js"
+import Battle from "../../Classes/Battle.js"
+import sendMessage_UI_Battle from "../sendMessage/sendMessage_UI_Battle.js"
+import attackAttempt from "./attackAttempt.js"
+import playerDied from "./playerDied.js"
+import playerWon from "./playerWon.js"
 
 export default function playerAdvantage(battle: Battle, dodgeWeight: number): void {
 

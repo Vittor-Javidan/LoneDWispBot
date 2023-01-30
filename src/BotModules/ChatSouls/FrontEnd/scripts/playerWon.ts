@@ -1,5 +1,5 @@
-import Battle from "../../../Classes/Battle.js"
-import { sendMessage_UI_Idle } from "../../../FrontEnd/sendMessage/sendMessage_UI_Idle.js"
+import Battle from "../../Classes/Battle.js"
+import { sendMessage_UI_Idle } from "../sendMessage/sendMessage_UI_Idle.js"
 
 export default function playerWon(battle: Battle, finalMessage: string): void {
 
