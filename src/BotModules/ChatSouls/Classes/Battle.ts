@@ -3,6 +3,8 @@ import Enemie from './EntityChilds/Enemie.js';
 import Player from './EntityChilds/Player.js';
 import SendMessage_UI from './SendMessage.js';
 
+
+const PLAYER_TURN = 1
 const config = {
     ATTACK: {
         EVASION_WEIGHT: 1
@@ -14,17 +16,16 @@ const config = {
 
 export default class Battle {
 
-    private static PLAYER_TURN = 1
-    private static battlesList: Record<string, Battle> = {}
 
-    private playerInstance: Player
-    private enemieInstance: Enemie
+    private static _battlesList: Record<string, Battle> = {}
+    private _player: Player
+    private _enemie: Enemie
     
-    private turn: 1 | 2 | undefined = undefined
+    private _turn: 1 | 2 | undefined = undefined
     
-    private earnedResources: CS_ResourceData[] = []
+    private _earnedResources: CS_ResourceData[] = []
     
-    private status = {
+    private _status = {
         playerDamage: 0,
         enemieDamage: 0,
         playerHit: false,
@@ -35,8 +36,8 @@ export default class Battle {
 
     private constructor(player: Player, enemie: Enemie){
         
-        this.playerInstance = player
-        this.enemieInstance = enemie
+        this._player = player
+        this._enemie = enemie
     }
 
     //=================================================================================================
@@ -45,7 +46,7 @@ export default class Battle {
 
     public attack() {
 
-        if(this.turn === Battle.PLAYER_TURN) {
+        if(this._turn === PLAYER_TURN) {
 
             this.playerRound()
             this.enemieRound()
@@ -65,15 +66,15 @@ export default class Battle {
 
     public getTurn(): number | undefined {
         
-        return this.turn
+        return this._turn
     }
 
     public getEnemie(): Enemie {
-        return this.enemieInstance
+        return this._enemie
     }
 
     public getPlayer(): Player {
-        return this.playerInstance
+        return this._player
     }
     
     //=================================================================================================
@@ -90,7 +91,7 @@ export default class Battle {
     
     public static getBattleByName(userName: string): Battle {
 
-        const battle = this.battlesList[userName]
+        const battle = this._battlesList[userName]
 
         if(!battle) {
             throw Error(`ERROR: Battle class, "getBattle": Battle doesn't exist`)
@@ -101,7 +102,7 @@ export default class Battle {
     
     public static doesBattleExist(userName: string): boolean{
 
-        const battle = this.battlesList[userName]
+        const battle = this._battlesList[userName]
 
         if(battle) {
             return true
@@ -111,13 +112,13 @@ export default class Battle {
     
     public static deleteBattle(userName: string): void {
 
-        delete this.battlesList[userName]
+        delete this._battlesList[userName]
     }
 
 
     public static returnStringWithAllBattles(): string {
 
-        const battlesList = this.battlesList
+        const battlesList = this._battlesList
         const playersOnBattle = Object.keys(battlesList)
         let message = 'Jogadores em batalha nesse momento: '
 
@@ -183,26 +184,26 @@ export default class Battle {
 
     private determineFirstTurn(): void {
 
-        const playerInstance = this.playerInstance
-        const enemieInstance = this.enemieInstance
+        const playerInstance = this._player
+        const enemieInstance = this._enemie
         this.evasionEventSucced({
             from: playerInstance, 
             against: enemieInstance, 
             evasionWeight: 1
-        }) ? this.turn = 1 : this.turn = 2
+        }) ? this._turn = 1 : this._turn = 2
     }
 
     private registerBattle(): void {
-        Battle.battlesList[this.playerInstance.getName()] = this
+        Battle._battlesList[this._player.getName()] = this
     }
 
     private isBothAlive(): boolean {
-        return !this.status.playerDied && !this.status.enemieDied
+        return !this._status.playerDied && !this._status.enemieDied
     }
 
     private calculateRewards(): void {
         
-        const resources = this.enemieInstance.getInventoryResources()
+        const resources = this._enemie.getInventoryResources()
         const resourceKeys = Object.keys(resources)
 
         resourceKeys.forEach(resourceName => {
@@ -212,7 +213,7 @@ export default class Battle {
             this.calculateLoot(resourceData, randomNumber)
         })
         
-        this.playerInstance.addSouls(this.enemieInstance.getSouls())
+        this._player.addSouls(this._enemie.getSouls())
     }
 
     private calculateLoot(resources: CS_ResourceData, randomNumber: number): void {
@@ -227,8 +228,8 @@ export default class Battle {
                 amount: resources.amount,
                 type: resources.type
             }
-            this.playerInstance.addResources(newResourceObject)
-            this.earnedResources.push(structuredClone(newResourceObject))
+            this._player.addResources(newResourceObject)
+            this._earnedResources.push(structuredClone(newResourceObject))
         }
     }
 
@@ -236,13 +237,13 @@ export default class Battle {
 
         let message = `Recursos ganhos: `
 
-        if(this.earnedResources.length <= 0) {
+        if(this._earnedResources.length <= 0) {
             message += `nenhum :(`
         }
 
-        for(let i = 0; i < this.earnedResources.length; i++) {
+        for(let i = 0; i < this._earnedResources.length; i++) {
 
-            const earnedResource = this.earnedResources[i]
+            const earnedResource = this._earnedResources[i]
             const amount = earnedResource.amount
             const resourceName = earnedResource.name
             message += `${amount}x ${resourceName}, `
@@ -285,9 +286,9 @@ export default class Battle {
      */
     private getPlayerStatus(): string {
         
-        const playerName = this.playerInstance.getName()
-        const playerHP = this.playerInstance.getCurrentHP()
-        const playerMaxHP = this.playerInstance.getTotalStats().hp
+        const playerName = this._player.getName()
+        const playerHP = this._player.getCurrentHP()
+        const playerMaxHP = this._player.getTotalStats().hp
         const playerHPString = `${playerName}: ${playerHP}/${playerMaxHP} HP`
 
         return `${playerHPString}`
@@ -300,9 +301,9 @@ export default class Battle {
      */
     private getEnemieStatus(): string {
         
-        const enemieName = this.enemieInstance.getName()
-        const enemieHP = this.enemieInstance.getCurrentHP()
-        const enemieMaxHP = this.enemieInstance.getTotalStats().hp
+        const enemieName = this._enemie.getName()
+        const enemieHP = this._enemie.getCurrentHP()
+        const enemieMaxHP = this._enemie.getTotalStats().hp
         const enemieHPString = `${enemieName}: ${enemieHP}/${enemieMaxHP} HP`
 
         return `${enemieHPString}`
@@ -310,7 +311,7 @@ export default class Battle {
 
     private playerRound() {
 
-        const battleStatus = this.status
+        const battleStatus = this._status
 
         if(!battleStatus.playerDied) {
             this.attackAttempt('Player')
@@ -323,7 +324,7 @@ export default class Battle {
 
     private enemieRound() {
 
-        const battleStatus = this.status
+        const battleStatus = this._status
 
         if(!battleStatus.enemieDied) {
             this.attackAttempt('Enemie') 
@@ -340,11 +341,11 @@ export default class Battle {
         let defensor: Player | Enemie
 
         if (agressor === "Player") {
-            attacker = this.playerInstance
-            defensor = this.enemieInstance
+            attacker = this._player
+            defensor = this._enemie
         } else {
-            attacker = this.enemieInstance
-            defensor = this.playerInstance
+            attacker = this._enemie
+            defensor = this._player
         }
     
         if(this.evasionEventSucced({
@@ -364,7 +365,7 @@ export default class Battle {
 
     private playerWon(): void {
 
-        const player = this.playerInstance
+        const player = this._player
         
         this.calculateRewards()
         player.save()
@@ -378,7 +379,7 @@ export default class Battle {
 
     private playerDied(): void {
 
-        const player = this.playerInstance
+        const player = this._player
     
         player.setSouls(0)
         player.recoverHP()
@@ -398,7 +399,7 @@ export default class Battle {
             return
         }
         
-        Battle.deleteBattle(this.playerInstance.getName())
+        Battle.deleteBattle(this._player.getName())
     }
 
     private calculateDamage(o: {
@@ -424,11 +425,11 @@ export default class Battle {
     private logDamageResults(attacker: Player | Enemie, damageValue: number): void {
 
         attacker instanceof Player
-        ? this.status.playerDamage = damageValue
-        : this.status.enemieDamage = damageValue
+        ? this._status.playerDamage = damageValue
+        : this._status.enemieDamage = damageValue
     
-        if(!this.playerInstance.getIsAlive()) this.status.playerDied = true
-        if(!this.enemieInstance.getIsAlive()) this.status.enemieDied = true
+        if(!this._player.getIsAlive()) this._status.playerDied = true
+        if(!this._enemie.getIsAlive()) this._status.enemieDied = true
     }
 
     private logHitResults(attacker: Player | Enemie, didHit: boolean): void {
@@ -436,20 +437,20 @@ export default class Battle {
         if(didHit) {
     
             attacker instanceof Player
-            ? this.status.playerHit = true
-            : this.status.enemieHit = true
+            ? this._status.playerHit = true
+            : this._status.enemieHit = true
     
             return
         }
         
         attacker instanceof Player
-        ? this.status.playerHit = false
-        : this.status.enemieHit = false
+        ? this._status.playerHit = false
+        : this._status.enemieHit = false
     }    
 
     private resetBattleLog() {
 
-        this.status = {
+        this._status = {
             playerDamage: 0,
             enemieDamage: 0,
             playerHit: false,
@@ -461,8 +462,8 @@ export default class Battle {
 
     private chooseBattleMessage(): void {
 
-        const player = this.playerInstance
-        const enemie = this.enemieInstance
+        const player = this._player
+        const enemie = this._enemie
     
         const {
             playerHit,
@@ -471,7 +472,7 @@ export default class Battle {
             enemieDamage,
             playerDied,
             enemieDied
-        } = this.status
+        } = this._status
     
         //=============================
         // NO DAMAGE POSSIBILITIES ====
