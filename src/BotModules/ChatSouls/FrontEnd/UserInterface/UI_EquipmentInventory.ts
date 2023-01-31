@@ -1,5 +1,5 @@
-import to_EquipmentMenu from "../../backEnd/sendTo/to_EquipmentMenu.js"
 import Player from "../../Classes/EntityChilds/Player.js"
+import Travel from "../../Classes/Travel.js"
 import { CS_DataPayload } from "../../Globals/moduleTypes.js"
 import { return_CS_EquipmentTypes } from "../../Globals/typesUtilsFunctions.js"
 import equipAndReturnToEquipmentTypeMenu from "../../UserInterface/UI_EquipmentsMenu/equip.js"
@@ -29,7 +29,7 @@ export default function UI_EquipmentInventory(data: CS_DataPayload): void {
 
         case commandCode === 0: 
             const menuMessage = returnMenuEquipmentMessageByType(equipmentType)
-            to_EquipmentMenu(player, menuMessage)
+            Travel.to_EquipmentMenu(player, menuMessage)
             break
         //
 

@@ -1,7 +1,7 @@
-import to_Battle from "../../backEnd/sendTo/to_Battle.js";
 import Player from "../../Classes/EntityChilds/Player.js";
+import Travel from "../../Classes/Travel.js";
 
 export function explorationEvent(player: Player): void {
 
-    to_Battle(player)
+    Travel.to_Battle(player)
 }

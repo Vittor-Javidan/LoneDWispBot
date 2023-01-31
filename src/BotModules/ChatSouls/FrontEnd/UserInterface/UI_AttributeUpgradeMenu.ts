@@ -1,4 +1,4 @@
-import to_StatisticsMenu from "../../backEnd/sendTo/to_StatisticsMenu.js"
+import Travel from "../../Classes/Travel.js"
 import { CS_DataPayload } from "../../Globals/moduleTypes.js"
 import consultAttributesDescription from "../../UserInterface/UI_StatisticsMenu/consultAttributesDescription.js"
 import upgradeAttributeByType from "../../UserInterface/UI_StatisticsMenu/upgradeAttributeByType.js"
@@ -17,7 +17,7 @@ export default function UI_AttributeUpgradeMenu(data: CS_DataPayload): void {
 	const commandCode = Number(commandWord)
 	switch(commandCode){
 				
-		case 0: to_StatisticsMenu(player, `Você voltou ao menu de estatísticas`);           break
+		case 0: Travel.to_StatisticsMenu(player, `Você voltou ao menu de estatísticas`);           break
 		case 1: upgradeAttributeByType(player, "vitality", `VITALIDADE AUMENTADA!`);        break
 		case 2: upgradeAttributeByType(player, "agility", `AGILIDADE AUMENTADA!`);          break
         case 3: upgradeAttributeByType(player, "strenght", `FORÇA AUMENTADA!`);             break

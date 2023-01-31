@@ -1,4 +1,4 @@
-import to_FirePit from "../../backEnd/sendTo/to_FirePit.js";
+import Travel from "../../Classes/Travel.js";
 import { CS_DataPayload } from "../../Globals/moduleTypes.js";
 import { explorationEvent } from "../Handlers/explorationEvent_Handler.js";
 import { sendMessage_UI_Idle } from "../sendMessage/sendMessage_UI_Idle.js";
@@ -16,7 +16,7 @@ export default function UI_Idle(data: CS_DataPayload): void {
     const commandCode = Number(commandWord)
     switch (commandCode) {
 
-        case 0: to_FirePit(playerInstance, `Você montou uma fogueira`)  ;break
+        case 0: Travel.to_FirePit(playerInstance, `Você montou uma fogueira`)  ;break
         case 1: explorationEvent(playerInstance)                        ;break
     }
 }
