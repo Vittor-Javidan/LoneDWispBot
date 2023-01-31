@@ -3,11 +3,11 @@ import Battle from "../../Classes/Battle.js"
 
 export default function sendMessage_UI_Battle(battle: Battle, menuMessage: string): void {
     
-    const playerInstance = battle.playerInstance
-    const playerName = playerInstance.getName()
+    const player = battle.getPlayer()
+    const playerName = player.getName()
 
 	sendMessage(
-		`/w ${playerName} ${menuMessage} ${battle.getBattleStatus()}. 
+		`/w ${playerName} ${menuMessage} ${battle.getBattleStatusString()}. 
         | 0. Fugir 
         | 1. Atacar 
         |`

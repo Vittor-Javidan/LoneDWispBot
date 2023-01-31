@@ -240,7 +240,7 @@ export type CS_Stats_Types = (
 //=============================================================================================
 
 export type CS_SecondaryState_EXPLORING = (
-    "IDLE" | "HUNTING" | "FORAGING" | "TRAVEL" | "EQUIPMENT"  
+    "IDLE" | "BATTLE" | "FORAGING" | "TRAVEL" | "EQUIPMENT"  
 )
 
 export type CS_SecondaryState_FIRE_PIT = (

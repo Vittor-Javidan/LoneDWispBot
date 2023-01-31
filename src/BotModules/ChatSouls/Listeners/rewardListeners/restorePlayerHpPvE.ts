@@ -28,7 +28,7 @@ function noBattleCase(userName: string): void {
 function battleExistCase(userName: string, targetPlayer: string): void{
 
     const battleInstance = Battle.getBattleByName(targetPlayer)
-    const playerInBattle = battleInstance.playerInstance
+    const playerInBattle = battleInstance.getPlayer()
     
     if(playerInBattle.getName() === userName){
         lalauCurseMuahaha(playerInBattle, userName)

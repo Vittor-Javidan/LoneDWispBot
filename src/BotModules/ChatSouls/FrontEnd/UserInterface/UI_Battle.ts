@@ -1,20 +1,15 @@
 import Battle from "../../Classes/Battle.js";
 import { CS_DataPayload } from "../../Globals/moduleTypes.js";
-import attack from "../scripts/attack.js";
 import sendMessage_UI_Battle from "../sendMessage/sendMessage_UI_Battle.js";
 
-export default function UI_Battle(data: CS_DataPayload, o: {
-    fleeWeight: number,
-    dodgeWeight: number
-}): void {
-
-    const {fleeWeight, dodgeWeight} = o
+export default function UI_Battle(data: CS_DataPayload): void {
+	
     const commandWord = data.message.split(" ")[0]
-	const playerInstance = data.playerInstance
-    const battleInstance = Battle.getBattleByName(playerInstance.getName())
+	const player = data.playerInstance
+    const battle = Battle.getBattleByName(player.getName())
 
     if (commandWord === '!cs') {
-        sendMessage_UI_Battle(battleInstance, `Você está em batalha!!!`)
+        sendMessage_UI_Battle(battle, `Você está em batalha!!!`)
 		return
 	}
 
@@ -22,8 +17,8 @@ export default function UI_Battle(data: CS_DataPayload, o: {
     
 	switch (commandCode) {
 
-		case 1: attack(battleInstance, dodgeWeight)	;break
+		case 1: battle.attack() ;break
 
-		default: sendMessage_UI_Battle(battleInstance,`opção inválida`)	;break
+		default: sendMessage_UI_Battle(battle,`opção inválida`)	;break
 	}
 }

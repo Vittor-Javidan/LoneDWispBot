@@ -10,21 +10,20 @@ export default function to_Battle(player: Player) {
     
     player.setCurrentState({
         primary: "EXPLORING",
-        secondary: "HUNTING"
+        secondary: "BATTLE"
     })
 
     const enemie = Enemie.instantiateRandomEnemie(player)
+    const enemieName = enemie.getName()
     const battleInstance = Battle.startBattle(player, enemie)
-    const enemieInstance = battleInstance.enemieInstance
-    const enemieName = enemieInstance.getName()
-
+    
     const message = `Você encontrou um ${enemieName} ${returnWhosTurnString(battleInstance)}`
     
     sendMessage_UI_Battle(battleInstance, message)
 }
 
 export function returnWhosTurnString(battle: Battle): string {
-    const turn = battle.turn
+    const turn = battle.getTurn()
     let message = ""
     turn === 1
         ? message += `e você tem a vantagem de ataque `

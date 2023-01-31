@@ -28,7 +28,7 @@ function noBattleCase(userName: string): void {
 function battleExistCase(userName: string, targetPlayer: string): void{
 
     const battle = Battle.getBattleByName(targetPlayer)
-    const playerInBattle = battle.playerInstance
+    const playerInBattle = battle.getPlayer()
 
     if(playerInBattle.getName() === userName){
         lalauCurseMuahaha(playerInBattle, userName)
@@ -47,7 +47,7 @@ function lalauCurseMuahaha(player: Player, userName: string): void {
 
 function recoverEnemieHP(battle: Battle, targetPlayer: string, userName: string): void {
 
-    const enemieInstance = battle.enemieInstance
+    const enemieInstance = battle.getEnemie()
     enemieInstance.recoverHP()
     enemieInstance.addSouls(enemieInstance.getSouls())
     sendMessage(`/w ${targetPlayer} ${userName} acabou de restaurar a vida de seu inimigo!!!`)

@@ -17,6 +17,7 @@
         //"noUncheckedIndexedAccess": true
     },
     "exclude": [
-        "**/*.test.ts"
+        "**/*.test.ts", 
+        "**/*.test.js"
     ]
 }

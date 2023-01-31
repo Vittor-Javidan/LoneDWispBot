@@ -13,9 +13,6 @@ export default function UI_Exploring_Handler(data: CS_DataPayload): void {
     switch(states.secondary) {
 
         case "IDLE": UI_Idle(data);break
-        case "HUNTING": UI_Battle(data, {
-            fleeWeight: 1.25, 
-            dodgeWeight: 0.5}
-        );break
+        case "BATTLE": UI_Battle(data);break
     }
 }
