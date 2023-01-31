@@ -2,6 +2,7 @@ import { CS_ResourceData } from '../Globals/moduleTypes.js';
 import Enemie from './EntityChilds/Enemie.js';
 import Player from './EntityChilds/Player.js';
 import SendMessage_UI from './SendMessage.js';
+import Travel from './Travel.js';
 
 
 const PLAYER_TURN = 1
@@ -22,17 +23,8 @@ export default class Battle {
     private _enemie: Enemie
     
     private _turn: 1 | 2 | undefined = undefined
-    
     private _earnedResources: CS_ResourceData[] = []
-    
-    private _status = {
-        playerDamage: 0,
-        enemieDamage: 0,
-        playerHit: false,
-        enemieHit: false,
-        playerDied: false,
-        enemieDied: false
-    }
+    private _BattleStatus = new _BattleStatus()
 
     private constructor(player: Player, enemie: Enemie){
         
@@ -57,7 +49,30 @@ export default class Battle {
             this.playerRound()
         }
 
-        this.chooseBattleMessage()
+        _BattleMessage.chooseBattleMessage(this)
+    }
+
+    public flee() {
+
+        if(this.evasionEventSucced({
+            from: this._player,
+            against: this._enemie,
+            evasionWeight: 1.5
+        })) {
+            this._BattleStatus.logFlee(true)
+            Battle.deleteBattle(this._player.getName())
+            Travel.to_Explore(this._player, `Você conseguiu fugir com sucesso!!!`)
+            return
+        }
+
+        this.attackAttempt('Enemie')
+
+        if(this._BattleStatus.getStatus().playerDied) {
+            this.playerDied()
+        }
+
+        this._BattleStatus.logFlee(false)
+        _BattleMessage.chooseBattleMessage(this)
     }
 
     public getBattleStatusString(): string {
@@ -65,7 +80,6 @@ export default class Battle {
     }
 
     public getTurn(): number | undefined {
-        
         return this._turn
     }
 
@@ -75,6 +89,10 @@ export default class Battle {
 
     public getPlayer(): Player {
         return this._player
+    }
+
+    public getStatus() {
+        return this._BattleStatus
     }
     
     //=================================================================================================
@@ -156,10 +174,6 @@ export default class Battle {
 
     private registerBattle(): void {
         Battle._battlesList[this._player.getName()] = this
-    }
-
-    private isBothAlive(): boolean {
-        return !this._status.playerDied && !this._status.enemieDied
     }
 
     private calculateRewards(): void {
@@ -272,7 +286,7 @@ export default class Battle {
 
     private playerRound() {
 
-        const battleStatus = this._status
+        const battleStatus = this._BattleStatus.getStatus()
 
         if(!battleStatus.playerDied) {
             this.attackAttempt('Player')
@@ -285,7 +299,7 @@ export default class Battle {
 
     private enemieRound() {
 
-        const battleStatus = this._status
+        const battleStatus = this._BattleStatus.getStatus()
 
         if(!battleStatus.enemieDied) {
             this.attackAttempt('Enemie') 
@@ -314,7 +328,7 @@ export default class Battle {
             against: attacker,
             evasionWeight: config.ATTACK.EVASION_WEIGHT
         })) {
-            this.logHitResults(attacker, false)
+            this._BattleStatus.logHitResults(attacker, false)
             return
         }
         
@@ -355,7 +369,7 @@ export default class Battle {
 
     private battleEnds(): void {
 
-        if(this.isBothAlive()) {
+        if(this._BattleStatus.isBothAlive()) {
             return
         }
         
@@ -381,172 +395,9 @@ export default class Battle {
         })
 
         defensor.inflictDamage(attackerDamage)
-        this.logDamageResults(attacker, attackerDamage)
-        this.logHitResults(attacker, true)
-    }
-
-    private logDamageResults(attacker: Player | Enemie, damageValue: number): void {
-
-        attacker instanceof Player
-        ? this._status.playerDamage = damageValue
-        : this._status.enemieDamage = damageValue
-    
-        if(!this._player.getIsAlive()) this._status.playerDied = true
-        if(!this._enemie.getIsAlive()) this._status.enemieDied = true
-    }
-
-    private logHitResults(attacker: Player | Enemie, didHit: boolean): void {
-
-        if(didHit) {
-    
-            attacker instanceof Player
-            ? this._status.playerHit = true
-            : this._status.enemieHit = true
-    
-            return
-        }
         
-        attacker instanceof Player
-        ? this._status.playerHit = false
-        : this._status.enemieHit = false
-    }    
-
-    private resetBattleLog() {
-
-        this._status = {
-            playerDamage: 0,
-            enemieDamage: 0,
-            playerHit: false,
-            enemieHit: false,
-            playerDied: false,
-            enemieDied: false
-        }
-    }
-
-    private chooseBattleMessage(): void {
-
-        const player = this._player
-        const enemie = this._enemie
-    
-        const {
-            playerHit,
-            enemieHit,
-            playerDamage,
-            enemieDamage,
-            playerDied,
-            enemieDied
-        } = this._status
-    
-        //=============================
-        // NO DAMAGE POSSIBILITIES ====
-        //=============================
-    
-        if(//Both miss
-            !playerHit && !enemieHit &&
-            !playerDied && !enemieDied
-        ) {
-            
-            SendMessage_UI.battle(this, `
-                UUUUUUUUUUUUUUUUUUUUU ambos erraram o ataque
-            `)
-            this.resetBattleLog()
-            return
-        }
-    
-        //=============================
-        // DAMAGE POSSIBILITIES =======
-        //=============================
-    
-        if(//Both hit
-            playerHit && enemieHit &&
-            !playerDied && !enemieDied
-        ) {
-            SendMessage_UI.battle(this, `
-                Ambos se acertaram! você causou ${playerDamage} de dano,
-                e sofreu ${enemieDamage} de dano.
-            `)
-            this.resetBattleLog()
-            return
-        }
-    
-        if(//Player Miss, enemie hits
-            !playerHit && enemieHit &&
-            !playerDied && !enemieDied
-        ) {
-            SendMessage_UI.battle(this, `
-                OUUCH, você errou o ataque e tomou  ${enemieDamage} de dano!!!
-            `)
-            this.resetBattleLog()
-            return
-        }
-    
-        if(//Enemie hit, player miss
-            playerHit && !enemieHit &&
-            !playerDied && !enemieDied
-        ) {
-            SendMessage_UI.battle(this, `
-                Conseguiu se esquivar e causar ${playerDamage} de dano!!!
-            `)
-            this.resetBattleLog()
-            return
-        }
-    
-        //=============================
-        // DEATH POSSIBILITIES ========
-        //=============================
-    
-        if(//Both Hit, player dies
-            playerHit && enemieHit &&
-            playerDied && !enemieDied
-        ) {
-            SendMessage_UI.firePit(player, `
-                RIP. Ambos se acertaram mas você morreu com ${enemieDamage} de dano.
-            `)
-            this.resetBattleLog()
-            return
-        }
-        
-        if(//Both hit, enemie dies
-            playerHit && enemieHit &&
-            !playerDied && enemieDied
-        ) {
-            SendMessage_UI.idle(player, `
-                VITÓRIA!! Você sofreu ${enemieDamage} de dano mas venceu!!!
-            `)
-            this.resetBattleLog()
-            return
-        }
-        
-        if(//Player hit and kill enemie
-            playerHit && !enemieHit &&
-            !playerDied && enemieDied
-        ) {
-            SendMessage_UI.idle(player, `
-                VITÓRIA!! Você conseguiu matar ${enemie.getName()} conectando uma esquiva!!!
-            `)
-            this.resetBattleLog()
-            return
-        }
-    
-        if(//Enemie hit and kills player
-            !playerHit && enemieHit &&
-            playerDied && !enemieDied
-        ) {
-            SendMessage_UI.firePit(player, `
-                RIP, você errou o ataque e morreu com ${enemieDamage} de dano!!!
-            `)
-            this.resetBattleLog()
-            return
-        }
-    
-        throw Error(`ERROR: attack(), sendUIMessage: possibilitie not consider.
-            playerDamage: ${playerDamage},
-            enemieDamage: ${enemieDamage},
-            playerHit: ${playerHit},
-            enemieHit: ${enemieHit},
-            playerDied: ${playerDied},
-            enemieDied: ${enemieDied}
-        `)
+        this._BattleStatus.logDamageResults(attacker, defensor, attackerDamage)
+        this._BattleStatus.logHitResults(attacker, true)
     }
 }
 
@@ -608,5 +459,255 @@ class _CS_Math {
         }
 
         return damageValue
+    }
+}
+
+class _BattleStatus {
+
+    private _status = {
+        playerDamage: 0,
+        enemieDamage: 0,
+        playerHit: false,
+        enemieHit: false,
+        playerDied: false,
+        enemieDied: false,
+        triedToFlee: false,
+        fleeSucced: false
+    }
+
+    getStatus() {
+        return this._status
+    }
+
+    isBothAlive(): boolean {
+        return !this._status.playerDied && !this._status.enemieDied
+    }
+
+    resetBattleLog(): void {
+
+        this._status = {
+            playerDamage: 0,
+            enemieDamage: 0,
+            playerHit: false,
+            enemieHit: false,
+            playerDied: false,
+            enemieDied: false,
+            triedToFlee: false,
+            fleeSucced: false
+        }
+    }
+
+    logFlee(succed: boolean): void {
+        this._status.triedToFlee = true
+        this._status.fleeSucced = succed
+    }
+
+    logHitResults(attacker: Player | Enemie, didHit: boolean): void {
+
+        if(didHit) {
+    
+            attacker instanceof Player
+            ? this._status.playerHit = true
+            : this._status.enemieHit = true
+    
+            return
+        }
+        
+        attacker instanceof Player
+        ? this._status.playerHit = false
+        : this._status.enemieHit = false
+    }   
+
+    logDamageResults(attacker: Player | Enemie, defensor: Player | Enemie, damageValue: number): void {
+
+        attacker instanceof Player
+        ? this._status.playerDamage = damageValue
+        : this._status.enemieDamage = damageValue
+
+        this.logDefensorDeath(defensor)
+    }
+
+    private logDefensorDeath(defensor: Player | Enemie) {
+
+        if(defensor.getIsAlive()) {
+            return
+        }
+
+        defensor instanceof Player
+        ? this._status.playerDied = true
+        : this._status.enemieDied = true
+    }
+}
+
+class _BattleMessage {
+
+    static chooseBattleMessage(battle: Battle): void {
+
+
+        const player = battle.getPlayer()
+        const enemie = battle.getEnemie()
+        const _BattleStatus = battle.getStatus()
+        const {
+            playerHit,
+            enemieHit,
+            playerDamage,
+            enemieDamage,
+            playerDied,
+            enemieDied,
+            triedToFlee,
+            fleeSucced
+        } = _BattleStatus.getStatus()
+
+        //=============================
+        // FLEE POSSIBILITIES =========
+        //=============================
+
+        if(//Trie to flee, fail and receives hit
+            triedToFlee &&
+            !fleeSucced &&
+            enemieHit
+        ) {
+            SendMessage_UI.battle(battle, `
+                Sua fulga falhou!! E você sofreu ${enemieDamage} de dano!!!
+            `)
+            _BattleStatus.resetBattleLog()
+            return
+        }
+
+        if(//Trie to flee, fail and Dies
+            triedToFlee &&
+            !fleeSucced &&
+            enemieHit &&
+            playerDied
+        ) {
+            SendMessage_UI.firePit(player, `
+                RIP. Sua fulga falhou e você morreu sofrendo ${enemieDamage} de dano.
+            `)
+            _BattleStatus.resetBattleLog()
+            return
+        }
+
+        if(//Trie to flee, fail and enemie miss
+            triedToFlee &&
+            !fleeSucced &&
+            !enemieHit
+        ) { 
+            SendMessage_UI.battle(battle, `
+                Sua fulga falhou mas uma esquiva foi conectada, UFFAAA!!
+            `)
+            _BattleStatus.resetBattleLog()
+            return
+        }
+    
+        //=============================
+        // NO DAMAGE POSSIBILITIES ====
+        //=============================
+    
+        if(//Both miss
+            !playerHit && !enemieHit &&
+            !playerDied && !enemieDied
+        ) {
+            
+            SendMessage_UI.battle(battle, `
+                UUUUUUUUUUUUUUUUUUUUU ambos erraram o ataque
+            `)
+            _BattleStatus.resetBattleLog()
+            return
+        }
+    
+        //=============================
+        // DAMAGE POSSIBILITIES =======
+        //=============================
+    
+        if(//Both hit
+            playerHit && enemieHit &&
+            !playerDied && !enemieDied
+        ) {
+            SendMessage_UI.battle(battle, `
+                Ambos se acertaram! você causou ${playerDamage} de dano,
+                e sofreu ${enemieDamage} de dano.
+            `)
+            _BattleStatus.resetBattleLog()
+            return
+        }
+    
+        if(//Player Miss, enemie hits
+            !playerHit && enemieHit &&
+            !playerDied && !enemieDied
+        ) {
+            SendMessage_UI.battle(battle, `
+                OUUCH, você errou o ataque e tomou  ${enemieDamage} de dano!!!
+            `)
+            _BattleStatus.resetBattleLog()
+            return
+        }
+    
+        if(//Enemie hit, player miss
+            playerHit && !enemieHit &&
+            !playerDied && !enemieDied
+        ) {
+            SendMessage_UI.battle(battle, `
+                Conseguiu se esquivar e causar ${playerDamage} de dano!!!
+            `)
+            _BattleStatus.resetBattleLog()
+            return
+        }
+    
+        //=============================
+        // DEATH POSSIBILITIES ========
+        //=============================
+    
+        if(//Both Hit, player dies
+            playerHit && enemieHit &&
+            playerDied && !enemieDied
+        ) {
+            SendMessage_UI.firePit(player, `
+                RIP. Ambos se acertaram mas você morreu com ${enemieDamage} de dano.
+            `)
+            _BattleStatus.resetBattleLog()
+            return
+        }
+        
+        if(//Both hit, enemie dies
+            playerHit && enemieHit &&
+            !playerDied && enemieDied
+        ) {
+            SendMessage_UI.idle(player, `
+                VITÓRIA!! Você sofreu ${enemieDamage} de dano mas venceu!!!
+            `)
+            _BattleStatus.resetBattleLog()
+            return
+        }
+        
+        if(//Player hit and kill enemie
+            playerHit && !enemieHit &&
+            !playerDied && enemieDied
+        ) {
+            SendMessage_UI.idle(player, `
+                VITÓRIA!! Você conseguiu matar ${enemie.getName()} conectando uma esquiva!!!
+            `)
+            _BattleStatus.resetBattleLog()
+            return
+        }
+    
+        if(//Enemie hit and kills player
+            !playerHit && enemieHit &&
+            playerDied && !enemieDied
+        ) {
+            SendMessage_UI.firePit(player, `
+                RIP, você errou o ataque e morreu com ${enemieDamage} de dano!!!
+            `)
+            _BattleStatus.resetBattleLog()
+            return
+        }
+    
+        throw Error(`ERROR: attack(), sendUIMessage: possibilitie not consider.
+            playerDamage: ${playerDamage},
+            enemieDamage: ${enemieDamage},
+            playerHit: ${playerHit},
+            enemieHit: ${enemieHit},
+            playerDied: ${playerDied},
+            enemieDied: ${enemieDied}
+        `)
     }
 }

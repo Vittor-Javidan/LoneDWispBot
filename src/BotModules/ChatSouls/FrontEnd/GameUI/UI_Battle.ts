@@ -18,6 +18,7 @@ export default function UI_Battle(data: CS_DataPayload): void {
     
 	switch (commandCode) {
 
+		case 0: battle.flee()	;break
 		case 1: battle.attack() ;break
 
 		default: SendMessage_UI.battle(battle,`opção inválida`)	;break
