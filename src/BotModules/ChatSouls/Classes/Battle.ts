@@ -142,45 +142,6 @@ export default class Battle {
     //=================================================================================================
     // PRIVATE METHODS ===============================================================================
     //=================================================================================================
-    
-    private static calculateRawDamage(object: {
-        attacker: Player | Enemie,
-        defender: Player | Enemie
-    }): number {
-
-        const attacker_fisicalDmg = object.attacker.getTotalStats().fisicalDamage
-        const defender_fisicalDef = object.defender.getTotalStats().fisicalDefense
-        let rawDamage = attacker_fisicalDmg - defender_fisicalDef
-        if (rawDamage < 1) {
-            rawDamage = 1
-        }
-        return Math.floor(rawDamage)
-    }
-
-    private static returnEffectiveDamage(damageValue: number, luck: number): number {
-
-        if(damageValue < 0) {
-            throw Error(`ERROR: damageValue must be a valid and positive number`)
-        }
-
-        switch(luck) {
-            
-            case 1: damageValue = damageValue * 0.5     ;break
-            case 2: damageValue = damageValue * 0.75    ;break
-            case 3: damageValue = damageValue * 0.9     ;break
-            case 4: damageValue = damageValue * 1.1     ;break
-            case 5: damageValue = damageValue * 1.25    ;break
-            case 6: damageValue = damageValue * 1.5     ;break
-        }
-
-        damageValue = Math.floor(damageValue)
-
-        if(damageValue < 1) {
-            damageValue = 1
-        }
-
-        return damageValue
-    }
 
     private determineFirstTurn(): void {
 
@@ -357,10 +318,9 @@ export default class Battle {
             return
         }
         
-        this.calculateDamage({
-            attacker: attacker,
-            defensor: defensor
-        })
+        agressor === "Player"
+        ? this.causeDamage("Enemie")
+        : this.causeDamage("Player")
     }
 
     private playerWon(): void {
@@ -402,23 +362,26 @@ export default class Battle {
         Battle.deleteBattle(this._player.getName())
     }
 
-    private calculateDamage(o: {
-        attacker: Player | Enemie,
-        defensor: Player | Enemie
-    }): void {
+    private causeDamage(against: "Player" | "Enemie"): void {
         
-        const { attacker, defensor } = o
-        
-        const rawDamage = Battle.calculateRawDamage({
+        let attacker: Player | Enemie
+        let defensor: Player | Enemie
+
+        if(against === "Enemie") {
+            attacker = this._player
+            defensor = this._enemie
+        } else {
+            attacker = this._enemie
+            defensor = this._player
+        }
+
+        const attackerDamage = _CS_Math.calculateDamage({
             attacker: attacker,
-            defender: defensor
+            defensor: defensor
         })
-        
-        const luck = Math.floor((Math.random() * 6) + 1)
-        const effectiveDamage = Battle.returnEffectiveDamage(rawDamage, luck)
-        defensor.inflictDamage(effectiveDamage)
-    
-        this.logDamageResults(attacker, effectiveDamage)
+
+        defensor.inflictDamage(attackerDamage)
+        this.logDamageResults(attacker, attackerDamage)
         this.logHitResults(attacker, true)
     }
 
@@ -584,5 +547,66 @@ export default class Battle {
             playerDied: ${playerDied},
             enemieDied: ${enemieDied}
         `)
+    }
+}
+
+class _CS_Math {
+    
+    public static getLuckNumber() {
+        return Math.floor((Math.random() * 6) + 1)
+    }
+
+    public static calculateDamage(o: {
+        attacker: Player | Enemie,
+        defensor: Player | Enemie
+    }): number {
+        
+        const rawDamage = this.calculateRawDamage({
+            attacker: o.attacker,
+            defender: o.defensor
+        })
+
+        return this.returnEffectiveDamage(rawDamage, _CS_Math.getLuckNumber())
+    }
+
+    private static calculateRawDamage(o: {
+        attacker: Player | Enemie,
+        defender: Player | Enemie
+    }): number {
+
+        const attacker_fisicalDmg = o.attacker.getTotalStats().fisicalDamage
+        const defensor_fisicalDef = o.defender.getTotalStats().fisicalDefense
+
+        let rawDamage = attacker_fisicalDmg - defensor_fisicalDef
+        if (rawDamage < 1) {
+            rawDamage = 1
+        }
+        
+        return Math.floor(rawDamage)
+    }
+
+    private static returnEffectiveDamage(damageValue: number, luck: number): number {
+
+        if(damageValue < 0) {
+            throw Error(`ERROR: damageValue must be a valid and positive number`)
+        }
+
+        switch(luck) {
+            
+            case 1: damageValue = damageValue * 0.5     ;break
+            case 2: damageValue = damageValue * 0.75    ;break
+            case 3: damageValue = damageValue * 0.9     ;break
+            case 4: damageValue = damageValue * 1.1     ;break
+            case 5: damageValue = damageValue * 1.25    ;break
+            case 6: damageValue = damageValue * 1.5     ;break
+        }
+
+        damageValue = Math.floor(damageValue)
+
+        if(damageValue < 1) {
+            damageValue = 1
+        }
+
+        return damageValue
     }
 }
