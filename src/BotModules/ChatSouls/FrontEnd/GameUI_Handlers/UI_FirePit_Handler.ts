@@ -1,10 +1,10 @@
 import { CS_DataPayload } from "../../Globals/moduleTypes.js";
-import UI_AttributeUpgradeMenu from "../UserInterface/UI_AttributeUpgradeMenu.js";
-import UI_EquipmentInventory from "../UserInterface/UI_EquipmentInventory.js";
-import UI_EquipmentMenu from "../UserInterface/UI_EquipmentMenu.js";
-import UI_Equipments from "../UserInterface/UI_Equipments.js";
-import UI_firePit from "../UserInterface/UI_FirePit.js";
-import UI_StatisticsMenu from "../UserInterface/UI_StatisticsMenu.js";
+import UI_AttributeUpgradeMenu from "../GameUI/UI_AttributeUpgradeMenu.js";
+import UI_EquipmentInventory from "../GameUI/UI_EquipmentInventory.js";
+import UI_EquipmentMenu from "../GameUI/UI_EquipmentMenu.js";
+import UI_Equipments from "../GameUI/UI_Equipments.js";
+import UI_firePit from "../GameUI/UI_FirePit.js";
+import UI_StatisticsMenu from "../GameUI/UI_StatisticsMenu.js";
 
 export default function UI_FirePit_Handler(data: CS_DataPayload): void {
 

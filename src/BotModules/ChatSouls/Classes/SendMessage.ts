@@ -1,5 +1,4 @@
 import sendMessage from "../../../Twitch/sendMessageHandler.js"
-import returnInventoryEquipmentStringWithCodes from "../FrontEnd/buildMessages/returnInventoryEquipmentCodes.js"
 import Battle from "./Battle.js"
 import Player from "./EntityChilds/Player.js"
 
@@ -118,12 +117,28 @@ export default class SendMessage_UI {
 
     public static equipmentInventory(player: Player, menuMessage: string): void {
 
-        const equipmentCodes = returnInventoryEquipmentStringWithCodes(player)
+        const equipmentype = player.getCurrentState().secondary.split(" ")[0]
         const playerName = player.getName()
     
+        let equipments = ''
+
+        switch(equipmentype) {
+        
+            case "longRangeWeapon": equipments = player.getAllEquipmentInventoryString("longRangeWeapon") ;break
+            case "meleeWeapon":     equipments = player.getAllEquipmentInventoryString("meleeWeapon")     ;break
+            case "helmet":          equipments = player.getAllEquipmentInventoryString("helmet")          ;break
+            case "bodyArmor":       equipments = player.getAllEquipmentInventoryString("bodyArmor")       ;break
+            case "gloves":          equipments = player.getAllEquipmentInventoryString("gloves")          ;break
+            case "boots":           equipments = player.getAllEquipmentInventoryString("boots")           ;break
+    
+            default: throw Error(`ERROR: SendMessage_UI, "equipmentInventory": 
+                Secondary state do not contain a equipment type included
+            `)
+        }
+
         sendMessage(
             `/w @${playerName} ${menuMessage}: 
-            | 0. Voltar ${equipmentCodes}
+            | 0. Voltar ${equipments}
             |`
         )
         return
