@@ -1,3 +1,4 @@
+import sendMessage from '../../../Twitch/sendMessageHandler.js';
 import { CS_ResourceData } from '../Globals/moduleTypes.js';
 import Enemie from './EntityChilds/Enemie.js';
 import Player from './EntityChilds/Player.js';
@@ -157,6 +158,25 @@ export default class Battle {
         return message
     }
 
+    public returnResourcesRewardsString(): string {
+
+        let message = `Recursos ganhos: `
+
+        if(this._earnedResources.length <= 0) {
+            message += `nenhum :(`
+        }
+
+        for(let i = 0; i < this._earnedResources.length; i++) {
+
+            const earnedResource = this._earnedResources[i]
+            const amount = earnedResource.amount
+            const resourceName = earnedResource.name
+            message += `${amount}x ${resourceName}, `
+        }
+
+        return message.slice(0, -2)
+    }
+
     //=================================================================================================
     // PRIVATE METHODS ===============================================================================
     //=================================================================================================
@@ -206,25 +226,6 @@ export default class Battle {
             this._player.addResources(newResourceObject)
             this._earnedResources.push(structuredClone(newResourceObject))
         }
-    }
-
-    private returnResourcesRewardsString(): string {
-
-        let message = `Recursos ganhos: `
-
-        if(this._earnedResources.length <= 0) {
-            message += `nenhum :(`
-        }
-
-        for(let i = 0; i < this._earnedResources.length; i++) {
-
-            const earnedResource = this._earnedResources[i]
-            const amount = earnedResource.amount
-            const resourceName = earnedResource.name
-            message += `${amount}x ${resourceName}, `
-        }
-
-        return message.slice(0, -2)
     }
 
     private evasionEventSucced(o: {
@@ -354,6 +355,11 @@ export default class Battle {
     private playerDied(): void {
 
         const player = this._player
+
+        sendMessage(`
+            O Jogador @${player.getName()} MORREU!! 
+            ${player.getSouls()} almas foram perdidas *-*.
+        `)
     
         player.setSouls(0)
         player.recoverHP()
@@ -674,6 +680,7 @@ class _BattleMessage {
         ) {
             SendMessage_UI.idle(player, `
                 VITÓRIA!! Você sofreu ${enemieDamage} de dano mas venceu!!!
+                Recursos ganhos: ${battle.returnResourcesRewardsString()}.
             `)
             _BattleStatus.resetBattleLog()
             return
@@ -685,6 +692,7 @@ class _BattleMessage {
         ) {
             SendMessage_UI.idle(player, `
                 VITÓRIA!! Você conseguiu matar ${enemie.getName()} conectando uma esquiva!!!
+                Recursos ganhos: ${battle.returnResourcesRewardsString()}.
             `)
             _BattleStatus.resetBattleLog()
             return
