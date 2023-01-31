@@ -1,6 +1,6 @@
 import sendMessage from "../../../../Twitch/sendMessageHandler.js"
 import Player from "../../Classes/EntityChilds/Player.js"
-import { sendMessage_UI_AttributeUpgradeMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_AttributeUpgradeMenu.js"
+import SendMessage_UI from "../../Classes/SendMessage.js"
 import { CS_AttributeTypes } from "../../Globals/moduleTypes.js"
 import notEnoughSoulsToLevelUp from "./notEnoughSoulsToLevelUp.js"
 
@@ -18,7 +18,8 @@ export default function upgradeAttributeByType(
 }
 
 function notEnoughSoulsCase(player: Player) {
-    sendMessage_UI_AttributeUpgradeMenu(player,
+    
+    SendMessage_UI.attributeUpgradeMenu(player,
         `Você não possui almas suficientes`
     )
 }
@@ -37,7 +38,8 @@ function enoughSoulsCase(
     const nextUpgradeCost = player.getLevelUpgradeCost()
 
     sendMessage(`@${playerName} upou para o nível ${level}!!`)
-    sendMessage_UI_AttributeUpgradeMenu(player,
+    
+    SendMessage_UI.attributeUpgradeMenu(player,
         `${menuMessage} 
         - Novo level: ${level} 
         - Almas restantes: ${souls} 

@@ -1,7 +1,7 @@
+import SendMessage_UI from "../../Classes/SendMessage.js";
 import Travel from "../../Classes/Travel.js";
 import { CS_DataPayload } from "../../Globals/moduleTypes.js";
 import consultAttributes from "../../UserInterface/UI_StatisticsMenu/checkAttributes.js";
-import { sendMessage_UI_StatisticsMenu } from "../sendMessage/sendMessage_UI_StatisticsMenu.js";
 
 export default function UI_StatisticsMenu(data: CS_DataPayload): void {
 
@@ -9,7 +9,7 @@ export default function UI_StatisticsMenu(data: CS_DataPayload): void {
     const player = data.playerInstance
 
 	if (commandWord === '!cs') {
-        sendMessage_UI_StatisticsMenu(player, `Você está no menu de estatísticas`); return
+        SendMessage_UI.statisticsMenu(player, `Você está no menu de estatísticas`); return
     }
 
     const commandCode = Number(commandWord)
@@ -19,6 +19,6 @@ export default function UI_StatisticsMenu(data: CS_DataPayload): void {
         case 1: consultAttributes(data,                     `Você ainda está no menu de estatísticas`)      ;break
         case 2: Travel.to_AttributeUpgradeMenu(player,      `Você está no menu de melhoria de attributos`)  ;break
         
-        default: sendMessage_UI_StatisticsMenu(player,      `Código inválido`);                             ;break
+        default: SendMessage_UI.statisticsMenu(player,      `Código inválido`);                             ;break
     }
 }

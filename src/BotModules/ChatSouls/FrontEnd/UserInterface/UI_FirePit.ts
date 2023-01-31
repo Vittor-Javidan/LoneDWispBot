@@ -1,6 +1,6 @@
+import SendMessage_UI from "../../Classes/SendMessage.js"
 import Travel from "../../Classes/Travel.js"
 import { CS_DataPayload } from "../../Globals/moduleTypes.js"
-import { sendMessage_UI_FirePit } from "../sendMessage/sendMessage_UI_firePit.js"
 
 export default function UI_firePit(data: CS_DataPayload): void {
 
@@ -8,7 +8,7 @@ export default function UI_firePit(data: CS_DataPayload): void {
 	const player = data.playerInstance
 
 	if (commandWord === '!cs') {
-		sendMessage_UI_FirePit(player, `Você está na fogueira`);
+		SendMessage_UI.firePit(player, `Você está na fogueira`);
 		return
 	}
 
@@ -20,6 +20,6 @@ export default function UI_firePit(data: CS_DataPayload): void {
 		case 1: Travel.to_StatisticsMenu(player, 		`Você está no menu de estatísticas`)   				;break
 		case 2: Travel.to_Equipments(player,			`Você entrou no menu de equipamentos`)  			;break
 		
-		default: sendMessage_UI_FirePit(player, 		`Código Inválido`)									;break
+		default: SendMessage_UI.firePit(player, 		`Código Inválido`)									;break
 	}
 }

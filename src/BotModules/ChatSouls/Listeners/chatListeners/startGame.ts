@@ -1,6 +1,6 @@
 import sendMessage from "../../../../Twitch/sendMessageHandler.js"
 import Player from "../../Classes/EntityChilds/Player.js"
-import { sendMessage_UI_FirePit } from "../../FrontEnd/sendMessage/sendMessage_UI_firePit.js"
+import SendMessage_UI from "../../Classes/SendMessage.js"
 
 export default function startGame(userName: string): void {
     
@@ -12,7 +12,8 @@ export default function startGame(userName: string): void {
     const player = Player.startGame(userName)
     
     publicMessage(userName, player)
-    sendMessage_UI_FirePit(player, (`
+    
+    SendMessage_UI.firePit(player, (`
         você acabou de iniciar ChatSouls, MUAHAHAHAH *-*. 
         Digitar: "!cs help" mostra opções da sua conta, "!cs" para se situar no game, 
         e apenas digite o número da opção para navegar dentro do jogo. 

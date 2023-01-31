@@ -1,4 +1,4 @@
-import { sendMessage_UI_Equipments } from "../../FrontEnd/sendMessage/sendMessage_UI_Equipments.js";
+import SendMessage_UI from "../../Classes/SendMessage.js";
 import { EQUIPMENT_TYPES_ARRAY } from "../../Globals/EQUIPMENTS_ENTRY.js";
 import { CS_DataPayload, CS_Equipments } from "../../Globals/moduleTypes.js";
 
@@ -7,9 +7,9 @@ export default function checkCurrentEquipments(data: CS_DataPayload, menuMessage
     const currentEquipments = data.playerInstance.getAllCurrentEquipments()
 
     if(isNaked(currentEquipments)) {
-        sendMessage_UI_Equipments(data.playerInstance, `${menuMessage} - Você está completamente nu!! Shame on you`)
+        SendMessage_UI.equipments(data.playerInstance, `${menuMessage} - Você está completamente nu!! Shame on you`)
     }
-    sendMessage_UI_Equipments(data.playerInstance, `${menuMessage} - ${buildMessage(currentEquipments)} `)
+    SendMessage_UI.equipments(data.playerInstance, `${menuMessage} - ${buildMessage(currentEquipments)} `)
 }
 
 function isNaked(currentEquipments: CS_Equipments): boolean {

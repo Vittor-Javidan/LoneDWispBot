@@ -1,6 +1,6 @@
 import Battle from "../../Classes/Battle.js";
+import SendMessage_UI from "../../Classes/SendMessage.js";
 import { CS_DataPayload } from "../../Globals/moduleTypes.js";
-import sendMessage_UI_Battle from "../sendMessage/sendMessage_UI_Battle.js";
 
 export default function UI_Battle(data: CS_DataPayload): void {
 	
@@ -9,7 +9,8 @@ export default function UI_Battle(data: CS_DataPayload): void {
     const battle = Battle.getBattleByName(player.getName())
 
     if (commandWord === '!cs') {
-        sendMessage_UI_Battle(battle, `Você está em batalha!!!`)
+		
+        SendMessage_UI.battle(battle, `Você está em batalha!!!`)
 		return
 	}
 
@@ -19,6 +20,6 @@ export default function UI_Battle(data: CS_DataPayload): void {
 
 		case 1: battle.attack() ;break
 
-		default: sendMessage_UI_Battle(battle,`opção inválida`)	;break
+		default: SendMessage_UI.battle(battle,`opção inválida`)	;break
 	}
 }

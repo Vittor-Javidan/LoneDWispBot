@@ -1,6 +1,6 @@
 import Player from "../../Classes/EntityChilds/Player.js"
+import SendMessage_UI from "../../Classes/SendMessage.js"
 import returnEquipmentDetails from "../../FrontEnd/buildMessages/returnEquipmentDetailByType.js"
-import { sendMessage_UI_EquipmentMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_EquipmentMenu.js"
 import { return_CS_EquipmentTypes } from "../../Globals/typesUtilsFunctions.js"
 
 export default function checkEquipmentDetais(player: Player): void {
@@ -9,10 +9,9 @@ export default function checkEquipmentDetais(player: Player): void {
     const equippedEquipment = player.getCurrentEquipment(equipmentType)
 
     if(!equippedEquipment.name) {
-        sendMessage_UI_EquipmentMenu(player,`você está sem capacete equipado`)
+        SendMessage_UI.equipmentMenu(player,`você está sem capacete equipado`)
         return
     }
-
-    const equipmentDetails = returnEquipmentDetails(equippedEquipment)
-    sendMessage_UI_EquipmentMenu(player, equipmentDetails)
+    
+    SendMessage_UI.equipmentMenu(player, returnEquipmentDetails(equippedEquipment))
 }

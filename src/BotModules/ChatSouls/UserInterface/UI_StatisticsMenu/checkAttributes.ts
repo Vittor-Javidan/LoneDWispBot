@@ -1,4 +1,4 @@
-import { sendMessage_UI_StatisticsMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_StatisticsMenu.js"
+import SendMessage_UI from "../../Classes/SendMessage.js"
 import { CS_DataPayload } from "../../Globals/moduleTypes.js"
 
 
@@ -10,7 +10,7 @@ export default function consultAttributes(data: CS_DataPayload, menuMessage: str
     const strenght = playerAttributes.strenght
     const intelligence = playerAttributes.intelligence
     
-    sendMessage_UI_StatisticsMenu(data.playerInstance, 
+    SendMessage_UI.statisticsMenu(data.playerInstance, 
         `${menuMessage}. Seus attributos:
         Vitalidade: ${vitality} 
         - Agilidade: ${agility} 

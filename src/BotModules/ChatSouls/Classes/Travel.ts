@@ -1,15 +1,8 @@
-import { sendMessage_UI_AttributeUpgradeMenu } from "../FrontEnd/sendMessage/sendMessage_UI_AttributeUpgradeMenu.js"
-import sendMessage_UI_Battle from "../FrontEnd/sendMessage/sendMessage_UI_Battle.js"
-import { sendMessage_UI_EquipmentInventory } from "../FrontEnd/sendMessage/sendMessage_UI_EquipmentInventory.js"
-import { sendMessage_UI_EquipmentMenu } from "../FrontEnd/sendMessage/sendMessage_UI_EquipmentMenu.js"
-import { sendMessage_UI_Equipments } from "../FrontEnd/sendMessage/sendMessage_UI_Equipments.js"
-import { sendMessage_UI_FirePit } from "../FrontEnd/sendMessage/sendMessage_UI_firePit.js"
-import { sendMessage_UI_Idle } from "../FrontEnd/sendMessage/sendMessage_UI_Idle.js"
-import { sendMessage_UI_StatisticsMenu } from "../FrontEnd/sendMessage/sendMessage_UI_StatisticsMenu.js"
 import { return_CS_EquipmentTypes, return_CS_SecondaryStates_EQUIPMENT_INVENTORY } from "../Globals/typesUtilsFunctions.js"
 import Battle from "./Battle.js"
 import Enemie from "./EntityChilds/Enemie.js"
 import Player from "./EntityChilds/Player.js"
+import SendMessage_UI from "./SendMessage.js"
 
 export default class Travel {
 
@@ -74,14 +67,12 @@ class Travel_To_FirePit {
 
     public static to_FirePit(player: Player, menuMessage: string): void {
     
+        player.recoverHP()
         player.setCurrentState({
             primary: "FIRE_PIT",
             secondary: "RESTING_ON_FIRE_PIT"
         })
-    
-        player.recoverHP()
-    
-        sendMessage_UI_FirePit(player, menuMessage)
+        SendMessage_UI.firePit(player, menuMessage)
     }
 
     public static to_StatisticsMenu(player: Player, menuMessage: string) {
@@ -90,7 +81,7 @@ class Travel_To_FirePit {
             primary: "FIRE_PIT",
             secondary: "STATS_MENU"
         })
-        sendMessage_UI_StatisticsMenu(player, menuMessage)
+        SendMessage_UI.statisticsMenu(player, menuMessage)
     }
 
     public static to_AttributeUpgradeMenu(player: Player, menuMessage: string): void {
@@ -99,8 +90,7 @@ class Travel_To_FirePit {
             primary: "FIRE_PIT",
             secondary: "ATRIBUTE_UPGRADE"
         })
-        
-        sendMessage_UI_AttributeUpgradeMenu(player, menuMessage)
+        SendMessage_UI.attributeUpgradeMenu(player, menuMessage)
     }
 }
 
@@ -111,7 +101,7 @@ class Travel_To_Explore {
             primary: "EXPLORING",
             secondary: "IDLE"
         })
-        sendMessage_UI_Idle(player, menuMessage)
+        SendMessage_UI.idle(player, menuMessage)
     }
 
     public static to_Battle(player: Player) {
@@ -134,7 +124,7 @@ class Travel_To_Explore {
 
         const message = `Você encontrou um ${enemieName} ${advantageMessage}`
         
-        sendMessage_UI_Battle(battle, message)
+        SendMessage_UI.battle(battle, message)
     }
 }
 
@@ -146,7 +136,7 @@ class Travel_To_Equipments {
         const equipmentType = return_CS_EquipmentTypes(player.getCurrentState().secondary.split(" ")[0])
     
         if (player.isInventoryEquipmentsTypeEmpty(equipmentType)) {
-            sendMessage_UI_EquipmentMenu(player, `Seu inventário está vazio.`)
+            SendMessage_UI.equipmentMenu(player, `Seu inventário está vazio.`)
             return
         }
     
@@ -155,7 +145,8 @@ class Travel_To_Equipments {
             secondary: return_CS_SecondaryStates_EQUIPMENT_INVENTORY(equipmentType)
         })
         
-        sendMessage_UI_EquipmentInventory(
+        
+        SendMessage_UI.equipmentInventory(
             player,
             menuMessage
         )
@@ -169,8 +160,7 @@ class Travel_To_Equipments {
             primary: primaryState,
             secondary: "EQUIPMENT"
         })
-        
-        sendMessage_UI_Equipments(player, menuMessage)
+        SendMessage_UI.equipments(player, menuMessage)
     }
 
     public static to_EquipmentMenu(player: Player, menuMessage: string): void {
@@ -181,8 +171,7 @@ class Travel_To_Equipments {
             primary: player.getCurrentState().primary,
             secondary: `${equipmentType} menu`
         })
-    
-        sendMessage_UI_EquipmentMenu(player, menuMessage)
+        SendMessage_UI.equipmentMenu(player, menuMessage)
     }
 
     public static to_MeleeMenu(player: Player, menuMessage: string): void {
@@ -191,7 +180,7 @@ class Travel_To_Equipments {
             primary: player.getCurrentState().primary,
             secondary: "meleeWeapon menu"
         })
-        sendMessage_UI_EquipmentMenu(player, menuMessage)
+        SendMessage_UI.equipmentMenu(player, menuMessage)
     }
 
     public static to_LongRangeMenu(player: Player, menuMessage: string): void {
@@ -200,7 +189,7 @@ class Travel_To_Equipments {
             primary: player.getCurrentState().primary,
             secondary: "longRangeWeapon menu"
         })
-        sendMessage_UI_EquipmentMenu(player, menuMessage)
+        SendMessage_UI.equipmentMenu(player, menuMessage)
     }
 
     public static to_HelmetMenu(player: Player, menuMessage: string): void {
@@ -209,7 +198,7 @@ class Travel_To_Equipments {
             primary: player.getCurrentState().primary,
             secondary: "helmet menu"
         })
-        sendMessage_UI_EquipmentMenu(player, menuMessage)
+        SendMessage_UI.equipmentMenu(player, menuMessage)
     }
 
     public static to_BodyArmorMenu(player: Player, menuMessage: string): void {
@@ -218,7 +207,7 @@ class Travel_To_Equipments {
             primary: player.getCurrentState().primary,
             secondary: "bodyArmor menu"
         })
-        sendMessage_UI_EquipmentMenu(player, menuMessage)
+        SendMessage_UI.equipmentMenu(player, menuMessage)
     }
 
     public static to_GlovesMenu(player: Player, menuMessage: string) {
@@ -227,7 +216,7 @@ class Travel_To_Equipments {
             primary: player.getCurrentState().primary,
             secondary: "gloves menu"
         })
-        sendMessage_UI_EquipmentMenu(player, menuMessage)
+        SendMessage_UI.equipmentMenu(player, menuMessage)
     }
 
     public static to_BootsMenu(player: Player, menuMessage: string): void {
@@ -236,6 +225,6 @@ class Travel_To_Equipments {
             primary: player.getCurrentState().primary,
             secondary: "boots menu"
         })
-        sendMessage_UI_EquipmentMenu(player, menuMessage)
+        SendMessage_UI.equipmentMenu(player, menuMessage)
     }
 }

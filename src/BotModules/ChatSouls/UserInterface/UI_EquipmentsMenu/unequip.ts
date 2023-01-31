@@ -1,5 +1,5 @@
 import Player from "../../Classes/EntityChilds/Player.js"
-import { sendMessage_UI_EquipmentMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_EquipmentMenu.js"
+import SendMessage_UI from "../../Classes/SendMessage.js"
 import { CS_EquipmentTypes } from "../../Globals/moduleTypes.js"
 import { return_CS_EquipmentTypes } from "../../Globals/typesUtilsFunctions.js"
 
@@ -10,7 +10,7 @@ export default function unequip(player: Player): void {
     const message = choseUnequipMessageByEquipmentType(equipmentType)
 
 	if(currentEquipment.name === "Empty"){
-		sendMessage_UI_EquipmentMenu(player, message.noEquipment)
+		SendMessage_UI.equipmentMenu(player, message.noEquipment)
 		return
 	}
 
@@ -18,7 +18,7 @@ export default function unequip(player: Player): void {
 	player.calculateStats()
     player.recoverHP()
 	player.save()
-	sendMessage_UI_EquipmentMenu(player, 
+	SendMessage_UI.equipmentMenu(player, 
         `${currentEquipment.name} ${message.withEquipment}`)
 }
 

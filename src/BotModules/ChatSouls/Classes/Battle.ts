@@ -1,9 +1,7 @@
-import sendMessage_UI_Battle from '../FrontEnd/sendMessage/sendMessage_UI_Battle.js';
-import { sendMessage_UI_FirePit } from '../FrontEnd/sendMessage/sendMessage_UI_firePit.js';
-import { sendMessage_UI_Idle } from '../FrontEnd/sendMessage/sendMessage_UI_Idle.js';
 import { CS_ResourceData } from '../Globals/moduleTypes.js';
 import Enemie from './EntityChilds/Enemie.js';
 import Player from './EntityChilds/Player.js';
+import SendMessage_UI from './SendMessage.js';
 
 const config = {
     ATTACK: {
@@ -483,7 +481,8 @@ export default class Battle {
             !playerHit && !enemieHit &&
             !playerDied && !enemieDied
         ) {
-            sendMessage_UI_Battle(this, `
+            
+            SendMessage_UI.battle(this, `
                 UUUUUUUUUUUUUUUUUUUUU ambos erraram o ataque
             `)
             this.resetBattleLog()
@@ -498,7 +497,7 @@ export default class Battle {
             playerHit && enemieHit &&
             !playerDied && !enemieDied
         ) {
-            sendMessage_UI_Battle(this, `
+            SendMessage_UI.battle(this, `
                 Ambos se acertaram! você causou ${playerDamage} de dano,
                 e sofreu ${enemieDamage} de dano.
             `)
@@ -510,7 +509,7 @@ export default class Battle {
             !playerHit && enemieHit &&
             !playerDied && !enemieDied
         ) {
-            sendMessage_UI_Battle(this, `
+            SendMessage_UI.battle(this, `
                 OUUCH, você errou o ataque e tomou  ${enemieDamage} de dano!!!
             `)
             this.resetBattleLog()
@@ -521,7 +520,7 @@ export default class Battle {
             playerHit && !enemieHit &&
             !playerDied && !enemieDied
         ) {
-            sendMessage_UI_Battle(this, `
+            SendMessage_UI.battle(this, `
                 Conseguiu se esquivar e causar ${playerDamage} de dano!!!
             `)
             this.resetBattleLog()
@@ -536,7 +535,7 @@ export default class Battle {
             playerHit && enemieHit &&
             playerDied && !enemieDied
         ) {
-            sendMessage_UI_FirePit(player, `
+            SendMessage_UI.firePit(player, `
                 RIP. Ambos se acertaram mas você morreu com ${enemieDamage} de dano.
             `)
             this.resetBattleLog()
@@ -547,7 +546,7 @@ export default class Battle {
             playerHit && enemieHit &&
             !playerDied && enemieDied
         ) {
-            sendMessage_UI_Idle(player, `
+            SendMessage_UI.idle(player, `
                 VITÓRIA!! Você sofreu ${enemieDamage} de dano mas venceu!!!
             `)
             this.resetBattleLog()
@@ -558,7 +557,7 @@ export default class Battle {
             playerHit && !enemieHit &&
             !playerDied && enemieDied
         ) {
-            sendMessage_UI_Idle(player, `
+            SendMessage_UI.idle(player, `
                 VITÓRIA!! Você conseguiu matar ${enemie.getName()} conectando uma esquiva!!!
             `)
             this.resetBattleLog()
@@ -569,7 +568,7 @@ export default class Battle {
             !playerHit && enemieHit &&
             playerDied && !enemieDied
         ) {
-            sendMessage_UI_FirePit(player, `
+            SendMessage_UI.firePit(player, `
                 RIP, você errou o ataque e morreu com ${enemieDamage} de dano!!!
             `)
             this.resetBattleLog()

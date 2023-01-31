@@ -1,7 +1,7 @@
 import Player from "../../Classes/EntityChilds/Player.js"
+import SendMessage_UI from "../../Classes/SendMessage.js"
 import returnEquippingMessage from "../../FrontEnd/buildMessages/returnEquippingMessage.js"
 import returnMenuEquipmentMessageByType from "../../FrontEnd/buildMessages/returnMenuEquipmentMessageByType.js"
-import { sendMessage_UI_EquipmentMenu } from "../../FrontEnd/sendMessage/sendMessage_UI_EquipmentMenu.js"
 import { return_CS_EquipmentTypes } from "../../Globals/typesUtilsFunctions.js"
 
 export default function equipAndReturnToEquipmentTypeMenu(player: Player, itemIndex: number): void {
@@ -19,7 +19,9 @@ export default function equipAndReturnToEquipmentTypeMenu(player: Player, itemIn
     player.save()
 
     const equippedEquipment = player.getCurrentEquipment(equipmentType)
-    sendMessage_UI_EquipmentMenu(player, 
-        `${returnEquippingMessage(equippedEquipment)}. ${returnMenuEquipmentMessageByType(equipmentType)}`
-    )
+    
+    SendMessage_UI.equipmentMenu(player, `
+        ${returnEquippingMessage(equippedEquipment)}. 
+        ${returnMenuEquipmentMessageByType(equipmentType)}
+    `)
 }

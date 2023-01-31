@@ -1,7 +1,7 @@
 import { CS_DataPayload } from "../../Globals/moduleTypes.js"
 import checkCurrentEquipments from "../../UserInterface/UI_EquipmentsMenu/checkCurrentEquipments.js"
-import { sendMessage_UI_Equipments } from "../sendMessage/sendMessage_UI_Equipments.js"
 
+import SendMessage_UI from "../../Classes/SendMessage.js"
 import Travel from "../../Classes/Travel.js"
 
 export default function UI_Equipments(data: CS_DataPayload) {
@@ -10,7 +10,7 @@ export default function UI_Equipments(data: CS_DataPayload) {
 	const playerInstance = data.playerInstance
 
 	if (commandWord === '!cs') {
-		sendMessage_UI_Equipments(data.playerInstance, `Você está no menu de quipamentos`)
+		SendMessage_UI.equipments(data.playerInstance, `Você está no menu de quipamentos`)
         return
     }
 
@@ -26,6 +26,6 @@ export default function UI_Equipments(data: CS_DataPayload) {
         case 6: Travel.to_BootsMenu(playerInstance,    	`Você está no menu de botas`)				;break
 		case 7: checkCurrentEquipments(data,            `Você ainda está no menu de quipamentos`)   ;break
 
-		default: sendMessage_UI_Equipments(playerInstance, `Código inválido`)
+		default: SendMessage_UI.equipments(playerInstance, `Código inválido`)
 	}
 }

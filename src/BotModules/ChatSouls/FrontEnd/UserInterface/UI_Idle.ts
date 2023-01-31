@@ -1,7 +1,7 @@
+import SendMessage_UI from "../../Classes/SendMessage.js";
 import Travel from "../../Classes/Travel.js";
 import { CS_DataPayload } from "../../Globals/moduleTypes.js";
 import { explorationEvent } from "../Handlers/explorationEvent_Handler.js";
-import { sendMessage_UI_Idle } from "../sendMessage/sendMessage_UI_Idle.js";
 
 export default function UI_Idle(data: CS_DataPayload): void {
 
@@ -9,7 +9,7 @@ export default function UI_Idle(data: CS_DataPayload): void {
 	const playerInstance = data.playerInstance
 
     if (commandWord === '!cs') {
-        sendMessage_UI_Idle(playerInstance, `Você se está planejando seu próximo passo`)
+        SendMessage_UI.idle(playerInstance, `Você se está planejando seu próximo passo`)
 		return
 	}
 
@@ -17,6 +17,6 @@ export default function UI_Idle(data: CS_DataPayload): void {
     switch (commandCode) {
 
         case 0: Travel.to_FirePit(playerInstance, `Você montou uma fogueira`)  ;break
-        case 1: explorationEvent(playerInstance)                        ;break
+        case 1: explorationEvent(playerInstance)                               ;break
     }
 }

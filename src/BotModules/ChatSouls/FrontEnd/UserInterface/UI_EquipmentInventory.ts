@@ -1,10 +1,10 @@
 import Player from "../../Classes/EntityChilds/Player.js"
+import SendMessage_UI from "../../Classes/SendMessage.js"
 import Travel from "../../Classes/Travel.js"
 import { CS_DataPayload } from "../../Globals/moduleTypes.js"
 import { return_CS_EquipmentTypes } from "../../Globals/typesUtilsFunctions.js"
 import equipAndReturnToEquipmentTypeMenu from "../../UserInterface/UI_EquipmentsMenu/equip.js"
 import returnMenuEquipmentMessageByType from "../buildMessages/returnMenuEquipmentMessageByType.js"
-import { sendMessage_UI_EquipmentInventory } from "../sendMessage/sendMessage_UI_EquipmentInventory.js"
 
 /**
  * Handle !cs play commands when the player has a primary state of "RESTING" and secondary state of "EQUIPMENT_BOOTS_INVENTORY"
@@ -20,7 +20,7 @@ export default function UI_EquipmentInventory(data: CS_DataPayload): void {
     const equipmentType = return_CS_EquipmentTypes(player.getCurrentState().secondary.split(" ")[0])
 
 	if (commandWord === '!cs') {
-        sendMessage_UI_EquipmentInventory(player, `O que deseja equipar?`)
+        SendMessage_UI.equipmentInventory(player, `O que deseja equipar?`)
         return
 	}
 
@@ -41,7 +41,7 @@ export default function UI_EquipmentInventory(data: CS_DataPayload): void {
         //
 
         default:
-            sendMessage_UI_EquipmentInventory(player , `Código inválido. O que deseja equipar?`)
+            SendMessage_UI.equipmentInventory(player , `Código inválido. O que deseja equipar?`)
             break
         //
     }

@@ -1,6 +1,6 @@
 import Player from "../../Classes/EntityChilds/Player.js";
 
-export default function returnInventoryEquipmentCodes(player: Player): string {
+export default function returnInventoryEquipmentStringWithCodes(player: Player): string {
 
     const equipmentype = player.getCurrentState().secondary.split(" ")[0]
         
