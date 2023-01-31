@@ -15,14 +15,14 @@ export default function UI_StatisticsMenu(data: CS_DataPayload): void {
     switch (commandCode) {
 
         case 0: Travel.to_FirePit(player,                   `Você voltou a fogueira`)                       ;break
-        case 1: UI_Option.consultAttributes(data,           `Você ainda está no menu de estatísticas`)      ;break
+        case 1: _UI_Option.consultAttributes(data,           `Você ainda está no menu de estatísticas`)      ;break
         case 2: Travel.to_AttributeUpgradeMenu(player,      `Você está no menu de melhoria de attributos`)  ;break
         
         default: SendMessage_UI.statisticsMenu(player,      `Código inválido`);                             ;break
     }
 }
 
-class UI_Option {
+class _UI_Option {
 
     public static consultAttributes(data: CS_DataPayload, menuMessage: string): void {
 

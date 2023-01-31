@@ -17,11 +17,11 @@ export default function UI_Idle(data: CS_DataPayload): void {
     switch (commandCode) {
 
         case 0: Travel.to_FirePit(playerInstance, `Você montou uma fogueira`)  ;break
-        case 1: UI_Options.explorationEvent(playerInstance)                    ;break
+        case 1: _UI_Options.explorationEvent(playerInstance)                    ;break
     }
 }
 
-class UI_Options {
+class _UI_Options {
 
     public static explorationEvent(player: Player): void {
 

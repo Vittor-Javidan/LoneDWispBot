@@ -18,19 +18,19 @@ export default function UI_AttributeUpgradeMenu(data: CS_DataPayload): void {
 	switch(commandCode){
 				
 		case 0: Travel.to_StatisticsMenu(player, `Você voltou ao menu de estatísticas`)					;break
-		case 1: UI_Option.upgradeAttributeByType(player, "vitality", `VITALIDADE AUMENTADA!`)			;break
-		case 2: UI_Option.upgradeAttributeByType(player, "agility", `AGILIDADE AUMENTADA!`)				;break
-        case 3: UI_Option.upgradeAttributeByType(player, "strenght", `FORÇA AUMENTADA!`)				;break
-        case 4: UI_Option.upgradeAttributeByType(player, "intelligence", `INTELIGÊNCIA AUMENTADA!`)		;break
-		case 5: UI_Option.consultAttributesDescription(player)											;break
+		case 1: _UI_Option.upgradeAttributeByType(player, "vitality", `VITALIDADE AUMENTADA!`)			;break
+		case 2: _UI_Option.upgradeAttributeByType(player, "agility", `AGILIDADE AUMENTADA!`)			;break
+        case 3: _UI_Option.upgradeAttributeByType(player, "strenght", `FORÇA AUMENTADA!`)				;break
+        case 4: _UI_Option.upgradeAttributeByType(player, "intelligence", `INTELIGÊNCIA AUMENTADA!`)	;break
+		case 5: _UI_Option.consultAttributesDescription(player)											;break
 
 		default: SendMessage_UI.attributeUpgradeMenu(player, `Código inválido`)
 	}
 }
 
-class UI_Option {
+class _UI_Option {
 
-	public static consultAttributesDescription(player: Player): void {
+	static consultAttributesDescription(player: Player): void {
     
 		SendMessage_UI.attributeUpgradeMenu(player,
 			`O bônus de cada um dos atributos são: 
@@ -41,20 +41,23 @@ class UI_Option {
 		)
 	}
 
-	public static upgradeAttributeByType(
+	static upgradeAttributeByType(
 		player: Player, 
 		attribute: CS_AttributeTypes, 
 		menuMessage: string
 	): void {
-	
-		if(this.notEnoughSoulsToLevelUp(player)) {
-			this.notEnoughSoulsCase(player)
+	 
+		if(_UI.notEnoughSoulsToLevelUp(player)) {
+			_UI.notEnoughSoulsCase(player)
 			return
 		}
-		this.enoughSoulsCase(player, attribute, menuMessage)
+		_UI.enoughSoulsCase(player, attribute, menuMessage)
 	}
+}
 
-	private static notEnoughSoulsToLevelUp(player: Player): boolean {
+class _UI {
+
+	static notEnoughSoulsToLevelUp(player: Player): boolean {
 
 		const souls = player.getSouls()
 		const upgradeCost = player.getLevelUpgradeCost()
@@ -65,14 +68,14 @@ class UI_Option {
 		return false
 	}
 
-	private static notEnoughSoulsCase(player: Player) {
+	static notEnoughSoulsCase(player: Player) {
     
 		SendMessage_UI.attributeUpgradeMenu(player,
 			`Você não possui almas suficientes`
 		)
 	}
 
-	private static enoughSoulsCase(
+	static enoughSoulsCase(
 		player: Player, 
 		attribute: CS_AttributeTypes, 
 		menuMessage: string

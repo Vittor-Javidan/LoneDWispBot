@@ -24,16 +24,16 @@ export default function UI_EquipmentMenu(data: CS_DataPayload) {
 	let itemCode = Number(words[0])
 	switch (itemCode) {
 
-		case 0: 	Travel.to_Equipments(player, 		`Você voltou para o menu de equipamentos`)	;break
-		case 1:		Travel.to_EquipmentInventory(player,`Oque deseja equipar?`)						;break
-		case 2: 	UI_Option.checkEquipmentDetais(player)											;break
-		case 3: 	UI_Option.unequip(player)														;break
+		case 0: 	Travel.to_Equipments(player, 			`Você voltou para o menu de equipamentos`)	;break
+		case 1:		Travel.to_EquipmentInventory(player,	`Oque deseja equipar?`)						;break
+		case 2: 	_UI_Option.checkEquipmentDetais(player)												;break
+		case 3: 	_UI_Option.unequip(player)															;break
 		
-		default:	SendMessage_UI.equipmentMenu(player,`Código inválido`)							;break
+		default:	SendMessage_UI.equipmentMenu(player,`Código inválido`)								;break
 	}
 }
 
-class UI_Option {
+class _UI_Option {
 
 	public static checkEquipmentDetais(player: Player): void {
 	
@@ -45,14 +45,14 @@ class UI_Option {
 			return
 		}
 		
-		SendMessage_UI.equipmentMenu(player, UI.getEquipmentDetails(equippedEquipment))
+		SendMessage_UI.equipmentMenu(player, _UI.getEquipmentDetails(equippedEquipment))
 	}
 
 	public static unequip(player: Player): void {
 
 		const equipmentType = return_CS_EquipmentTypes(player.getCurrentState().secondary.split(" ")[0])
 		const currentEquipment = player.getCurrentEquipment(equipmentType)
-		const message = UI.choseUnequipMessageByEquipmentType(equipmentType)
+		const message = _UI.choseUnequipMessageByEquipmentType(equipmentType)
 	
 		if(currentEquipment.name === "Empty"){
 			SendMessage_UI.equipmentMenu(player, message.noEquipment)
@@ -69,7 +69,7 @@ class UI_Option {
 	}
 }
 
-class UI {
+class _UI {
 
 	public static getEquipmentDetails(currentEquipment: CS_EquipmentData) {
 

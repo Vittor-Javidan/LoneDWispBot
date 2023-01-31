@@ -26,7 +26,7 @@ export default function UI_EquipmentInventory(data: CS_DataPayload): void {
     switch (true) {
 
         case commandCode === 0: 
-            Travel.to_EquipmentMenu(player, UI.getReturnMessage(equipmentType))
+            Travel.to_EquipmentMenu(player, _UI.getReturnMessage(equipmentType))
             break
         //
 
@@ -34,7 +34,7 @@ export default function UI_EquipmentInventory(data: CS_DataPayload): void {
 
             const itemIndex = commandCode - 1
 
-            UI_Option.equipAndReturn(player, itemIndex)
+            _UI_Option.equipAndReturn(player, itemIndex)
 
             break
         //
@@ -46,7 +46,7 @@ export default function UI_EquipmentInventory(data: CS_DataPayload): void {
     }
 }
 
-class UI_Option {
+class _UI_Option {
 
     public static equipAndReturn(player: Player, itemIndex: number): void {
 
@@ -65,13 +65,13 @@ class UI_Option {
         const equippedEquipment = player.getCurrentEquipment(equipmentType)
         
         SendMessage_UI.equipmentMenu(player, `
-            ${UI.returnEquippingMessage(equippedEquipment)}. 
-            ${UI.returnMenuEquipmentMessageByType(equipmentType)}
+            ${_UI.returnEquippingMessage(equippedEquipment)}. 
+            ${_UI.returnMenuEquipmentMessageByType(equipmentType)}
         `)
     }
 }
 
-class UI {
+class _UI {
 
     public static getReturnMessage(equipmentType: CS_EquipmentTypes): string {
 
