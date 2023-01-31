@@ -14,35 +14,63 @@ import Player from "./EntityChilds/Player.js"
 export default class Travel {
 
     public static to_Explore(player: Player, menuMessage: string): void {
-        player.setCurrentState({
-            primary: "EXPLORING",
-            secondary: "IDLE"
-        })
-        sendMessage_UI_Idle(player, menuMessage)
+        Travel_To_Explore.to_Explore(player, menuMessage)
     }
 
     public static to_Battle(player: Player) {
-    
-        player.setCurrentState({
-            primary: "EXPLORING",
-            secondary: "BATTLE"
-        })
-
-        const enemie = Enemie.instantiateRandomEnemie(player)
-        const enemieName = enemie.getName()
-        const battle = Battle.startBattle(player, enemie)
-        const turn = battle.getTurn()
-
-        let advantageMessage = ""
-        
-        turn === 1
-        ? advantageMessage += `e você tem a vantagem de ataque `
-        : advantageMessage += `e ele tem a vantagem de ataque `
-
-        const message = `Você encontrou um ${enemieName} ${advantageMessage}`
-        
-        sendMessage_UI_Battle(battle, message)
+        Travel_To_Explore.to_Battle(player)
     }
+
+    public static to_FirePit(player: Player, menuMessage: string): void {
+        Travel_To_FirePit.to_FirePit(player, menuMessage)
+    }
+
+    public static to_StatisticsMenu(player: Player, menuMessage: string) {
+        Travel_To_FirePit.to_StatisticsMenu(player, menuMessage)
+    }
+
+    public static to_AttributeUpgradeMenu(player: Player, menuMessage: string): void {
+        Travel_To_FirePit.to_AttributeUpgradeMenu(player, menuMessage)
+    }
+
+    public static to_EquipmentInventory(player: Player, menuMessage: string): void {
+        Travel_To_Equipments.to_EquipmentInventory(player, menuMessage)
+    }
+
+    public static to_Equipments(player: Player, menuMessage: string): void {
+        Travel_To_Equipments.to_Equipments(player, menuMessage)
+    }
+
+    public static to_EquipmentMenu(player: Player, menuMessage: string): void {
+        Travel_To_Equipments.to_EquipmentMenu(player, menuMessage)
+    }
+
+    public static to_MeleeMenu(player: Player, menuMessage: string): void {
+        Travel_To_Equipments.to_MeleeMenu(player, menuMessage)
+    }
+
+    public static to_LongRangeMenu(player: Player, menuMessage: string): void {
+        Travel_To_Equipments.to_LongRangeMenu(player, menuMessage)
+    }
+
+    public static to_HelmetMenu(player: Player, menuMessage: string): void {
+        Travel_To_Equipments.to_HelmetMenu(player, menuMessage)
+    }
+
+    public static to_BodyArmorMenu(player: Player, menuMessage: string): void {
+        Travel_To_Equipments.to_BodyArmorMenu(player, menuMessage)
+    }
+
+    public static to_GlovesMenu(player: Player, menuMessage: string) {
+        Travel_To_Equipments.to_GlovesMenu(player, menuMessage)
+    }
+
+    public static to_BootsMenu(player: Player, menuMessage: string): void {
+        Travel_To_Equipments.to_BootsMenu(player, menuMessage)
+    }
+}
+
+class Travel_To_FirePit {
 
     public static to_FirePit(player: Player, menuMessage: string): void {
     
@@ -74,6 +102,43 @@ export default class Travel {
         
         sendMessage_UI_AttributeUpgradeMenu(player, menuMessage)
     }
+}
+
+class Travel_To_Explore {
+
+    public static to_Explore(player: Player, menuMessage: string): void {
+        player.setCurrentState({
+            primary: "EXPLORING",
+            secondary: "IDLE"
+        })
+        sendMessage_UI_Idle(player, menuMessage)
+    }
+
+    public static to_Battle(player: Player) {
+    
+        player.setCurrentState({
+            primary: "EXPLORING",
+            secondary: "BATTLE"
+        })
+
+        const enemie = Enemie.instantiateRandomEnemie(player)
+        const enemieName = enemie.getName()
+        const battle = Battle.startBattle(player, enemie)
+        const turn = battle.getTurn()
+
+        let advantageMessage = ""
+        
+        turn === 1
+        ? advantageMessage += `e você tem a vantagem de ataque `
+        : advantageMessage += `e ele tem a vantagem de ataque `
+
+        const message = `Você encontrou um ${enemieName} ${advantageMessage}`
+        
+        sendMessage_UI_Battle(battle, message)
+    }
+}
+
+class Travel_To_Equipments {
 
     public static to_EquipmentInventory(player: Player, menuMessage: string): void {
 
