@@ -1,6 +1,6 @@
-import { CS_Catalog_Melee, CS_MeleeData } from "../../../Globals/moduleTypes.js";
+import { CS_DataBase_MeleeWeapon } from "../../../Globals/moduleTypes.js";
  
-export const allMeleeData: Record<CS_Catalog_Melee, CS_MeleeData> = {
+export const meleeDatabase: CS_DataBase_MeleeWeapon = {
 
     "Dummy Equipment": {
         name: "Dummy Equipment",

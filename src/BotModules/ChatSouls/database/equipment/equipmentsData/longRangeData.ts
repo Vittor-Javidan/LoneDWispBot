@@ -1,6 +1,6 @@
-import { CS_Catalog_LongRange, CS_LongRangeData } from "../../../Globals/moduleTypes.js";
+import { CS_DataBase_LongRange } from "../../../Globals/moduleTypes.js";
 
-export const allLongRangeData: Record<CS_Catalog_LongRange, CS_LongRangeData> = {
+export const longRangeDatabase: CS_DataBase_LongRange = {
     "Dummy Equipment": {
         name: "Dummy Equipment",
         type: 'longRangeWeapon'

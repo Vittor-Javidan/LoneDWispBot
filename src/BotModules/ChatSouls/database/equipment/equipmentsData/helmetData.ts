@@ -1,6 +1,6 @@
-import { CS_Catalog_Helmet, CS_HelmetData } from "../../../Globals/moduleTypes.js";
+import { CS_DataBase_Helmet } from "../../../Globals/moduleTypes.js";
 
-export const allHelmetData: Record<CS_Catalog_Helmet, CS_HelmetData> = {
+export const helmetDatabase: CS_DataBase_Helmet = {
     "Dummy Equipment": {
         name: "Dummy Equipment",
         type: 'helmet'

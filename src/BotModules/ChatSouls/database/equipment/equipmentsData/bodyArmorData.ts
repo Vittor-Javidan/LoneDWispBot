@@ -1,6 +1,6 @@
-import { CS_BodyArmorData, CS_Catalog_BodyArmor } from "../../../Globals/moduleTypes.js";
+import { CS_DataBase_BodyArmor } from "../../../Globals/moduleTypes.js";
 
-export const allBodyArmorData: Record<CS_Catalog_BodyArmor, CS_BodyArmorData> = {
+export const bodyArmorDatabase: CS_DataBase_BodyArmor = {
     
     "Dummy Equipment": {
         name: "Dummy Equipment",

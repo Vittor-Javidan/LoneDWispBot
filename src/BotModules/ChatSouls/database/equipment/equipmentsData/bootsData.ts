@@ -1,6 +1,6 @@
-import { CS_BootsData, CS_Catalog_Boots } from "../../../Globals/moduleTypes.js";
+import { CS_DataBase_Boots } from "../../../Globals/moduleTypes.js";
 
-export const allBootsData: Record<CS_Catalog_Boots, CS_BootsData> = {
+export const bootsDatabase: CS_DataBase_Boots = {
 
     "Dummy Equipment": {
         name: "Dummy Equipment",

@@ -8,9 +8,7 @@ import {
     CS_Catalog_LongRange,
     CS_Catalog_Melee,
     CS_DataBase_BodyArmor,
-    CS_DataBase_Boots,
-    CS_DataBase_Equipments,
-    CS_DataBase_Gloves,
+    CS_DataBase_Boots, CS_DataBase_Gloves,
     CS_DataBase_Helmet,
     CS_DataBase_LongRange,
     CS_DataBase_MeleeWeapon,
@@ -19,68 +17,58 @@ import {
     CS_LongRangeData,
     CS_MeleeData
 } from '../../Globals/moduleTypes.js'
-import { allBodyArmorData } from './equipmentsData/bodyArmorData.js'
-import { allBootsData } from './equipmentsData/bootsData.js'
-import { allGlovesData } from './equipmentsData/glovesData.js'
-import { allHelmetData } from './equipmentsData/helmetData.js'
 
-import { allLongRangeData } from './equipmentsData/longRangeData.js'
-import { allMeleeData } from './equipmentsData/meleeData.js'
-
-export const equipmentDataBase: CS_DataBase_Equipments = {
-
-    longRangeWeapon: allLongRangeData,
-    meleeWeapon:     allMeleeData,
-    helmet:          allHelmetData,
-    bodyArmor:       allBodyArmorData,
-    gloves:          allGlovesData,
-    boots:           allBootsData
-}
+import { bodyArmorDatabase } from './equipmentsData/bodyArmorData.js'
+import { bootsDatabase } from './equipmentsData/bootsData.js'
+import { glovesDatabase } from './equipmentsData/glovesData.js'
+import { helmetDatabase } from './equipmentsData/helmetData.js'
+import { longRangeDatabase } from './equipmentsData/longRangeData.js'
+import { meleeDatabase } from './equipmentsData/meleeData.js'
 
 export function getAll_LongRange(): CS_DataBase_LongRange {
-    return structuredClone(equipmentDataBase["longRangeWeapon"])
+    return structuredClone(longRangeDatabase)
 }
 
 export function getAll_Melee(): CS_DataBase_MeleeWeapon {
-    return structuredClone(equipmentDataBase["meleeWeapon"])
+    return structuredClone(meleeDatabase)
 }
 
 export function getAll_Helmet(): CS_DataBase_Helmet {
-    return structuredClone(equipmentDataBase["helmet"])
+    return structuredClone(helmetDatabase)
 }
 
 export function getAll_BodyArmor(): CS_DataBase_BodyArmor {
-    return structuredClone(equipmentDataBase["bodyArmor"])
+    return structuredClone(bodyArmorDatabase)
 }
 
 export function getAll_Gloves(): CS_DataBase_Gloves {
-    return structuredClone(equipmentDataBase["gloves"])
+    return structuredClone(glovesDatabase)
 }
 
 export function getAll_Boots(): CS_DataBase_Boots {
-    return structuredClone(equipmentDataBase["boots"])
+    return structuredClone(bootsDatabase)
 }
 
 export function getLongRange(itemName: CS_Catalog_LongRange): CS_LongRangeData {
-    return structuredClone(equipmentDataBase["longRangeWeapon"][itemName])
+    return structuredClone(longRangeDatabase[itemName])
 }
 
 export function getMelee(itemName: CS_Catalog_Melee): CS_MeleeData {
-    return structuredClone(equipmentDataBase["meleeWeapon"][itemName])
+    return structuredClone(meleeDatabase[itemName])
 }
 
 export function getHelmet(itemName: CS_Catalog_Helmet): CS_HelmetData {
-    return structuredClone(equipmentDataBase["helmet"][itemName])
+    return structuredClone(helmetDatabase[itemName])
 }
 
 export function getBodyArmor(itemName: CS_Catalog_BodyArmor): CS_BodyArmorData {
-    return structuredClone(equipmentDataBase["bodyArmor"][itemName])
+    return structuredClone(bodyArmorDatabase[itemName])
 }
 
 export function getGloves(itemName: CS_Catalog_Gloves): CS_GlovesData {
-    return structuredClone(equipmentDataBase["gloves"][itemName])
+    return structuredClone(glovesDatabase[itemName])
 }
 
 export function getBoots(itemName: CS_Catalog_Boots): CS_BootsData {
-    return structuredClone(equipmentDataBase["boots"][itemName])
+    return structuredClone(bootsDatabase[itemName])
 }
