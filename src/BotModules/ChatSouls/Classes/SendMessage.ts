@@ -76,7 +76,8 @@ export default class SendMessage_UI {
         sendMessage(
             `/w ${playerName} ${menuMessage} ${battle.getBattleStatusString()}. 
             | 0. Fugir 
-            | 1. Atacar 
+            | 1. Ataque curto alcance
+            | 2. Ataque longo alcance
             |`
         )
         return

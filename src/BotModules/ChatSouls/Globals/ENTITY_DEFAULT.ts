@@ -76,28 +76,55 @@ export const ENTITY_DEFAULT: {
         resources: {},
     },
     BASE_STATS: {
-        hp: 0,
-        evasion: 0,
-        fisicalDamage: 0,
+
+        hp:             0,
+        evasion:        0,
+
+        fisicalDamage:  0,
+        fireDamage:     0,
+        iceDamage:      0,
+        thunderDamage:  0,
+        poisonDamage:   0,
+
         fisicalDefense: 0,
-        magicalDamage: 0,
-        magicalDefense: 0
+        fireDefense:    0,
+        iceDefense:     0,
+        thunderDefense: 0,
+        poisonDefense:  0
     },
     STATS_FROM_EQUIPS: {
-        hp: 0,
-        evasion: 0,
-        fisicalDamage: 0,
+
+        hp:             0,
+        evasion:        0,
+
+        fisicalDamage:  0,
+        fireDamage:     0,
+        iceDamage:      0,
+        thunderDamage:  0,
+        poisonDamage:   0,
+
         fisicalDefense: 0,
-        magicalDamage: 0,
-        magicalDefense: 0
+        fireDefense:    0,
+        iceDefense:     0,
+        thunderDefense: 0,
+        poisonDefense:  0
     },
     TOTAL_STATS: {
-        hp: 0,
-        evasion: 0,
-        fisicalDamage: 0,
+
+        hp:             0,
+        evasion:        0,
+
+        fisicalDamage:  0,
+        fireDamage:     0,
+        iceDamage:      0,
+        thunderDamage:  0,
+        poisonDamage:   0,
+
         fisicalDefense: 0,
-        magicalDamage: 0,
-        magicalDefense: 0
+        fireDefense:    0,
+        iceDefense:     0,
+        thunderDefense: 0,
+        poisonDefense:  0
     },
     CURRENT_HP: 1,
     IS_ALIVE: true

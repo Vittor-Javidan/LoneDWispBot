@@ -37,20 +37,12 @@ export default class Battle {
     // PUBLIC METHODS =================================================================================
     //=================================================================================================
 
-    public attack() {
+    public attackLongRange() {
+        this.attack("LongRange")
+    }
 
-        if(this._turn === PLAYER_TURN) {
-
-            this.playerRound()
-            this.enemieRound()
-
-        } else {
-            
-            this.enemieRound()
-            this.playerRound()
-        }
-
-        _BattleMessage.chooseBattleMessage(this)
+    public attackMelee() {
+        this.attack("Melee")
     }
 
     public flee() {
@@ -66,7 +58,7 @@ export default class Battle {
             return
         }
 
-        this.attackAttempt('Enemie')
+        this.attackAttempt('Enemie', this.decideEnemieWeapon())
 
         if(this._BattleStatus.getStatus().playerDied) {
             this.playerDied()
@@ -237,8 +229,8 @@ export default class Battle {
         const NOT_ZERO = 100 // Easy value to unit test
         const { from, against, evasionWeight } = o
 
-        const evasion = from.getTotalStats().evasion
-        const oponent_evasion = against.getTotalStats().evasion
+        const evasion = from.getBaseStats().evasion + from.getArmorStats().evasion
+        const oponent_evasion = against.getBaseStats().evasion + against.getArmorStats().evasion 
 
         let sharedEvasion = oponent_evasion + evasion
 
@@ -264,7 +256,7 @@ export default class Battle {
         
         const playerName = this._player.getName()
         const playerHP = this._player.getCurrentHP()
-        const playerMaxHP = this._player.getTotalStats().hp
+        const playerMaxHP = this._player.getBaseStats().hp + this._player.getArmorStats().hp
         const playerHPString = `${playerName}: ${playerHP}/${playerMaxHP} HP`
 
         return `${playerHPString}`
@@ -279,18 +271,18 @@ export default class Battle {
         
         const enemieName = this._enemie.getName()
         const enemieHP = this._enemie.getCurrentHP()
-        const enemieMaxHP = this._enemie.getTotalStats().hp
+        const enemieMaxHP = this._enemie.getBaseStats().hp + this._enemie.getArmorStats().hp
         const enemieHPString = `${enemieName}: ${enemieHP}/${enemieMaxHP} HP`
 
         return `${enemieHPString}`
     }
 
-    private playerRound() {
+    private playerRound(attackType: "Melee" | "LongRange") {
 
         const battleStatus = this._BattleStatus.getStatus()
 
         if(!battleStatus.playerDied) {
-            this.attackAttempt('Player')
+            this.attackAttempt('Player', attackType)
         }
 
         if(battleStatus.enemieDied) { 
@@ -298,20 +290,60 @@ export default class Battle {
         }
     }
 
-    private enemieRound() {
+    private enemieRound(attackType: "Melee" | "LongRange") {
 
         const battleStatus = this._BattleStatus.getStatus()
 
         if(!battleStatus.enemieDied) {
-            this.attackAttempt('Enemie') 
+            this.attackAttempt('Enemie', attackType) 
         }
 
         if(battleStatus.playerDied) {
             this.playerDied()
         }
     }
+
+    private decideEnemieWeapon(): "Melee" | "LongRange" {
+
+        const enemieEquipment = this._enemie.getAllCurrentEquipments()
+        const enemieMelee = enemieEquipment["meleeWeapon"]
+        const enemieLongRange = enemieEquipment["longRangeWeapon"]
+        
+        switch (true) {
+            case enemieMelee.name !== "Empty" && enemieLongRange.name !== "Empty":
+                const randomNumber = Math.floor(Math.random() * 2)
+                if(randomNumber === 1){
+                    return "Melee"
+                } else {
+                    return "LongRange"
+                }
+            
+            case enemieMelee.name !== 'Empty':
+                return "Melee"
+            case enemieLongRange.name !== "Empty":
+                return "LongRange"
+            
+            default: return "Melee"
+        }
+    }
+
+    private attack(attackType: "Melee" | "LongRange") {
+
+        if(this._turn === PLAYER_TURN) {
+
+            this.playerRound(attackType)
+            this.enemieRound(attackType)
+
+        } else {
+            
+            this.enemieRound(attackType)
+            this.playerRound(attackType)
+        }
+
+        _BattleMessage.chooseBattleMessage(this)
+    }
     
-    private attackAttempt(agressor: "Player" | "Enemie") {
+    private attackAttempt(agressor: "Player" | "Enemie", attackType: "Melee" | "LongRange") {
     
         let attacker: Player | Enemie
         let defensor: Player | Enemie
@@ -334,8 +366,8 @@ export default class Battle {
         }
         
         agressor === "Player"
-        ? this.causeDamage("Enemie")
-        : this.causeDamage("Player")
+        ? this.causeDamage("Enemie", attackType)
+        : this.causeDamage("Player", attackType)
     }
 
     private playerWon(): void {
@@ -382,7 +414,7 @@ export default class Battle {
         Battle.deleteBattle(this._player.getName())
     }
 
-    private causeDamage(against: "Player" | "Enemie"): void {
+    private causeDamage(against: "Player" | "Enemie", attackType: "Melee" | "LongRange"): void {
         
         let attacker: Player | Enemie
         let defensor: Player | Enemie
@@ -397,7 +429,8 @@ export default class Battle {
 
         const attackerDamage = _CS_Math.calculateDamage({
             attacker: attacker,
-            defensor: defensor
+            defensor: defensor,
+            attackType: attackType
         })
 
         defensor.inflictDamage(attackerDamage)
@@ -415,12 +448,14 @@ class _CS_Math {
 
     public static calculateDamage(o: {
         attacker: Player | Enemie,
-        defensor: Player | Enemie
+        defensor: Player | Enemie,
+        attackType: "Melee" | "LongRange"
     }): number {
         
         const rawDamage = this.calculateRawDamage({
             attacker: o.attacker,
-            defender: o.defensor
+            defender: o.defensor,
+            attackType: o.attackType
         })
 
         return this.returnEffectiveDamage(rawDamage, _CS_Math.getLuckNumber())
@@ -428,18 +463,48 @@ class _CS_Math {
 
     private static calculateRawDamage(o: {
         attacker: Player | Enemie,
-        defender: Player | Enemie
+        defender: Player | Enemie,
+        attackType: "Melee" | "LongRange"
     }): number {
 
-        const attacker_fisicalDmg = o.attacker.getTotalStats().fisicalDamage
-        const defensor_fisicalDef = o.defender.getTotalStats().fisicalDefense
+        const { attacker, defender, attackType } = o
 
-        let rawDamage = attacker_fisicalDmg - defensor_fisicalDef
-        if (rawDamage < 1) {
-            rawDamage = 1
-        }
+        const attacker_baseStats = attacker.getBaseStats()
+        const defensor_baseStats = defender.getBaseStats()
+        const defensor_ArmorStats = defender.getArmorStats()
         
-        return Math.floor(rawDamage)
+        let attacker_WeaponStats
+        attackType === "LongRange"
+        ? attacker_WeaponStats = attacker.getLongRangeStats()
+        : attacker_WeaponStats = attacker.getMeleeStats() 
+
+        const damages = [
+            attacker_baseStats.fisicalDamage  + attacker_WeaponStats.fisicalDamage,
+            attacker_baseStats.fireDamage     + attacker_WeaponStats.fireDamage,
+            attacker_baseStats.iceDamage      + attacker_WeaponStats.iceDamage,
+            attacker_baseStats.thunderDamage  + attacker_WeaponStats.thunderDamage,
+            attacker_baseStats.poisonDamage   + attacker_WeaponStats.poisonDamage
+        ]
+
+        const defenses = [
+            defensor_baseStats.fisicalDefense + defensor_ArmorStats.fisicalDefense,
+            defensor_baseStats.fireDefense    + defensor_ArmorStats.fireDefense,
+            defensor_baseStats.iceDefense     + defensor_ArmorStats.iceDefense,
+            defensor_baseStats.thunderDefense + defensor_ArmorStats.thunderDefense,
+            defensor_baseStats.poisonDefense  + defensor_ArmorStats.poisonDefense
+        ]
+
+        let totalRawDamage = 0
+        damages.forEach((damage, index) => {
+            
+            let rawDamage = damage - defenses[index] 
+            if (rawDamage < 0) {
+                rawDamage = 0
+            }
+            totalRawDamage += rawDamage
+        })
+        
+        return Math.floor(totalRawDamage)
     }
 
     private static returnEffectiveDamage(damageValue: number, luck: number): number {

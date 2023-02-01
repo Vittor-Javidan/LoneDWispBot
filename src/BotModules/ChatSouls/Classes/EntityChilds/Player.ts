@@ -84,16 +84,17 @@ export default class Player extends Entity {
 
     static startGame(userName: string): Player {
 
-        const playerInstance = new Player(userName)
+        const player = new Player(userName)
 
-        this.registerPlayer(playerInstance)
-        this.loginPlayerInstance(playerInstance)
+        this.registerPlayer(player)
+        this.loginPlayerInstance(player)
 
-        playerInstance.load()
-        playerInstance.calculateStats()
-        playerInstance.recoverHP()
+        player.load()
+        player.calculateBaseStats()
+        player.calculateStatsFromEquips()
+        player.recoverHP()
 
-        return playerInstance
+        return player
     }
 
     static isLogged(userName: string): boolean {
@@ -187,7 +188,8 @@ export default class Player extends Entity {
         this.decreaseSouls(upgradeCost)
         this.addAttributes(attributeType)
         this.addLevel()
-        this.calculateStats()
+        this.calculateBaseStats()
+        this.calculateStatsFromEquips()
         this.recoverHP()
         this.save()
     }

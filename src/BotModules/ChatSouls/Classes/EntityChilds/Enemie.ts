@@ -18,7 +18,8 @@ export default class Enemie extends Entity{
     static initialize(enemieData: CS_EntityData): Enemie{
 
         const enemie = new Enemie(enemieData)
-        enemie.calculateStats()
+        enemie.calculateBaseStats()
+        enemie.calculateStatsFromEquips()
         enemie.recoverHP()
         
         return enemie

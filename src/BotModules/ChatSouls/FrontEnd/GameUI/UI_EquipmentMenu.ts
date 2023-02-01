@@ -60,7 +60,8 @@ class _UI_Option {
 		}
 	
 		player.unequip(equipmentType)
-		player.calculateStats()
+		player.calculateBaseStats()
+		player.calculateStatsFromEquips()
 		player.recoverHP()
 		player.save()
 		SendMessage_UI.equipmentMenu(player, 

@@ -3,7 +3,6 @@ import { GAME_BALANCE } from '../Globals/GAME_BALANCE.js'
 import Armor from './Equipments/Armor.js'
 import BodyArmor from './Equipments/BodyArmor.js'
 import Boots from './Equipments/Boots.js'
-import Equipment from './Equipments/Equipment.js'
 import Gloves from './Equipments/Gloves.js'
 import Helmet from './Equipments/Helmet.js'
 import LongRangeWeapon from './Equipments/LongRangeWeapon.js'
@@ -12,6 +11,7 @@ import Weapon from './Equipments/Weapon.js'
 
 import { EQUIPMENT_TYPES_ARRAY } from '../Globals/EQUIPMENTS_ENTRY.js'
 import {
+    CS_Armor_Multipliers,
     CS_Attributes,
     CS_AttributeTypes,
     CS_EquipmentData,
@@ -21,7 +21,8 @@ import {
     CS_Inventory,
     CS_Inventory_Equipments,
     CS_Inventory_Resources, CS_ResourceData,
-    CS_Stats
+    CS_Stats,
+    CS_Weapon_Multipliers
 } from '../Globals/moduleTypes.js'
 
 export default class Entity {
@@ -40,7 +41,9 @@ export default class Entity {
     private _inventory: CS_Inventory = structuredClone(ENTITY_DEFAULT.INVENTORY)
     private _totalStats: CS_Stats = structuredClone(ENTITY_DEFAULT.TOTAL_STATS)
     private _baseStats: CS_Stats = structuredClone(ENTITY_DEFAULT.BASE_STATS)
-    private _statsFromEquips: CS_Stats = structuredClone(ENTITY_DEFAULT.STATS_FROM_EQUIPS)
+    private _statsFromArmor: CS_Stats = structuredClone(ENTITY_DEFAULT.STATS_FROM_EQUIPS)
+    private _statsFromMelee: CS_Stats = structuredClone(ENTITY_DEFAULT.STATS_FROM_EQUIPS)
+    private _statsFromLongRange: CS_Stats = structuredClone(ENTITY_DEFAULT.STATS_FROM_EQUIPS)
 
     //=================================================================================================
     // CONSTRUCTOR ====================================================================================
@@ -143,22 +146,28 @@ export default class Entity {
         this._inventory.resources = structuredClone(object) 
     }
 
-    getTotalStats(): CS_Stats { return this._totalStats }
-    setTotalStats(object: CS_Stats): void {
-        
-        this._totalStats = structuredClone(object) 
-    }
-
     getBaseStats(): CS_Stats { return this._baseStats }
     setBaseStats(object: CS_Stats): void {
 
         this._baseStats = structuredClone(object) 
     }
 
-    getEquipmentStats(): CS_Stats { return this._statsFromEquips }
-    setEquipmentStats(object: CS_Stats): void {
+    getLongRangeStats(): CS_Stats { return this._statsFromLongRange }
+    setLongRangeStats(object: CS_Stats): void {
         
-        this._statsFromEquips = structuredClone(object)
+        this._statsFromLongRange = structuredClone(object)
+    }
+    
+    getMeleeStats(): CS_Stats { return this._statsFromMelee }
+    setMeleeStats(object: CS_Stats): void {
+        
+        this._statsFromMelee = structuredClone(object)
+    }
+    
+    getArmorStats(): CS_Stats { return this._statsFromArmor }
+    setArmorStats(object: CS_Stats): void {
+        
+        this._statsFromArmor = structuredClone(object)
     }
 
     //=================================================================================================
@@ -309,8 +318,9 @@ export default class Entity {
     }
 
     recoverHP(): void {
-        
-        this.setCurrentHP(this.getTotalStats().hp)
+
+        const totalHP = this.getBaseStats().hp + this.getArmorStats().hp
+        this.setCurrentHP(totalHP)
     }
 
     inflictDamage(value: number): void {
@@ -339,87 +349,114 @@ export default class Entity {
         const attributes = this.getAttributes()
 
         this.setBaseStats({
+            
             hp:             attributes.vitality     * balanceStatsValues.HP,
             evasion:        attributes.agility      * balanceStatsValues.EVASION,
+
             fisicalDamage:  attributes.strenght     * balanceStatsValues.FISICAL_DMG,
+            fireDamage:     0,
+            iceDamage:      0,
+            thunderDamage:  0,
+            poisonDamage:   0,
+
             fisicalDefense: attributes.strenght     * balanceStatsValues.FISICAL_DEF,
-            magicalDamage:  attributes.intelligence * balanceStatsValues.MAGICAL_DMG,
-            magicalDefense: attributes.intelligence * balanceStatsValues.MAGICAL_DEF
+            fireDefense:    attributes.intelligence * balanceStatsValues.MAGICAL_DEF,
+            iceDefense:     attributes.intelligence * balanceStatsValues.MAGICAL_DEF,
+            thunderDefense: attributes.intelligence * balanceStatsValues.MAGICAL_DEF,
+            poisonDefense:  attributes.intelligence * balanceStatsValues.MAGICAL_DEF
         })
     }
-
+    
     calculateStatsFromEquips(): void {
+        
+        const currentEquipment = this.getAllCurrentEquipments()
+        const resetedStats: CS_Stats = {
 
-        this.setEquipmentStats({
             hp:             0,
             evasion:        0,
+
             fisicalDamage:  0,
+            fireDamage:     0,
+            iceDamage:      0,
+            thunderDamage:  0,
+            poisonDamage:   0,
+
             fisicalDefense: 0,
-            magicalDamage:  0,
-            magicalDefense: 0
-        })
+            fireDefense:    0,
+            iceDefense:     0,
+            thunderDefense: 0,
+            poisonDefense:  0
+        }
 
-        const classesArray = [
-            LongRangeWeapon, 
-            MeleeWeapon, 
-            Helmet, 
-            BodyArmor, 
-            Gloves, 
-            Boots
-        ]
+        this.setLongRangeStats(resetedStats)
+        this.setMeleeStats(resetedStats)
+        this.setArmorStats(resetedStats)
 
-        EQUIPMENT_TYPES_ARRAY.forEach((type, index) => {
-            this.bonusFromEquippment(classesArray[index], type)
-        })
-    }
+        let equipmentInstance: Weapon | Armor
 
-    bonusFromEquippment(EquipmentClass: any , equipmentType: CS_EquipmentTypes): void{
+        for(let equipmentType in currentEquipment) {    
 
-        const currentEquipment = this.getAllCurrentEquipments()
+            switch(equipmentType as CS_EquipmentTypes) {
 
-        if(!currentEquipment[equipmentType].name) return
-        
-        const equipmentInstance: Equipment = new EquipmentClass(currentEquipment[equipmentType])
-        const equipMultipliers = equipmentInstance.multipliers
-        const statsWeightValues = GAME_BALANCE.STATS_WEIGHT
-        const attributes = this.getAttributes()
+                case "longRangeWeapon": equipmentInstance = new LongRangeWeapon(currentEquipment["longRangeWeapon"]);break
+                case "meleeWeapon":     equipmentInstance = new MeleeWeapon(currentEquipment["meleeWeapon"])        ;break
+                case "helmet":          equipmentInstance = new Helmet(currentEquipment["helmet"])                  ;break
+                case "bodyArmor":       equipmentInstance = new BodyArmor(currentEquipment["bodyArmor"])            ;break
+                case "gloves":          equipmentInstance = new Gloves(currentEquipment["gloves"])                  ;break
+                case "boots":           equipmentInstance = new Boots(currentEquipment["boots"])                    ;break
 
-        const stats = this.getEquipmentStats()
+                default: throw Error(`Error: Entity class, "calculateStatsFromEquips": equipment type not recognized`)
+            }
 
-        stats.hp           += attributes.vitality        * equipMultipliers.vitality   * statsWeightValues.HP
-        stats.evasion      += attributes.agility         * equipMultipliers.agility    * statsWeightValues.EVASION
+            if(equipmentInstance instanceof Armor) {
+                this.bonusFromArmor(equipmentInstance)
+            }
 
-        switch (true) {
-
-            case equipmentInstance instanceof Weapon:
-                stats.fisicalDamage += attributes.strenght      * equipMultipliers.strenght     * statsWeightValues.FISICAL_DMG
-                stats.magicalDamage += attributes.intelligence  * equipMultipliers.intelligence * statsWeightValues.MAGICAL_DMG
-                break
-            //
-                
-            case equipmentInstance instanceof Armor:
-                stats.fisicalDefense += attributes.strenght     * equipMultipliers.strenght     * statsWeightValues.FISICAL_DEF
-                stats.magicalDefense += attributes.intelligence * equipMultipliers.intelligence * statsWeightValues.MAGICAL_DEF
-                break
-            //
+            if(equipmentInstance instanceof Weapon) {
+                this.bonusFromWeapon(equipmentInstance)
+            }
         }
     }
 
-    calculateStats(): void {
+    bonusFromArmor(armor: Armor): void{
 
-        this.calculateBaseStats()
-        this.calculateStatsFromEquips()
+        const attributes = this.getAttributes()
+        const stats = this.getArmorStats()
 
-        const baseStats = this.getBaseStats()
-        const equipmentStats = this.getEquipmentStats()
+        let equipMultipliers: CS_Weapon_Multipliers | CS_Armor_Multipliers
+        
+        equipMultipliers  = armor.multipliers as CS_Armor_Multipliers
 
-        this.setTotalStats({
-            hp:             baseStats.hp               + equipmentStats.hp,
-            evasion:        baseStats.evasion          + equipmentStats.evasion,
-            fisicalDamage:  baseStats.fisicalDamage    + equipmentStats.fisicalDamage,
-            fisicalDefense: baseStats.fisicalDefense   + equipmentStats.fisicalDefense,
-            magicalDamage:  baseStats.magicalDamage    + equipmentStats.magicalDamage,
-            magicalDefense: baseStats.magicalDefense   + equipmentStats.magicalDefense
-        })
+        stats.hp             += attributes.vitality       * equipMultipliers.vitality
+        stats.evasion        += attributes.agility        * equipMultipliers.agility
+
+        stats.fisicalDefense += attributes.strenght       * equipMultipliers.strenght
+        stats.fireDefense    += attributes.intelligence   * equipMultipliers.fireDefense
+        stats.iceDefense     += attributes.intelligence   * equipMultipliers.iceDefense
+        stats.thunderDefense += attributes.intelligence   * equipMultipliers.thunderDefense
+        stats.poisonDefense  += attributes.intelligence   * equipMultipliers.poisonDefense
+    }
+
+    bonusFromWeapon(weapon: Weapon): void{
+
+        const attributes = this.getAttributes()
+        let equipMultipliers: CS_Weapon_Multipliers | CS_Armor_Multipliers
+        let stats: CS_Stats
+
+        weapon instanceof LongRangeWeapon
+        ? stats = this.getLongRangeStats()
+        : stats = this.getMeleeStats()
+
+        equipMultipliers  = weapon.multipliers as CS_Weapon_Multipliers
+        
+        stats.fisicalDamage += (
+            attributes.agility      * equipMultipliers.agility  +
+            attributes.strenght     * equipMultipliers.strenght
+        )
+        
+        stats.fireDamage        += attributes.intelligence  * equipMultipliers.fireDamage
+        stats.iceDamage         += attributes.intelligence  * equipMultipliers.iceDamage
+        stats.thunderDamage     += attributes.intelligence  * equipMultipliers.thunderDamage
+        stats.poisonDamage      += attributes.intelligence  * equipMultipliers.poisonDamage
     }
 }

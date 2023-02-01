@@ -54,7 +54,8 @@ class _UI_Option {
         const equipmentType = return_CS_EquipmentTypes(playerState.secondary.split(" ")[0])
     
         player.equipFromInventory(itemIndex, equipmentType)
-        player.calculateStats()
+        player.calculateBaseStats()
+        player.calculateStatsFromEquips()
         player.recoverHP()
         player.save()
         player.setCurrentState({

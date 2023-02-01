@@ -159,13 +159,43 @@ export type CS_Attributes = {
     intelligence: number
 }
 
+export type CS_Weapon_Multipliers = {
+
+    agility: number,
+    strenght: number,
+    fireDamage: number,
+    iceDamage: number,
+    thunderDamage: number,
+    poisonDamage: number
+}
+
+export type CS_Armor_Multipliers = {
+
+    vitality: number,
+    agility: number,
+    strenght: number,
+    fireDefense: number,
+    iceDefense: number,
+    thunderDefense: number,
+    poisonDefense: number
+}
+
 export type CS_Stats = {
+    
     hp: number,
     evasion: number,
+
     fisicalDamage: number,
+    fireDamage: number,
+    iceDamage: number,
+    thunderDamage: number,
+    poisonDamage: number,
+
     fisicalDefense: number,
-    magicalDamage: number,
-    magicalDefense: number
+    fireDefense: number,
+    iceDefense: number,
+    thunderDefense: number,
+    poisonDefense: number
 }
 
 export type CS_EquipmentData = (
