@@ -1,6 +1,6 @@
 export const GAME_BALANCE = {
     STATS_WEIGHT: {
-        HP:             30,
+        HP:             50,
         EVASION:        1,
         FISICAL_DMG:    5,
         FISICAL_DEF:    1,
