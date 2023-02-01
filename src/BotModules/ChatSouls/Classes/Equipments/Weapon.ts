@@ -14,17 +14,38 @@ export default class Weapon {
     }
 
     detailsString(description: string): string {
+
+        let multipliersString = ''
+
+        if(this.multipliers["agility"] !== 0) {
+            multipliersString += `Dano físico = ${this.multipliers.agility}x Agilidade, `
+        }
+
+        if(this.multipliers["strenght"] !== 0) {
+            multipliersString += `Dano físico = ${this.multipliers.strenght}x Força, `
+        }
+
+        if(this.multipliers["fireDamage"] !== 0) {
+            multipliersString += `Dano de Fogo = ${this.multipliers.fireDamage}x Inteligência, `
+        }
+
+        if(this.multipliers["iceDamage"] !== 0) {
+            multipliersString += `Dano de Gelo = ${this.multipliers.iceDamage}x Inteligência, `
+        }
+
+        if(this.multipliers["thunderDamage"] !== 0) {
+            multipliersString += `Dano de Eletricidade = ${this.multipliers.thunderDamage}x Inteligência, ` 
+        }
+
+        if(this.multipliers["poisonDamage"] !== 0 ) {
+            multipliersString += `Dano de Veneno = ${this.multipliers.poisonDamage}x Inteligência, `
+        }
+
+        multipliersString.substring(0, -2)
+
         return `
         DESCRIÇÃO: ${description} 
-        MULTIPLICADORES: 
-
-        Evasão = ${this.multipliers.agility}x Agilidade, 
-        Dano físico = ${this.multipliers.strenght}x Força,
-
-        Dano de Fogo = ${this.multipliers.fireDamage}x Inteligência
-        Dano de Gelo = ${this.multipliers.iceDamage}x Inteligência
-        Dano de Eletricidade = ${this.multipliers.thunderDamage}x Inteligência
-        Dano de Veneno = ${this.multipliers.poisonDamage}x Inteligência
+        MULTIPLICADORES: ${multipliersString}
         `
     }
 }

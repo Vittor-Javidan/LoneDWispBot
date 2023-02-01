@@ -15,19 +15,42 @@ export default class Armor {
     }
 
     detailsString(description: string): string {
+
+        let multipliersString = ''
+
+        if(this.multipliers["vitality"] !== 0) {
+            multipliersString += `HP = ${this.multipliers.vitality}x Vitalidade, `
+        }
+
+        if(this.multipliers["agility"] !== 0 ) {
+            multipliersString += `Evasão = ${this.multipliers.agility}x Agilidade, `
+        }
+
+        if(this.multipliers["strenght"] !== 0 ) {
+            multipliersString += `Defesa física = ${this.multipliers.strenght}x Força,`
+        }
+
+        if(this.multipliers["fireDefense"] !== 0 ) {
+            multipliersString += `Defesa a fogo = ${this.multipliers.fireDefense}x Inteligência, `
+        }
+
+        if(this.multipliers["iceDefense"] !== 0 ) {
+            multipliersString += `Defesa a gelo = ${this.multipliers.iceDefense}x Inteligência, `
+        }
+
+        if(this.multipliers["thunderDefense"] !== 0 ) {
+            multipliersString += `Defesa a eletricidade = ${this.multipliers.thunderDefense}x Inteligência, `
+        }
+
+        if(this.multipliers["poisonDefense"] !== 0 ) {
+            multipliersString += `Defesa a veneno = ${this.multipliers.poisonDefense}x Inteligência, `
+        }
+
+        multipliersString.substring(0, -2)
+
         return `
         DESCRIÇÃO: ${description} 
-
-        MULTIPLICADORES: 
-
-        HP = ${this.multipliers.vitality}x Vitalidade, 
-        Evasão = ${this.multipliers.agility}x Agilidade, 
-        Defesa física = ${this.multipliers.strenght}x Força,
-
-        Defesa a fogo = ${this.multipliers.fireDefense}x Inteligência
-        Defesa a gelo = ${this.multipliers.iceDefense}x Inteligência
-        Defesa a eletricidade = ${this.multipliers.thunderDefense}x Inteligência
-        Defesa a veneno = ${this.multipliers.poisonDefense}x Inteligência
+        MULTIPLICADORES: ${multipliersString}
         `
     }
 }
