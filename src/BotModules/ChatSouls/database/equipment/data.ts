@@ -19,142 +19,22 @@ import {
     CS_LongRangeData,
     CS_MeleeData
 } from '../../Globals/moduleTypes.js'
+import { allBodyArmorData } from './equipmentsData/bodyArmorData.js'
+import { allBootsData } from './equipmentsData/bootsData.js'
+import { allGlovesData } from './equipmentsData/glovesData.js'
+import { allHelmetData } from './equipmentsData/helmetData.js'
+
+import { allLongRangeData } from './equipmentsData/longRangeData.js'
+import { allMeleeData } from './equipmentsData/meleeData.js'
 
 export const equipmentDataBase: CS_DataBase_Equipments = {
 
-    longRangeWeapon: {
-        "Dummy Equipment": {
-            name: "Dummy Equipment",
-            type: 'longRangeWeapon'
-        },
-        "Empty": {
-            name: "Empty",
-            type: 'longRangeWeapon'
-        },
-        "Arco de madeira": {
-            name: "Arco de madeira",
-            type: 'longRangeWeapon'
-        },
-        "Cuspida tóxica": {
-            name: "Cuspida tóxica",
-            type: "longRangeWeapon"
-        }
-    },
-
-    meleeWeapon: {
-        "Dummy Equipment": {
-            name: "Dummy Equipment",
-            type: 'meleeWeapon'
-        },
-        "Empty": {
-            name: "Empty",
-            type: 'meleeWeapon'
-        },
-        "Adaga": {
-            name: "Adaga",
-            type: 'meleeWeapon'
-        },
-        "Espada enferrujada": {
-            name: "Espada enferrujada",
-            type: 'meleeWeapon'
-        },
-        "Garras de Javali": {
-            name: "Garras de Javali",
-            type: 'meleeWeapon'
-        }
-    },
-
-    helmet: {
-        "Dummy Equipment": {
-            name: "Dummy Equipment",
-            type: 'helmet'
-        },
-        "Empty": {
-            name: "Empty",
-            type: 'helmet'
-        },
-        "Chapéu de caçador": {
-            name: "Chapéu de caçador",
-            type: 'helmet'
-        },
-        "Elmo enferrujado": {
-            name: "Elmo enferrujado",
-            type: "helmet"
-        },
-        "Crânio endurecido": {
-            name: "Crânio endurecido",
-            type: 'helmet'
-        }
-    },
-
-    bodyArmor: {
-        "Dummy Equipment": {
-            name: "Dummy Equipment",
-            type: 'bodyArmor'
-        },
-        "Empty": {
-            name: "Empty",
-            type: 'bodyArmor'
-        },
-        "Roupa de caçador": {
-            name: "Roupa de caçador",
-            type: "bodyArmor"
-        },
-        "Armadura enferrujada": {
-            name: "Armadura enferrujada",
-            type: 'bodyArmor'
-        },
-        "Pele de Javali": {
-            name: 'Pele de Javali',
-            type: 'bodyArmor'
-        }
-    },
-
-    gloves: {
-        "Dummy Equipment": {
-            name: "Dummy Equipment",
-            type: 'gloves'
-        },
-        "Empty": {
-            name: "Empty",
-            type: 'gloves'
-        },
-        "Luvas de caçador": {
-            name: "Luvas de caçador",
-            type: 'gloves'
-        },
-        "Luvas enferrujadas": {
-            name: "Luvas enferrujadas",
-            type: 'gloves'
-        },
-        "Patas de javali": {
-            name: "Patas de javali",
-            type: "gloves"
-        }
-    },
-
-    boots: {
-        "Dummy Equipment": {
-            name: "Dummy Equipment",
-            type: 'boots'
-        },
-        "Empty": {
-            name: "Empty",
-            type: 'boots'
-        },
-        "Botas de caçador": {
-            name: "Botas de caçador",
-            type: 'boots'
-        },
-        "Botas enferrujadas": {
-            name: "Botas enferrujadas",
-            type: 'boots'
-        },
-        "Patas de javali": {
-            name: "Patas de javali",
-            type: "boots"
-        }
-    }
+    longRangeWeapon: allLongRangeData,
+    meleeWeapon:     allMeleeData,
+    helmet:          allHelmetData,
+    bodyArmor:       allBodyArmorData,
+    gloves:          allGlovesData,
+    boots:           allBootsData
 }
 
 export function getAll_LongRange(): CS_DataBase_LongRange {
