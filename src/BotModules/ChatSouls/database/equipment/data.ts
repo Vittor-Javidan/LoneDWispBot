@@ -34,6 +34,10 @@ export const equipmentDataBase: CS_DataBase_Equipments = {
         "Arco de madeira": {
             name: "Arco de madeira",
             type: 'longRangeWeapon'
+        },
+        "Cuspida tóxica": {
+            name: "Cuspida tóxica",
+            type: "longRangeWeapon"
         }
     },
 
@@ -52,6 +56,10 @@ export const equipmentDataBase: CS_DataBase_Equipments = {
         },
         "Espada enferrujada": {
             name: "Espada enferrujada",
+            type: 'meleeWeapon'
+        },
+        "Garras de Javali": {
+            name: "Garras de Javali",
             type: 'meleeWeapon'
         }
     },
@@ -72,6 +80,10 @@ export const equipmentDataBase: CS_DataBase_Equipments = {
         "Elmo enferrujado": {
             name: "Elmo enferrujado",
             type: "helmet"
+        },
+        "Crânio endurecido": {
+            name: "Crânio endurecido",
+            type: 'helmet'
         }
     },
 
@@ -90,6 +102,10 @@ export const equipmentDataBase: CS_DataBase_Equipments = {
         },
         "Armadura enferrujada": {
             name: "Armadura enferrujada",
+            type: 'bodyArmor'
+        },
+        "Pele de Javali": {
+            name: 'Pele de Javali',
             type: 'bodyArmor'
         }
     },
@@ -110,6 +126,10 @@ export const equipmentDataBase: CS_DataBase_Equipments = {
         "Luvas enferrujadas": {
             name: "Luvas enferrujadas",
             type: 'gloves'
+        },
+        "Patas de javali": {
+            name: "Patas de javali",
+            type: "gloves"
         }
     },
 
@@ -129,6 +149,10 @@ export const equipmentDataBase: CS_DataBase_Equipments = {
         "Botas enferrujadas": {
             name: "Botas enferrujadas",
             type: 'boots'
+        },
+        "Patas de javali": {
+            name: "Patas de javali",
+            type: "boots"
         }
     }
 }

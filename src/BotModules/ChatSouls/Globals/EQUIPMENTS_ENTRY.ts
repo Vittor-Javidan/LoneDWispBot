@@ -14,35 +14,41 @@ export const EQUIPMENT_TYPES_ARRAY = [
 
 export const LONG_RANGE_ARRAY = [
     ...GENERIC_EQUIPMENTS_ARRAY,
-    "Arco de madeira"
+    "Arco de madeira",
+    "Cuspida tóxica"
 ] as const
 
 export const MELEE_ARRAY = [
     ...GENERIC_EQUIPMENTS_ARRAY,
     "Adaga",
-    "Espada enferrujada"
+    "Espada enferrujada",
+    "Garras de Javali"
 ] as const
 
 export const HELMET_ARRAY = [
     ...GENERIC_EQUIPMENTS_ARRAY,
     "Chapéu de caçador",
-    "Elmo enferrujado"
+    "Elmo enferrujado",
+    "Crânio endurecido"
 ] as const
 
 export const BODY_ARMOR_ARRAY = [
     ...GENERIC_EQUIPMENTS_ARRAY,
     "Roupa de caçador",
-    "Armadura enferrujada"
+    "Armadura enferrujada",
+    "Pele de Javali"
 ] as const
 
 export const GLOVES_ARRAY = [
     ...GENERIC_EQUIPMENTS_ARRAY,
     "Luvas de caçador",
-    "Luvas enferrujadas"
+    "Luvas enferrujadas",
+    "Patas de javali"
 ] as const
 
 export const BOOTS_ARRAY = [
     ...GENERIC_EQUIPMENTS_ARRAY,
     "Botas de caçador",
-    "Botas enferrujadas"
+    "Botas enferrujadas",
+    "Patas de javali"
 ] as const

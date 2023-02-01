@@ -15,34 +15,34 @@ export function get_JAVALI(): CS_EntityData {
         name: "Javali",
         souls: 100,
         attributes: {
-            vitality: 15,
+            vitality: 10,
             agility: 10,
             strenght: 10,
-            intelligence: 5
+            intelligence: 10
         },
         equipment: {
             longRangeWeapon: {
-                name: "Empty",
+                name: "Cuspida tóxica",
                 type: "longRangeWeapon"
             },
             meleeWeapon: {
-                name: "Empty",
+                name: "Garras de Javali",
                 type: "meleeWeapon"
             },
             helmet: {
-                name: "Empty",
+                name: "Crânio endurecido",
                 type: "helmet"
             },
             bodyArmor: {
-                name: "Empty",
+                name: "Pele de Javali",
                 type: "bodyArmor"
             },
             gloves: {
-                name: "Empty",
+                name: "Patas de javali",
                 type: "gloves"
             },
             boots: {
-                name: "Empty",
+                name: "Patas de javali",
                 type: "boots"
             }
         },

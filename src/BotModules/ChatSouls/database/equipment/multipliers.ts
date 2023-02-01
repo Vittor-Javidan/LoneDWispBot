@@ -21,12 +21,20 @@ export const equipments_Multipliers: {
         "Dummy Equipment": getDummyEquipmentWeaponMultipliers(),
         "Empty": getEmptyEquipmentWeaponMultipliers(),
         "Arco de madeira": {
-            agility:        10,
+            agility:        20,
             strenght:       0,
             fireDamage:     0,
             iceDamage:      0,
             thunderDamage:  0,
             poisonDamage:   0
+        },
+        "Cuspida tóxica": {
+            agility:        0,
+            strenght:       0,
+            fireDamage:     0,
+            iceDamage:      0,
+            thunderDamage:  0,
+            poisonDamage:   20
         }
     },
 
@@ -34,8 +42,8 @@ export const equipments_Multipliers: {
         "Dummy Equipment": getDummyEquipmentWeaponMultipliers(),
         "Empty": getEmptyEquipmentWeaponMultipliers(),
         "Adaga": {
-            agility:        7,
-            strenght:       3,
+            agility:        14,
+            strenght:       6,
             fireDamage:     0,
             iceDamage:      0,
             thunderDamage:  0,
@@ -43,7 +51,15 @@ export const equipments_Multipliers: {
         },
         "Espada enferrujada": {
             agility:        0,
-            strenght:       10,
+            strenght:       20,
+            fireDamage:     0,
+            iceDamage:      0,
+            thunderDamage:  0,
+            poisonDamage:   0
+        },
+        "Garras de Javali": {
+            agility:        0,
+            strenght:       20,
             fireDamage:     0,
             iceDamage:      0,
             thunderDamage:  0,
@@ -71,6 +87,15 @@ export const equipments_Multipliers: {
             iceDefense:     0,
             thunderDefense: 0,
             poisonDefense:  0
+        },
+        "Crânio endurecido": {
+            vitality:       5,
+            agility:        0,
+            strenght:       5,
+            fireDefense:    0,
+            iceDefense:     0,
+            thunderDefense: 0,
+            poisonDefense:  0
         }
     },
 
@@ -94,6 +119,15 @@ export const equipments_Multipliers: {
             iceDefense:     0,
             thunderDefense: 0,
             poisonDefense:  0
+        },
+        "Pele de Javali": {
+            vitality:       4,
+            agility:        3,
+            strenght:       6,
+            fireDefense:    -3,
+            iceDefense:     -3,
+            thunderDefense: -3,
+            poisonDefense:  -3
         }
     },
 
@@ -117,6 +151,15 @@ export const equipments_Multipliers: {
             iceDefense:     0,
             thunderDefense: 0,
             poisonDefense:  0
+        },
+        "Patas de javali": {
+            vitality:       3,
+            agility:        5,
+            strenght:       3,
+            fireDefense:    -1,
+            iceDefense:     -1,
+            thunderDefense: -1,
+            poisonDefense:  -1
         }
     },
 
@@ -140,6 +183,15 @@ export const equipments_Multipliers: {
             iceDefense:     0,
             thunderDefense: 0,
             poisonDefense:  0
+        },
+        "Patas de javali": {
+            vitality:       3,
+            agility:        5,
+            strenght:       3,
+            fireDefense:    -1,
+            iceDefense:     -1,
+            thunderDefense: -1,
+            poisonDefense:  -1
         }
     }
 }
