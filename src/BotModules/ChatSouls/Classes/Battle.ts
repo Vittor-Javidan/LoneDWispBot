@@ -74,8 +74,8 @@ export default class Battle {
             target: enemie,
             battle: this
         })
-        
         this.checkDeath(enemie)
+        
         this.buffRound(enemie)
         this.buffRound(player)
         this.enemieRound()
@@ -98,8 +98,8 @@ export default class Battle {
             Travel.to_Explore(player, this.buildLogMessage())
             return
         }
-
         this.logBattleHistory(`${Emote._SirSad_} Sua fuga falhou!`)
+
         this.buffRound(player)
         this.buffRound(enemie)
         this.enemieRound()
@@ -139,7 +139,7 @@ export default class Battle {
     // PUBLIC STATIC METHODS ==========================================================================
     //=================================================================================================
 
-    public static startBattle(player: Player, enemie: Enemie): Battle {
+    public static initializeBattle(player: Player, enemie: Enemie): Battle {
         
         const battleInstance = new Battle(player, enemie)
         battleInstance.determineFirstTurn()
@@ -158,21 +158,13 @@ export default class Battle {
         return battle
     }
     
-    public static doesBattleExist(userName: string): boolean{
-
-        const battle = this._battlesList[userName]
-
-        if(battle) {
-            return true
-        }
-        return false
+    public static doesBattleExist(userName: string): boolean {
+        return this._battlesList[userName] !== undefined
     }
     
     public static deleteBattle(userName: string): void {
-
         delete this._battlesList[userName]
     }
-
 
     public static returnStringWithAllBattles(): string {
 

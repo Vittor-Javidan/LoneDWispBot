@@ -77,7 +77,7 @@ class _Explore {
 
         const enemie = Enemie.instantiateRandomEnemie(player)
         const enemieName = enemie.getName()
-        const battle = Battle.startBattle(player, enemie)
+        const battle = Battle.initializeBattle(player, enemie)
         const turn = battle.getTurn()
 
         let advantageMessage = ""
