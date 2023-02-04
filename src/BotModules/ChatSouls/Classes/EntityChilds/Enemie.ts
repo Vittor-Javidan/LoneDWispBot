@@ -20,7 +20,7 @@ export default class Enemie extends Entity{
         const enemie = new Enemie(enemieData)
         enemie.calculateBaseStats()
         enemie.calculateStatsFromEquips()
-        enemie.recoverHP()
+        enemie.recoverHP("maxHP")
         
         return enemie
     }

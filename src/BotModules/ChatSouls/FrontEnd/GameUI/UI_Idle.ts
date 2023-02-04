@@ -23,8 +23,8 @@ export default function UI_Idle(data: CS_DataPayload): void {
 
 class _UI_Options {
 
-    public static explorationEvent(player: Player): void {
+    static explorationEvent(player: Player): void {
 
-        Travel.to_Battle(player)
+        Travel.to_NewBattle(player)
     }
 }

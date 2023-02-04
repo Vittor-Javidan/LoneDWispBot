@@ -1,0 +1,254 @@
+import { ENTITY_DEFAULT } from "../Globals/DEFAULT_VALUES/ENTITY_DEFAULT.js"
+import { GAME_BALANCE } from "../Globals/GAME_BALANCE.js"
+import { CS_Armor_Multipliers, CS_EquipmentTypes, CS_Stats, CS_Weapon_Multipliers } from "../Globals/moduleTypes.js"
+import Entity from "./Entity.js"
+import Enemie from "./EntityChilds/Enemie.js"
+import Player from "./EntityChilds/Player.js"
+import Armor from "./Equipments/Armor.js"
+import BodyArmor from "./Equipments/BodyArmor.js"
+import Boots from "./Equipments/Boots.js"
+import Gloves from "./Equipments/Gloves.js"
+import Helmet from "./Equipments/Helmet.js"
+import LongRangeWeapon from "./Equipments/LongRangeWeapon.js"
+import MeleeWeapon from "./Equipments/MeleeWeapon.js"
+import Weapon from "./Equipments/Weapon.js"
+
+export default class CS_Math {
+    
+    public static getLuckNumber() {
+        return Math.floor((Math.random() * 6) + 1)
+    }
+
+    public static evasionEventSucced(o: {
+        from: Player | Enemie,
+        against: Player | Enemie,
+        evasionWeight: number
+    }): boolean {
+
+        const NOT_ZERO = 100 // Easy value to unit test
+        const { from, against, evasionWeight } = o
+
+        const accuracy = from.getBaseStats().accuracy + from.getArmorStats().accuracy
+        const evasion = against.getBaseStats().evasion + against.getArmorStats().evasion 
+
+        let sumEvasionAccuracy = evasion + accuracy
+
+        if(sumEvasionAccuracy <= 0) {
+            sumEvasionAccuracy = NOT_ZERO
+        }
+
+        const evasionChance = (evasion * evasionWeight) / (sumEvasionAccuracy)
+        const randomNumber = Math.random()
+
+        if(evasionChance >= randomNumber) {
+            return true
+        }
+        return false
+    }
+
+    public static rawDamage_Melee(attacker: Player | Enemie, defender: Player | Enemie): number {
+        
+        const offensiveStats = this.sumStatsObjects([attacker.getBaseStats(), attacker.getMeleeStats()]) 
+        const defensiveStats = this.sumStatsObjects([defender.getBaseStats(), defender.getArmorStats()])
+        return this.rawDamageReceived(offensiveStats, defensiveStats)
+    }
+
+    public static rawDamage_LongRange(attacker: Player | Enemie, defender: Player | Enemie): number {
+
+        const offensiveStats = this.sumStatsObjects([attacker.getBaseStats(), attacker.getLongRangeStats()])
+        const defensiveStats = this.sumStatsObjects([defender.getBaseStats(), defender.getArmorStats()])
+        return this.rawDamageReceived(offensiveStats, defensiveStats)
+    }
+
+    public static rawDamageReceived(offensiveStats: CS_Stats, defensiveStats: CS_Stats): number {
+
+        const damages = [
+            offensiveStats.fisicalDamage,
+            offensiveStats.fireDamage,
+            offensiveStats.iceDamage,
+            offensiveStats.thunderDamage,
+            offensiveStats.poisonDamage
+        ]
+
+        const defenses = [
+            defensiveStats.fisicalDefense,
+            defensiveStats.fireDefense,
+            defensiveStats.iceDefense,
+            defensiveStats.thunderDefense,
+            defensiveStats.poisonDefense
+        ]
+
+        let totalRawDamage = 0
+        damages.forEach((damage, index) => {
+            
+            let rawDamage = damage - defenses[index] 
+            if (rawDamage < 0) {
+                rawDamage = 0
+            }
+            totalRawDamage += rawDamage
+        })
+
+        return Math.floor(totalRawDamage)
+    }
+
+    public static returnEffectiveDamage(damageValue: number, luck: number): number {
+
+        if(damageValue < 0) {
+            throw Error(`ERROR: damageValue must be a valid and positive number`)
+        }
+
+        switch(luck) {
+            
+            case 1: damageValue = damageValue * 0.5     ;break
+            case 2: damageValue = damageValue * 0.75    ;break
+            case 3: damageValue = damageValue * 0.9     ;break
+            case 4: damageValue = damageValue * 1.1     ;break
+            case 5: damageValue = damageValue * 1.25    ;break
+            case 6: damageValue = damageValue * 1.5     ;break
+        }
+
+        damageValue = Math.floor(damageValue)
+
+        if(damageValue < 1) {
+            damageValue = 1
+        }
+
+        return damageValue
+    }
+
+    public static baseStatsCalculation(entity: Entity) {
+
+        const balanceStatsValues = GAME_BALANCE.STATS_WEIGHT
+        const attributes = entity.getAttributes()
+        entity.setBaseStats({
+            
+            hp:             attributes.vitality     * balanceStatsValues.HP,
+            mana:           attributes.intelligence * balanceStatsValues.MANA,
+            evasion:        attributes.agility      * balanceStatsValues.EVASION,
+            accuracy:       attributes.agility      * balanceStatsValues.ACCURACY,
+
+            fisicalDamage:  attributes.strenght     * balanceStatsValues.FISICAL_DMG,
+            fireDamage:     0,
+            iceDamage:      0,
+            thunderDamage:  0,
+            poisonDamage:   0,
+
+            fisicalDefense: attributes.strenght     * balanceStatsValues.FISICAL_DEF,
+            fireDefense:    attributes.intelligence * balanceStatsValues.MAGICAL_DEF,
+            iceDefense:     attributes.intelligence * balanceStatsValues.MAGICAL_DEF,
+            thunderDefense: attributes.intelligence * balanceStatsValues.MAGICAL_DEF,
+            poisonDefense:  attributes.intelligence * balanceStatsValues.MAGICAL_DEF
+        })
+    }
+
+    public static equipmentStatsCalculation(entity: Entity) {
+        
+        entity.setLongRangeStats(ENTITY_DEFAULT.EMPTY_STATS)
+        entity.setMeleeStats(ENTITY_DEFAULT.EMPTY_STATS)
+        entity.setArmorStats(ENTITY_DEFAULT.EMPTY_STATS)
+
+        const currentEquipment = entity.getAllCurrentEquipments()
+
+        let equipmentInstance: Weapon | Armor
+
+        for(let equipmentType in currentEquipment) {    
+
+            switch(equipmentType as CS_EquipmentTypes) {
+
+                case "longRangeWeapon": equipmentInstance = new LongRangeWeapon(currentEquipment["longRangeWeapon"]);break
+                case "meleeWeapon":     equipmentInstance = new MeleeWeapon(currentEquipment["meleeWeapon"])        ;break
+                case "helmet":          equipmentInstance = new Helmet(currentEquipment["helmet"])                  ;break
+                case "bodyArmor":       equipmentInstance = new BodyArmor(currentEquipment["bodyArmor"])            ;break
+                case "gloves":          equipmentInstance = new Gloves(currentEquipment["gloves"])                  ;break
+                case "boots":           equipmentInstance = new Boots(currentEquipment["boots"])                    ;break
+
+                default: throw Error(`Error: Entity class, "calculateStatsFromEquips": equipment type not recognized`)
+            }
+
+            if(equipmentInstance instanceof Armor) {
+                this.bonusFromArmor(entity, equipmentInstance)
+            }
+
+            if(equipmentInstance instanceof Weapon) {
+                this.bonusFromWeapon(entity, equipmentInstance)
+            }
+        }
+    }
+
+    private static bonusFromArmor(entity: Entity, armor: Armor): void{
+
+        const attributes = entity.getAttributes()
+        const stats = entity.getArmorStats()
+
+        let equipMultipliers: CS_Weapon_Multipliers | CS_Armor_Multipliers
+        
+        equipMultipliers  = armor.multipliers as CS_Armor_Multipliers
+
+        stats.hp             += attributes.vitality       * equipMultipliers.vitality
+        stats.mana           += attributes.intelligence   * equipMultipliers.mana
+        stats.evasion        += attributes.agility        * equipMultipliers.agility
+        stats.accuracy       += attributes.agility        * equipMultipliers.agility
+
+        stats.fisicalDefense += attributes.strenght       * equipMultipliers.strenght
+        stats.fireDefense    += attributes.intelligence   * equipMultipliers.fireDefense
+        stats.iceDefense     += attributes.intelligence   * equipMultipliers.iceDefense
+        stats.thunderDefense += attributes.intelligence   * equipMultipliers.thunderDefense
+        stats.poisonDefense  += attributes.intelligence   * equipMultipliers.poisonDefense
+    }
+
+    private static bonusFromWeapon(entity: Entity, weapon: Weapon): void{
+
+        const attributes = entity.getAttributes()
+        let equipMultipliers: CS_Weapon_Multipliers | CS_Armor_Multipliers
+        let stats: CS_Stats
+
+        weapon instanceof LongRangeWeapon
+        ? stats = entity.getLongRangeStats()
+        : stats = entity.getMeleeStats()
+
+        equipMultipliers  = weapon.multipliers as CS_Weapon_Multipliers
+        
+        stats.fisicalDamage += (
+            attributes.agility      * equipMultipliers.agility  +
+            attributes.strenght     * equipMultipliers.strenght
+        )
+        
+        stats.fireDamage        += attributes.intelligence  * equipMultipliers.fireDamage
+        stats.iceDamage         += attributes.intelligence  * equipMultipliers.iceDamage
+        stats.thunderDamage     += attributes.intelligence  * equipMultipliers.thunderDamage
+        stats.poisonDamage      += attributes.intelligence  * equipMultipliers.poisonDamage
+    }
+
+    static buffStatsCalculation(entity: Entity) {
+        
+        const entityBuffs = entity.getBuffs()
+        
+        let newBuffStats = structuredClone(ENTITY_DEFAULT.EMPTY_STATS)
+
+        for(const buffName in entityBuffs) {
+
+            if(entityBuffs[buffName].type === 'Buff/Debuff') {
+                newBuffStats = (CS_Math.sumStatsObjects([
+                    newBuffStats, 
+                    entityBuffs[buffName].buffStats
+                ]))
+            }
+        }
+    }
+
+    static sumStatsObjects(statsArray: CS_Stats[]): CS_Stats {
+
+        const newObject = structuredClone(ENTITY_DEFAULT.EMPTY_STATS)
+        
+        for (let i = 0; i < statsArray.length; i++) { 
+
+            const stats = statsArray[i];
+
+            for(const key  in stats) {
+                newObject[key as keyof CS_Stats] += stats[key as keyof CS_Stats]
+            }
+        }
+
+        return newObject
+    }
+}

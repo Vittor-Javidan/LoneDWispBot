@@ -4,9 +4,11 @@ export default class Armor {
 
     multipliers: CS_Armor_Multipliers = {
         
+
         vitality:       0,
         agility:        0,
         strenght:       0,
+        mana:   0,
         
         fireDefense:    0,
         iceDefense:     0,
@@ -46,11 +48,9 @@ export default class Armor {
             multipliersString += `Defesa a veneno = ${this.multipliers.poisonDefense}x Inteligência, `
         }
 
-        multipliersString.substring(0, -2)
-
         return `
         DESCRIÇÃO: ${description} 
-        MULTIPLICADORES: ${multipliersString}
+        MULTIPLICADORES: ${multipliersString.slice(0, -2)}
         `
     }
 }

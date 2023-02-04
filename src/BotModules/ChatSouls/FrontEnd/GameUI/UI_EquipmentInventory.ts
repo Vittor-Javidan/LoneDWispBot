@@ -56,7 +56,8 @@ class _UI_Option {
         player.equipFromInventory(itemIndex, equipmentType)
         player.calculateBaseStats()
         player.calculateStatsFromEquips()
-        player.recoverHP()
+        player.recoverHP("maxHP")
+        player.recoverMana()
         player.save()
         player.setCurrentState({
             primary: playerState.primary,

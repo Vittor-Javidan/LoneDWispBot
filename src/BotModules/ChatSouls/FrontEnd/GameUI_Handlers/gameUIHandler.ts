@@ -20,7 +20,7 @@ export default function gameUIHandler(data: CS_DataPayload): void {
         const player = data.playerInstance
         
         player.ressurrect()
-        player.recoverHP()
+        player.recoverHP("maxHP")
         player.setCurrentState({
             primary: "FIRE_PIT",
             secondary: "RESTING_ON_FIRE_PIT"

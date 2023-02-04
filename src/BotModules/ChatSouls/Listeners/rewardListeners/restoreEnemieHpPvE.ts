@@ -48,7 +48,7 @@ function lalauCurseMuahaha(player: Player, userName: string): void {
 function recoverEnemieHP(battle: Battle, targetPlayer: string, userName: string): void {
 
     const enemieInstance = battle.getEnemie()
-    enemieInstance.recoverHP()
+    enemieInstance.recoverHP("maxHP")
     enemieInstance.addSouls(enemieInstance.getSouls())
     sendMessage(`/w ${targetPlayer} ${userName} acabou de restaurar a vida de seu inimigo!!!`)
     sendMessage(`${userName} restaurou a vida do inimigo de ${targetPlayer} durante sua batalha *-*`)

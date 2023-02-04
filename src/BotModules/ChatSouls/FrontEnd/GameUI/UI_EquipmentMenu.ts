@@ -62,7 +62,8 @@ class _UI_Option {
 		player.unequip(equipmentType)
 		player.calculateBaseStats()
 		player.calculateStatsFromEquips()
-		player.recoverHP()
+		player.recoverHP("maxHP")
+		player.recoverMana()
 		player.save()
 		SendMessage_UI.equipmentMenu(player, 
 			`${currentEquipment.name} ${message.withEquipment}`

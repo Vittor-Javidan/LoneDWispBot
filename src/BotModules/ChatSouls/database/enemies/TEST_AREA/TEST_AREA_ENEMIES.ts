@@ -43,6 +43,38 @@ export function get_DUMMY_ENEMIE(): CS_EntityData {
                 type: "boots"
             }
         },
+        habilities: {
+            longRangeWeapon: {
+                name: "Dummy Habilitie",
+                rank: 1,
+                type: "longRangeWeapon"
+            },
+            meleeWeapon: {
+                name: "Dummy Habilitie",
+                rank: 1,
+                type: "meleeWeapon"
+            },
+            bodyArmor: {
+                name: "Dummy Habilitie",
+                rank: 1,
+                type: "bodyArmor"
+            },
+            helmet: {
+                name: "Dummy Habilitie",
+                rank: 1,
+                type:"helmet"
+            },
+            gloves: {
+                name: "Dummy Habilitie",
+                rank: 1,
+                type: "gloves"
+            },
+            boots: {
+                name: "Dummy Habilitie",
+                rank: 1,
+                type: "boots"
+            },
+        },
         inventory: {
             equipments: {
                 longRangeWeapon: {
@@ -55,7 +87,7 @@ export function get_DUMMY_ENEMIE(): CS_EntityData {
                             name: "Dummy Equipment",
                             type: "longRangeWeapon"
                         }],
-                        type: "longRangeWeapon"
+                    type: "longRangeWeapon"
                 },
                 meleeWeapon: {
                     array: [
@@ -114,7 +146,7 @@ export function get_DUMMY_ENEMIE(): CS_EntityData {
                         {
                             name: "Dummy Equipment",
                             type: "boots"
-                        }, 
+                        },    
                         {
                             name: "Dummy Equipment",
                             type: "boots"

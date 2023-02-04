@@ -1,15 +1,15 @@
-import { CS_Attributes, CS_Equipments, CS_Inventory, CS_Stats } from "./moduleTypes.js"
+import { CS_Attributes, CS_Equipments, CS_HabilitiesSlots, CS_Inventory, CS_Stats } from "../moduleTypes.js"
 
 export const ENTITY_DEFAULT: {
     SOULS: number,
     LEVEL: number,
     ATTRIBUTES: CS_Attributes,
     EQUIPMENT: CS_Equipments,
+    HABILITIES: CS_HabilitiesSlots
     INVENTORY: CS_Inventory,
-    BASE_STATS: CS_Stats,
-    STATS_FROM_EQUIPS: CS_Stats,
-    TOTAL_STATS: CS_Stats,
+    EMPTY_STATS: CS_Stats,
     CURRENT_HP: number,
+    CURRENT_MANA: number,
     IS_ALIVE: boolean
 } = {
     SOULS: 0,
@@ -23,28 +23,60 @@ export const ENTITY_DEFAULT: {
     EQUIPMENT: {
         longRangeWeapon: { 
             name: "Empty", 
-            type: "longRangeWeapon"
+            type: "longRangeWeapon",
         },
         meleeWeapon: { 
             name: "Empty", 
-            type: "meleeWeapon"
+            type: "meleeWeapon",
         },
         helmet: { 
             name: "Empty",
-            type: "helmet"
+            type: "helmet",
         },
         bodyArmor: { 
             name: "Empty",
-            type: "bodyArmor" 
+            type: "bodyArmor",
         },
         gloves: { 
             name: "Empty",
-            type: "gloves" 
+            type: "gloves",
         },
         boots: { 
             name: "Empty",
-            type: "boots" 
+            type: "boots",
         },
+    },
+    HABILITIES: {
+        longRangeWeapon: {
+            name: "Empty",
+            rank: 0,
+            type: "longRangeWeapon"
+        },
+        meleeWeapon: {
+            name: "Empty",
+            rank: 0,
+            type: "meleeWeapon"
+        },
+        helmet: {
+            name: "Empty",
+            rank: 0,
+            type: "helmet"
+        },
+        bodyArmor: {
+            name: "Empty",
+            rank: 0,
+            type: "bodyArmor"
+        },
+        gloves: {
+            name: "Empty",
+            rank: 0,
+            type: "gloves"
+        },
+        boots: {
+            name: "Empty",
+            rank: 0,
+            type: "boots"
+        }
     },
     INVENTORY: {
         equipments: {
@@ -75,44 +107,11 @@ export const ENTITY_DEFAULT: {
         },
         resources: {},
     },
-    BASE_STATS: {
-
+    EMPTY_STATS: {
         hp:             0,
+        mana:           0,
         evasion:        0,
-
-        fisicalDamage:  0,
-        fireDamage:     0,
-        iceDamage:      0,
-        thunderDamage:  0,
-        poisonDamage:   0,
-
-        fisicalDefense: 0,
-        fireDefense:    0,
-        iceDefense:     0,
-        thunderDefense: 0,
-        poisonDefense:  0
-    },
-    STATS_FROM_EQUIPS: {
-
-        hp:             0,
-        evasion:        0,
-
-        fisicalDamage:  0,
-        fireDamage:     0,
-        iceDamage:      0,
-        thunderDamage:  0,
-        poisonDamage:   0,
-
-        fisicalDefense: 0,
-        fireDefense:    0,
-        iceDefense:     0,
-        thunderDefense: 0,
-        poisonDefense:  0
-    },
-    TOTAL_STATS: {
-
-        hp:             0,
-        evasion:        0,
+        accuracy:       0,
 
         fisicalDamage:  0,
         fireDamage:     0,
@@ -127,5 +126,6 @@ export const ENTITY_DEFAULT: {
         poisonDefense:  0
     },
     CURRENT_HP: 1,
+    CURRENT_MANA: 0,
     IS_ALIVE: true
 }

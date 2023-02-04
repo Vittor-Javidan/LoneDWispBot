@@ -1,12 +1,16 @@
+import Emote from '../../../Twitch/Emotes.js';
 import sendMessage from '../../../Twitch/sendMessageHandler.js';
-import { CS_ResourceData } from '../Globals/moduleTypes.js';
+import { CS_Catalog_Habilities, CS_EquipmentTypes, CS_HabilitieData, CS_ResourceData } from '../Globals/moduleTypes.js';
+import CS_Math from './CS_Math.js';
+import Entity from './Entity.js';
 import Enemie from './EntityChilds/Enemie.js';
 import Player from './EntityChilds/Player.js';
+import Habilities from './Habilities.js';
 import SendMessage_UI from './SendMessage.js';
 import Travel from './Travel.js';
 
-
 const PLAYER_TURN = 1
+const ENEMIE_TURN = 2
 const config = {
     ATTACK: {
         EVASION_WEIGHT: 1
@@ -25,7 +29,7 @@ export default class Battle {
     
     private _turn: 1 | 2 | undefined = undefined
     private _earnedResources: CS_ResourceData[] = []
-    private _BattleStatus = new _BattleStatus()
+    private _battleHistory: string[] = []
 
     private constructor(player: Player, enemie: Enemie){
         
@@ -37,43 +41,90 @@ export default class Battle {
     // PUBLIC METHODS =================================================================================
     //=================================================================================================
 
-    public attackLongRange() {
-        this.attack("LongRange")
+    public playerFisicalAttackScenario(attackType: "Melee" | "LongRange") {
+
+        const player = this.getPlayer()
+        const enemie = this.getEnemie()
+
+        if(this._turn === PLAYER_TURN) {
+            
+            this.buffRound(enemie)
+            this.buffRound(player)
+            this.playerRound(attackType)
+            this.enemieRound()
+            
+        } else {
+            
+            this.buffRound(player)
+            this.buffRound(enemie)
+            this.enemieRound()
+            this.playerRound(attackType)
+        }
+
+        this.sendMessageAndStateChange()
     }
 
-    public attackMelee() {
-        this.attack("Melee")
+    public playerHabilitieUsageScenario(habilitieName: CS_Catalog_Habilities): void {
+        
+        const player = this.getPlayer()
+        const enemie = this.getEnemie()
+        
+        Habilities.useHabilitie(habilitieName, {
+            caster: player,
+            target: enemie,
+            battle: this
+        })
+        
+        this.checkDeath(enemie)
+        this.buffRound(enemie)
+        this.buffRound(player)
+        this.enemieRound()
+        
+        this.sendMessageAndStateChange()
     }
 
-    public flee() {
+    public playerFleeScenario() {
 
-        if(this.evasionEventSucced({
-            from: this._player,
-            against: this._enemie,
+        const player = this.getPlayer()
+        const enemie = this.getEnemie()
+
+        if(CS_Math.evasionEventSucced({
+            from: player,
+            against: enemie,
             evasionWeight: 1.5
         })) {
-            this._BattleStatus.logFlee(true)
-            Battle.deleteBattle(this._player.getName())
-            Travel.to_Explore(this._player, `Você conseguiu fugir com sucesso!!!`)
+            this.logBattleHistory(`${Emote._SirUwU_} Você conseguiu fugir com sucesso!`)
+            Battle.deleteBattle(player.getName())
+            Travel.to_Explore(player, this.buildLogMessage())
             return
         }
 
-        this.attackAttempt('Enemie', this.decideEnemieWeapon())
+        this.logBattleHistory(`${Emote._SirSad_} Sua fuga falhou!`)
+        this.buffRound(player)
+        this.buffRound(enemie)
+        this.enemieRound()
+        
+        this.sendMessageAndStateChange()
+    }
 
-        if(this._BattleStatus.getStatus().playerDied) {
-            this.playerDied()
-        }
+    public logBattleHistory(messageToAdd: string) {
+        this._battleHistory.push(messageToAdd)
+    }
 
-        this._BattleStatus.logFlee(false)
-        _BattleMessage.chooseBattleMessage(this)
+    public resetBattleHistory() {
+        this._battleHistory = []
     }
 
     public getBattleStatusString(): string {
         return `| ${this.getPlayerStatus()} | ${this.getEnemieStatus()}`
     }
 
-    public getTurn(): number | undefined {
-        return this._turn
+    public getTurn(): number | undefined { return this._turn }
+    public setTurn(whosFirst: "PlayerFirst" | "EnemieFirst"): void {
+
+        whosFirst === "PlayerFirst"
+        ? this._turn = PLAYER_TURN
+        : this._turn = ENEMIE_TURN
     }
 
     public getEnemie(): Enemie {
@@ -82,10 +133,6 @@ export default class Battle {
 
     public getPlayer(): Player {
         return this._player
-    }
-
-    public getStatus() {
-        return this._BattleStatus
     }
     
     //=================================================================================================
@@ -177,7 +224,7 @@ export default class Battle {
 
         const playerInstance = this._player
         const enemieInstance = this._enemie
-        this.evasionEventSucced({
+        CS_Math.evasionEventSucced({
             from: playerInstance, 
             against: enemieInstance, 
             evasionWeight: 1
@@ -220,33 +267,6 @@ export default class Battle {
         }
     }
 
-    private evasionEventSucced(o: {
-        from: Player | Enemie,
-        against: Player | Enemie,
-        evasionWeight: number
-    }): boolean {
-
-        const NOT_ZERO = 100 // Easy value to unit test
-        const { from, against, evasionWeight } = o
-
-        const evasion = from.getBaseStats().evasion + from.getArmorStats().evasion
-        const oponent_evasion = against.getBaseStats().evasion + against.getArmorStats().evasion 
-
-        let sharedEvasion = oponent_evasion + evasion
-
-        if(sharedEvasion <= 0) {
-            sharedEvasion = NOT_ZERO
-        }
-
-        const evasionChance = (evasion * evasionWeight) / (sharedEvasion)
-        const randomNumber = Math.random()
-
-        if(evasionChance >= randomNumber) {
-            return true
-        }
-        return false
-    }
-
     /**
      * Returns a string with Player 
      * current and max HP already 
@@ -256,8 +276,10 @@ export default class Battle {
         
         const playerName = this._player.getName()
         const playerHP = this._player.getCurrentHP()
+        const playerMana = this._player.getCurrentMana()
         const playerMaxHP = this._player.getBaseStats().hp + this._player.getArmorStats().hp
-        const playerHPString = `${playerName}: ${playerHP}/${playerMaxHP} HP`
+        const playerMaxMana = this._player.getBaseStats().mana + this._player.getArmorStats().mana
+        const playerHPString = `${playerName}: ${playerHP}/${playerMaxHP} HP, ${playerMana}/${playerMaxMana} Mana`
 
         return `${playerHPString}`
     }
@@ -279,27 +301,65 @@ export default class Battle {
 
     private playerRound(attackType: "Melee" | "LongRange") {
 
-        const battleStatus = this._BattleStatus.getStatus()
+        const player = this.getPlayer()
+        const enemie = this.getEnemie()
 
-        if(!battleStatus.playerDied) {
-            this.attackAttempt('Player', attackType)
+        if(!player.getIsAlive()) {
+            return
         }
 
-        if(battleStatus.enemieDied) { 
-            this.playerWon()
-        }
+        this.weaponAttackAttempt(player, enemie, attackType)
+        this.checkDeath(enemie)
     }
 
-    private enemieRound(attackType: "Melee" | "LongRange") {
+    private enemieRound() {
 
-        const battleStatus = this._BattleStatus.getStatus()
+        const player = this.getPlayer()
+        const enemie = this.getEnemie()
 
-        if(!battleStatus.enemieDied) {
-            this.attackAttempt('Enemie', attackType) 
+        if(!enemie.getIsAlive()) {
+            return 
         }
 
-        if(battleStatus.playerDied) {
-            this.playerDied()
+        const CAST_CHANCE = 25
+        const rngChance = Math.floor(Math.random() * 100) + 1
+
+        rngChance <= CAST_CHANCE
+        ? this.enemieHabilitieUsageAttempt()
+        : this.weaponAttackAttempt(enemie, player, this.decideEnemieWeapon()) 
+        
+        this.checkDeath(player)
+    }
+
+    private buffRound(entity: Entity) {
+
+        const entityBuffs = entity.getBuffs()
+
+        for(const buffName in entityBuffs) {
+
+            const buff = entityBuffs[buffName]
+
+            if(buff.type === 'Damage') {
+                
+                const enemieDefenses = CS_Math.sumStatsObjects([entity.getBaseStats(), entity.getArmorStats()])
+                const rawDamage = CS_Math.rawDamageReceived(buff.buffStats, enemieDefenses)
+                const effectiverDamage = CS_Math.returnEffectiveDamage(rawDamage, CS_Math.getLuckNumber())
+                
+                entity.inflictDamage(effectiverDamage)
+
+                entity instanceof Player
+                ? this.logBattleHistory(`${Emote._SMOrc_} ${Emote._bleedPurple_} ${this.getEnemie().getName()} sofreu ${effectiverDamage} de dano para ${buff.name}.`)
+                : this.logBattleHistory(`${Emote._SirMad_} ${Emote._bleedPurple_} Você sofreu ${effectiverDamage} de dano para ${buff.name}.`)
+
+                this.checkDeath(entity)
+            }
+
+            buff.turns -= 1
+            
+            if(buff.turns <= 0) {
+                entity.deleteBuff(buffName as CS_Catalog_Habilities)
+                entity.calculateStatsFromBuffs()
+            }
         }
     }
 
@@ -308,66 +368,82 @@ export default class Battle {
         const enemieEquipment = this._enemie.getAllCurrentEquipments()
         const enemieMelee = enemieEquipment["meleeWeapon"]
         const enemieLongRange = enemieEquipment["longRangeWeapon"]
-        
-        switch (true) {
-            case enemieMelee.name !== "Empty" && enemieLongRange.name !== "Empty":
-                const randomNumber = Math.floor(Math.random() * 2)
-                if(randomNumber === 1){
-                    return "Melee"
-                } else {
-                    return "LongRange"
-                }
-            
-            case enemieMelee.name !== 'Empty':
+
+        if(enemieMelee.name !== "Empty" && enemieLongRange.name !== "Empty") {
+
+            const WEAPON_CHOOSE_CHANCE = 50
+            const rngChance = Math.floor(Math.random() * 100) + 1
+                
+            if(rngChance <= WEAPON_CHOOSE_CHANCE){
                 return "Melee"
-            case enemieLongRange.name !== "Empty":
+            } else {
                 return "LongRange"
-            
-            default: return "Melee"
+            }
+        }
+
+        if(enemieLongRange.name !== 'Empty') {
+            return "LongRange"
+        } else {
+            return "Melee"
         }
     }
 
-    private attack(attackType: "Melee" | "LongRange") {
+    private enemieHabilitieUsageAttempt(): void {
 
-        if(this._turn === PLAYER_TURN) {
+        const enemie = this.getEnemie()
 
-            this.playerRound(attackType)
-            this.enemieRound(attackType)
+        const enemiesHabilities = enemie.getCurrentHabilities()
+        const habilities: CS_HabilitieData[] = []
 
-        } else {
+        for(const equipmentType in enemiesHabilities) {
+
+            const habilitie =  enemiesHabilities[equipmentType as CS_EquipmentTypes]
             
-            this.enemieRound(attackType)
-            this.playerRound(attackType)
+            if(habilitie.name !== 'Empty') {
+                habilities.push(habilitie)
+            }
         }
 
-        _BattleMessage.chooseBattleMessage(this)
-    }
-    
-    private attackAttempt(agressor: "Player" | "Enemie", attackType: "Melee" | "LongRange") {
-    
-        let attacker: Player | Enemie
-        let defensor: Player | Enemie
+        const habilitiesAmount = habilities.length
+        const indexChoosed = Math.floor(Math.random() * habilitiesAmount)
 
-        if (agressor === "Player") {
-            attacker = this._player
-            defensor = this._enemie
-        } else {
-            attacker = this._enemie
-            defensor = this._player
-        }
-    
-        if(this.evasionEventSucced({
-            from: defensor,
-            against: attacker,
-            evasionWeight: config.ATTACK.EVASION_WEIGHT
-        })) {
-            this._BattleStatus.logHitResults(attacker, false)
+        const noHabilityEquipped = habilities.length === 0
+        if(noHabilityEquipped) {
+            this.weaponAttackAttempt(enemie, this.getPlayer(), this.decideEnemieWeapon()) 
             return
         }
         
-        agressor === "Player"
-        ? this.causeDamage("Enemie", attackType)
-        : this.causeDamage("Player", attackType)
+        Habilities.useHabilitie(habilities[indexChoosed].name, {
+            caster: enemie,
+            target: this.getPlayer(),
+            battle: this
+        })
+    }
+    
+    private weaponAttackAttempt(attacker: Entity, target: Entity, attackType: "Melee" | "LongRange") {
+    
+        if(CS_Math.evasionEventSucced({
+            from: target,
+            against: attacker,
+            evasionWeight: config.ATTACK.EVASION_WEIGHT
+        })) {
+            attacker instanceof Player
+            ? this.logBattleHistory(`${Emote._SirPrise_} ${Emote._SirSad_} Você errou seu ataque!`)
+            : this.logBattleHistory(`${Emote._SirPrise_} ${Emote._SirUwU_} Você conseguiu se esquivar!`)
+            return
+        }
+        this.causeDamage(attacker, target, attackType)
+    }
+
+    private checkDeath(entity: Entity): void {
+
+        if(entity.getIsAlive()) {
+            return
+        }
+
+        entity instanceof Player
+        ? this.playerDied()
+        : this.playerWon()
     }
 
     private playerWon(): void {
@@ -375,13 +451,10 @@ export default class Battle {
         const player = this._player
         
         this.calculateRewards()
-        player.save()
-        player.setCurrentState({
-            primary: "EXPLORING",
-            secondary: "IDLE"
-        })
-        
         this.battleEnds()
+        this.logBattleHistory(`${Emote._GlitchCat_} VOCÊ GANHOU!!!`)
+        
+        player.save()
     }
 
     private playerDied(): void {
@@ -389,398 +462,72 @@ export default class Battle {
         const player = this._player
 
         sendMessage(`
-            O Jogador @${player.getName()} MORREU!! 
+            O Jogador ${Emote._PowerUpL_} @${player.getName()} ${Emote._PowerUpR_} MORREU!! 
             ${player.getSouls()} almas foram perdidas *-*.
         `)
     
-        player.setSouls(0)
-        player.recoverHP()
-        player.ressurrect()
+        player.setSouls(0) 
         player.save()
-        player.setCurrentState({
-            primary: "FIRE_PIT",
-            secondary: "RESTING_ON_FIRE_PIT"
-        })
-        
         this.battleEnds()
+        this.logBattleHistory(`${Emote._DarkMode_} VOCÊ MORREU!!!`)
     }
 
     private battleEnds(): void {
 
-        if(this._BattleStatus.isBothAlive()) {
+        if(this.isBothAlive()) {
             return
         }
         
         Battle.deleteBattle(this._player.getName())
     }
 
-    private causeDamage(against: "Player" | "Enemie", attackType: "Melee" | "LongRange"): void {
-        
-        let attacker: Player | Enemie
-        let defensor: Player | Enemie
+    private causeDamage(attacker: Entity, target: Entity, attackType: "Melee" | "LongRange"): void {
 
-        if(against === "Enemie") {
-            attacker = this._player
-            defensor = this._enemie
-        } else {
-            attacker = this._enemie
-            defensor = this._player
-        }
+        let attackerDamage
 
-        const attackerDamage = _CS_Math.calculateDamage({
-            attacker: attacker,
-            defensor: defensor,
-            attackType: attackType
-        })
-
-        defensor.inflictDamage(attackerDamage)
-        
-        this._BattleStatus.logDamageResults(attacker, defensor, attackerDamage)
-        this._BattleStatus.logHitResults(attacker, true)
-    }
-}
-
-class _CS_Math {
-    
-    public static getLuckNumber() {
-        return Math.floor((Math.random() * 6) + 1)
-    }
-
-    public static calculateDamage(o: {
-        attacker: Player | Enemie,
-        defensor: Player | Enemie,
-        attackType: "Melee" | "LongRange"
-    }): number {
-        
-        const rawDamage = this.calculateRawDamage({
-            attacker: o.attacker,
-            defender: o.defensor,
-            attackType: o.attackType
-        })
-
-        return this.returnEffectiveDamage(rawDamage, _CS_Math.getLuckNumber())
-    }
-
-    private static calculateRawDamage(o: {
-        attacker: Player | Enemie,
-        defender: Player | Enemie,
-        attackType: "Melee" | "LongRange"
-    }): number {
-
-        const { attacker, defender, attackType } = o
-
-        const attacker_baseStats = attacker.getBaseStats()
-        const defensor_baseStats = defender.getBaseStats()
-        const defensor_ArmorStats = defender.getArmorStats()
-        
-        let attacker_WeaponStats
         attackType === "LongRange"
-        ? attacker_WeaponStats = attacker.getLongRangeStats()
-        : attacker_WeaponStats = attacker.getMeleeStats() 
+        ? attackerDamage = CS_Math.rawDamage_LongRange(attacker, target)
+        : attackerDamage = CS_Math.rawDamage_Melee(attacker, target)
 
-        const damages = [
-            attacker_baseStats.fisicalDamage  + attacker_WeaponStats.fisicalDamage,
-            attacker_baseStats.fireDamage     + attacker_WeaponStats.fireDamage,
-            attacker_baseStats.iceDamage      + attacker_WeaponStats.iceDamage,
-            attacker_baseStats.thunderDamage  + attacker_WeaponStats.thunderDamage,
-            attacker_baseStats.poisonDamage   + attacker_WeaponStats.poisonDamage
-        ]
+        target.inflictDamage(attackerDamage)
 
-        const defenses = [
-            defensor_baseStats.fisicalDefense + defensor_ArmorStats.fisicalDefense,
-            defensor_baseStats.fireDefense    + defensor_ArmorStats.fireDefense,
-            defensor_baseStats.iceDefense     + defensor_ArmorStats.iceDefense,
-            defensor_baseStats.thunderDefense + defensor_ArmorStats.thunderDefense,
-            defensor_baseStats.poisonDefense  + defensor_ArmorStats.poisonDefense
-        ]
+        attacker instanceof Player
+        ? this.logBattleHistory(`${Emote._SirUwU_} ${Emote._SirSword_} você causou  ${attackerDamage} de dano!!`)
+        : this.logBattleHistory(`${Emote._SMOrc_} ${Emote._SirSword_} Você sofreu ${attackerDamage} de dano!!!`)
+    }
+    
+    private isBothAlive() {
+        return this.getPlayer().getIsAlive() && this.getEnemie().getIsAlive()
+    }
 
-        let totalRawDamage = 0
-        damages.forEach((damage, index) => {
-            
-            let rawDamage = damage - defenses[index] 
-            if (rawDamage < 0) {
-                rawDamage = 0
-            }
-            totalRawDamage += rawDamage
+    private sendMessageAndStateChange() {
+
+        const player = this.getPlayer()
+        const enemie = this.getEnemie()
+        
+        if(this.isBothAlive()){
+            SendMessage_UI.battle(this, this.buildLogMessage())
+            this.resetBattleHistory()
+            return
+        }
+
+        if(enemie.getIsAlive()) {
+            Travel.to_FirePit(player, this.buildLogMessage())
+            return
+        }
+
+        if(player.getIsAlive()) {
+            Travel.to_Explore(player, this.buildLogMessage())
+            return
+        }
+    }
+
+    private buildLogMessage(): string {
+
+        let message = ''
+        this._battleHistory.forEach(sentence => {
+            message += `${sentence} `
         })
-        
-        return Math.floor(totalRawDamage)
-    }
-
-    private static returnEffectiveDamage(damageValue: number, luck: number): number {
-
-        if(damageValue < 0) {
-            throw Error(`ERROR: damageValue must be a valid and positive number`)
-        }
-
-        switch(luck) {
-            
-            case 1: damageValue = damageValue * 0.5     ;break
-            case 2: damageValue = damageValue * 0.75    ;break
-            case 3: damageValue = damageValue * 0.9     ;break
-            case 4: damageValue = damageValue * 1.1     ;break
-            case 5: damageValue = damageValue * 1.25    ;break
-            case 6: damageValue = damageValue * 1.5     ;break
-        }
-
-        damageValue = Math.floor(damageValue)
-
-        if(damageValue < 1) {
-            damageValue = 1
-        }
-
-        return damageValue
-    }
-}
-
-class _BattleStatus {
-
-    private _status = {
-        playerDamage: 0,
-        enemieDamage: 0,
-        playerHit: false,
-        enemieHit: false,
-        playerDied: false,
-        enemieDied: false,
-        triedToFlee: false,
-        fleeSucced: false
-    }
-
-    getStatus() {
-        return this._status
-    }
-
-    isBothAlive(): boolean {
-        return !this._status.playerDied && !this._status.enemieDied
-    }
-
-    resetBattleLog(): void {
-
-        this._status = {
-            playerDamage: 0,
-            enemieDamage: 0,
-            playerHit: false,
-            enemieHit: false,
-            playerDied: false,
-            enemieDied: false,
-            triedToFlee: false,
-            fleeSucced: false
-        }
-    }
-
-    logFlee(succed: boolean): void {
-        this._status.triedToFlee = true
-        this._status.fleeSucced = succed
-    }
-
-    logHitResults(attacker: Player | Enemie, didHit: boolean): void {
-
-        if(didHit) {
-    
-            attacker instanceof Player
-            ? this._status.playerHit = true
-            : this._status.enemieHit = true
-    
-            return
-        }
-        
-        attacker instanceof Player
-        ? this._status.playerHit = false
-        : this._status.enemieHit = false
-    }   
-
-    logDamageResults(attacker: Player | Enemie, defensor: Player | Enemie, damageValue: number): void {
-
-        attacker instanceof Player
-        ? this._status.playerDamage = damageValue
-        : this._status.enemieDamage = damageValue
-
-        this.logDefensorDeath(defensor)
-    }
-
-    private logDefensorDeath(defensor: Player | Enemie) {
-
-        if(defensor.getIsAlive()) {
-            return
-        }
-
-        defensor instanceof Player
-        ? this._status.playerDied = true
-        : this._status.enemieDied = true
-    }
-}
-
-class _BattleMessage {
-
-    static chooseBattleMessage(battle: Battle): void {
-
-
-        const player = battle.getPlayer()
-        const enemie = battle.getEnemie()
-        const _BattleStatus = battle.getStatus()
-        const {
-            playerHit,
-            enemieHit,
-            playerDamage,
-            enemieDamage,
-            playerDied,
-            enemieDied,
-            triedToFlee,
-            fleeSucced
-        } = _BattleStatus.getStatus()
-
-        //=============================
-        // FLEE POSSIBILITIES =========
-        //=============================
-
-        if(//Trie to flee, fail and receives hit
-            triedToFlee &&
-            !fleeSucced &&
-            enemieHit
-        ) {
-            SendMessage_UI.battle(battle, `
-                Sua fulga falhou!! E você sofreu ${enemieDamage} de dano!!!
-            `)
-            _BattleStatus.resetBattleLog()
-            return
-        }
-
-        if(//Trie to flee, fail and Dies
-            triedToFlee &&
-            !fleeSucced &&
-            enemieHit &&
-            playerDied
-        ) {
-            SendMessage_UI.firePit(player, `
-                RIP. Sua fulga falhou e você morreu sofrendo ${enemieDamage} de dano.
-            `)
-            _BattleStatus.resetBattleLog()
-            return
-        }
-
-        if(//Trie to flee, fail and enemie miss
-            triedToFlee &&
-            !fleeSucced &&
-            !enemieHit
-        ) { 
-            SendMessage_UI.battle(battle, `
-                Sua fulga falhou mas uma esquiva foi conectada, UFFAAA!!
-            `)
-            _BattleStatus.resetBattleLog()
-            return
-        }
-    
-        //=============================
-        // NO DAMAGE POSSIBILITIES ====
-        //=============================
-    
-        if(//Both miss
-            !playerHit && !enemieHit &&
-            !playerDied && !enemieDied
-        ) {
-            
-            SendMessage_UI.battle(battle, `
-                UUUUUUUUUUUUUUUUUUUUU ambos erraram o ataque
-            `)
-            _BattleStatus.resetBattleLog()
-            return
-        }
-    
-        //=============================
-        // DAMAGE POSSIBILITIES =======
-        //=============================
-    
-        if(//Both hit
-            playerHit && enemieHit &&
-            !playerDied && !enemieDied
-        ) {
-            SendMessage_UI.battle(battle, `
-                Ambos se acertaram! você causou ${playerDamage} de dano,
-                e sofreu ${enemieDamage} de dano.
-            `)
-            _BattleStatus.resetBattleLog()
-            return
-        }
-    
-        if(//Player Miss, enemie hits
-            !playerHit && enemieHit &&
-            !playerDied && !enemieDied
-        ) {
-            SendMessage_UI.battle(battle, `
-                OUUCH, você errou o ataque e tomou  ${enemieDamage} de dano!!!
-            `)
-            _BattleStatus.resetBattleLog()
-            return
-        }
-    
-        if(//Enemie hit, player miss
-            playerHit && !enemieHit &&
-            !playerDied && !enemieDied
-        ) {
-            SendMessage_UI.battle(battle, `
-                Conseguiu se esquivar e causar ${playerDamage} de dano!!!
-            `)
-            _BattleStatus.resetBattleLog()
-            return
-        }
-    
-        //=============================
-        // DEATH POSSIBILITIES ========
-        //=============================
-    
-        if(//Both Hit, player dies
-            playerHit && enemieHit &&
-            playerDied && !enemieDied
-        ) {
-            SendMessage_UI.firePit(player, `
-                RIP. Ambos se acertaram mas você morreu com ${enemieDamage} de dano.
-            `)
-            _BattleStatus.resetBattleLog()
-            return
-        }
-        
-        if(//Both hit, enemie dies
-            playerHit && enemieHit &&
-            !playerDied && enemieDied
-        ) {
-            SendMessage_UI.idle(player, `
-                VITÓRIA!! Você sofreu ${enemieDamage} de dano mas venceu!!!
-                Recursos ganhos: ${battle.returnResourcesRewardsString()}.
-            `)
-            _BattleStatus.resetBattleLog()
-            return
-        }
-        
-        if(//Player hit and kill enemie
-            playerHit && !enemieHit &&
-            !playerDied && enemieDied
-        ) {
-            SendMessage_UI.idle(player, `
-                VITÓRIA!! Você conseguiu matar ${enemie.getName()} conectando uma esquiva!!!
-                Recursos ganhos: ${battle.returnResourcesRewardsString()}.
-            `)
-            _BattleStatus.resetBattleLog()
-            return
-        }
-    
-        if(//Enemie hit and kills player
-            !playerHit && enemieHit &&
-            playerDied && !enemieDied
-        ) {
-            SendMessage_UI.firePit(player, `
-                RIP, você errou o ataque e morreu com ${enemieDamage} de dano!!!
-            `)
-            _BattleStatus.resetBattleLog()
-            return
-        }
-    
-        throw Error(`ERROR: attack(), sendUIMessage: possibilitie not consider.
-            playerDamage: ${playerDamage},
-            enemieDamage: ${enemieDamage},
-            playerHit: ${playerHit},
-            enemieHit: ${enemieHit},
-            playerDied: ${playerDied},
-            enemieDied: ${enemieDied}
-        `)
+        return message
     }
 }

@@ -41,11 +41,9 @@ export default class Weapon {
             multipliersString += `Dano de Veneno = ${this.multipliers.poisonDamage}x Inteligência, `
         }
 
-        multipliersString.substring(0, -2)
-
         return `
         DESCRIÇÃO: ${description} 
-        MULTIPLICADORES: ${multipliersString}
+        MULTIPLICADORES: ${multipliersString.slice(0, -2)}
         `
     }
 }

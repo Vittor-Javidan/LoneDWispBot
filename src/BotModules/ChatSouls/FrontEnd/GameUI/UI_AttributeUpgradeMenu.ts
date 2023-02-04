@@ -1,3 +1,4 @@
+import Emote from "../../../../Twitch/Emotes.js"
 import sendMessage from "../../../../Twitch/sendMessageHandler.js"
 import Player from "../../Classes/EntityChilds/Player.js"
 import SendMessage_UI from "../../Classes/SendMessage.js"
@@ -17,12 +18,12 @@ export default function UI_AttributeUpgradeMenu(data: CS_DataPayload): void {
 	const commandCode = Number(commandWord)
 	switch(commandCode){
 				
-		case 0: Travel.to_StatisticsMenu(player, `Você voltou ao menu de estatísticas`)					;break
-		case 1: _UI_Option.upgradeAttributeByType(player, "vitality", `VITALIDADE AUMENTADA!`)			;break
-		case 2: _UI_Option.upgradeAttributeByType(player, "agility", `AGILIDADE AUMENTADA!`)			;break
-        case 3: _UI_Option.upgradeAttributeByType(player, "strenght", `FORÇA AUMENTADA!`)				;break
-        case 4: _UI_Option.upgradeAttributeByType(player, "intelligence", `INTELIGÊNCIA AUMENTADA!`)	;break
-		case 5: _UI_Option.consultAttributesDescription(player)											;break
+		case 0: Travel.to_StatisticsMenu(player, `Você voltou ao menu de estatísticas`)									;break
+		case 1: _UI_Option.upgradeAttributeByType(player, "vitality", `${Emote._GivePLZ_} VITALIDADE AUMENTADA!`)		;break
+		case 2: _UI_Option.upgradeAttributeByType(player, "agility", `${Emote._GivePLZ_} AGILIDADE AUMENTADA!`)			;break
+        case 3: _UI_Option.upgradeAttributeByType(player, "strenght", `${Emote._GivePLZ_} FORÇA AUMENTADA!`)			;break
+        case 4: _UI_Option.upgradeAttributeByType(player, "intelligence", `${Emote._GivePLZ_} INTELIGÊNCIA AUMENTADA!`)	;break
+		case 5: _UI_Option.consultAttributesDescription(player)															;break
 
 		default: SendMessage_UI.attributeUpgradeMenu(player, `Código inválido`)
 	}

@@ -1,29 +1,20 @@
-import { ENTITY_DEFAULT } from '../Globals/ENTITY_DEFAULT.js'
-import { GAME_BALANCE } from '../Globals/GAME_BALANCE.js'
-import Armor from './Equipments/Armor.js'
-import BodyArmor from './Equipments/BodyArmor.js'
-import Boots from './Equipments/Boots.js'
-import Gloves from './Equipments/Gloves.js'
-import Helmet from './Equipments/Helmet.js'
-import LongRangeWeapon from './Equipments/LongRangeWeapon.js'
-import MeleeWeapon from './Equipments/MeleeWeapon.js'
-import Weapon from './Equipments/Weapon.js'
+import { ENTITY_DEFAULT } from '../Globals/DEFAULT_VALUES/ENTITY_DEFAULT.js'
 
-import { EQUIPMENT_TYPES_ARRAY } from '../Globals/EQUIPMENTS_ENTRY.js'
+import { EQUIPMENT_TYPES_ARRAY } from '../Globals/ENTRIES/EQUIPMENTS_ENTRY.js'
 import {
-    CS_Armor_Multipliers,
     CS_Attributes,
     CS_AttributeTypes,
-    CS_EquipmentData,
+    CS_BuffData, CS_Catalog_Habilities, CS_EquipmentData,
     CS_EquipmentInventory_Object,
     CS_Equipments,
     CS_EquipmentTypes,
+    CS_HabilitiesSlots,
     CS_Inventory,
     CS_Inventory_Equipments,
     CS_Inventory_Resources, CS_ResourceData,
-    CS_Stats,
-    CS_Weapon_Multipliers
+    CS_Stats
 } from '../Globals/moduleTypes.js'
+import CS_Math from './CS_Math.js'
 
 export default class Entity {
 
@@ -36,14 +27,17 @@ export default class Entity {
     private _souls: number = ENTITY_DEFAULT.SOULS
     private _level: number = ENTITY_DEFAULT.LEVEL
     private _currentHP: number = ENTITY_DEFAULT.CURRENT_HP
+    private _currentMana: number = ENTITY_DEFAULT.CURRENT_MANA
     private _attributes: CS_Attributes = structuredClone(ENTITY_DEFAULT.ATTRIBUTES)
     private _currentEquipment: CS_Equipments = structuredClone(ENTITY_DEFAULT.EQUIPMENT)
+    private _currentHabilities: CS_HabilitiesSlots = structuredClone(ENTITY_DEFAULT.HABILITIES)
     private _inventory: CS_Inventory = structuredClone(ENTITY_DEFAULT.INVENTORY)
-    private _totalStats: CS_Stats = structuredClone(ENTITY_DEFAULT.TOTAL_STATS)
-    private _baseStats: CS_Stats = structuredClone(ENTITY_DEFAULT.BASE_STATS)
-    private _statsFromArmor: CS_Stats = structuredClone(ENTITY_DEFAULT.STATS_FROM_EQUIPS)
-    private _statsFromMelee: CS_Stats = structuredClone(ENTITY_DEFAULT.STATS_FROM_EQUIPS)
-    private _statsFromLongRange: CS_Stats = structuredClone(ENTITY_DEFAULT.STATS_FROM_EQUIPS)
+    private _baseStats: CS_Stats = structuredClone(ENTITY_DEFAULT.EMPTY_STATS)
+    private _statsFromArmor: CS_Stats = structuredClone(ENTITY_DEFAULT.EMPTY_STATS)
+    private _statsFromMelee: CS_Stats = structuredClone(ENTITY_DEFAULT.EMPTY_STATS)
+    private _statsFromLongRange: CS_Stats = structuredClone(ENTITY_DEFAULT.EMPTY_STATS)
+    private _statsFromBuffs: CS_Stats = structuredClone(ENTITY_DEFAULT.EMPTY_STATS)
+    private _buffs: Record<string, CS_BuffData> = {}
 
     //=================================================================================================
     // CONSTRUCTOR ====================================================================================
@@ -74,6 +68,13 @@ export default class Entity {
         
         this._currentHP = value
     }
+
+    getCurrentMana(): number { return this._currentMana }
+    setCurrentMana(value: number): void {
+        
+        this._currentMana = value
+    }
+
 
     getSouls(): number { return this._souls }
     setSouls(amount: number): void {
@@ -114,6 +115,12 @@ export default class Entity {
 
         //@ts-ignore: Read "knowIssues.md"
         this._currentEquipment[equipment.type] = structuredClone(equipment)
+    }
+
+    getCurrentHabilities(): CS_HabilitiesSlots { return this._currentHabilities }
+    setCurrentHabilities(habilities: CS_HabilitiesSlots): void {
+        
+        this._currentHabilities = habilities
     }
 
     getInventory(): CS_Inventory { return this._inventory }
@@ -169,6 +176,14 @@ export default class Entity {
         
         this._statsFromArmor = structuredClone(object)
     }
+
+    getBuffStats(): CS_Stats { return this._statsFromBuffs }
+    setBuffStats(object: CS_Stats): void {
+        
+        this._statsFromBuffs = structuredClone(object)
+    }
+
+    getBuffs(): Record<string, CS_BuffData> { return this._buffs }
 
     //=================================================================================================
     // INSTANCE METHODS ===============================================================================
@@ -253,7 +268,7 @@ export default class Entity {
 
         const itemToUnequip = this.getAllCurrentEquipments()[equipmentType]
         this.pushToInventory(itemToUnequip)
-        this.setCurrentEquipment({ name: "Empty", type: equipmentType })
+        this.setCurrentEquipment({ name: "Empty", type: equipmentType})
         this.sortInventoryEquipments(equipmentType)
     }
 
@@ -290,6 +305,45 @@ export default class Entity {
         return equipmentListString
     }
 
+    getHabilitsAmount(): number {
+
+        const habilities = this.getHabilitiesNames()
+        return habilities.length
+    }
+
+    getHabilitiesString(): string {
+
+        const habilities = this.getHabilitiesNames()
+        let message = ''
+
+        habilities.forEach((habilitieName, index) => {
+            message += `| ${index + 1}. ${habilitieName} `
+        })
+
+        if(message === '') {
+            return `Sem habilidades equipadas`
+        }
+
+        return message
+    }
+
+    getHabilitiesNames(): CS_Catalog_Habilities[] {
+
+        const habilities = this.getCurrentHabilities()
+        let habilitiesArray: CS_Catalog_Habilities[] = []
+
+        for(const equipmentType in habilities) {
+
+            const habilitieName = habilities[equipmentType as CS_EquipmentTypes].name
+
+            if(habilitieName !== "Empty") {
+                habilitiesArray.push(habilitieName)
+            }
+        }
+
+        return habilitiesArray
+    }
+
     addResources(resourceObject: CS_ResourceData): void {
 
         const inventoryResources = this.getInventoryResources()[resourceObject.name]
@@ -317,10 +371,30 @@ export default class Entity {
         }
     }
 
-    recoverHP(): void {
+    recoverHP(value: number | "maxHP"): void {
 
-        const totalHP = this.getBaseStats().hp + this.getArmorStats().hp
+        const maxHP = this.getBaseStats().hp + this.getArmorStats().hp
+        let totalHP = 0
+
+        if (value === "maxHP") {
+            totalHP = maxHP
+            this.setCurrentHP(totalHP)
+            return
+        }
+
+        totalHP = this.getCurrentHP() + value
+        
+        if(totalHP > maxHP) {
+            totalHP = maxHP
+        } 
+
         this.setCurrentHP(totalHP)
+    }
+
+    recoverMana(): void {
+
+        const totalMana = this.getBaseStats().mana + this.getArmorStats().mana
+        this.setCurrentMana(totalMana)
     }
 
     inflictDamage(value: number): void {
@@ -334,129 +408,30 @@ export default class Entity {
     }
 
     ressurrect(): void {
-        
         this.setIsAlive(true)
     }
 
     kill(): void {
-        
         this.setIsAlive(false)
     }
 
     calculateBaseStats(): void {
-
-        const balanceStatsValues = GAME_BALANCE.STATS_WEIGHT
-        const attributes = this.getAttributes()
-
-        this.setBaseStats({
-            
-            hp:             attributes.vitality     * balanceStatsValues.HP,
-            evasion:        attributes.agility      * balanceStatsValues.EVASION,
-
-            fisicalDamage:  attributes.strenght     * balanceStatsValues.FISICAL_DMG,
-            fireDamage:     0,
-            iceDamage:      0,
-            thunderDamage:  0,
-            poisonDamage:   0,
-
-            fisicalDefense: attributes.strenght     * balanceStatsValues.FISICAL_DEF,
-            fireDefense:    attributes.intelligence * balanceStatsValues.MAGICAL_DEF,
-            iceDefense:     attributes.intelligence * balanceStatsValues.MAGICAL_DEF,
-            thunderDefense: attributes.intelligence * balanceStatsValues.MAGICAL_DEF,
-            poisonDefense:  attributes.intelligence * balanceStatsValues.MAGICAL_DEF
-        })
+        CS_Math.baseStatsCalculation(this)
     }
     
     calculateStatsFromEquips(): void {
-        
-        const currentEquipment = this.getAllCurrentEquipments()
-        const resetedStats: CS_Stats = {
-
-            hp:             0,
-            evasion:        0,
-
-            fisicalDamage:  0,
-            fireDamage:     0,
-            iceDamage:      0,
-            thunderDamage:  0,
-            poisonDamage:   0,
-
-            fisicalDefense: 0,
-            fireDefense:    0,
-            iceDefense:     0,
-            thunderDefense: 0,
-            poisonDefense:  0
-        }
-
-        this.setLongRangeStats(resetedStats)
-        this.setMeleeStats(resetedStats)
-        this.setArmorStats(resetedStats)
-
-        let equipmentInstance: Weapon | Armor
-
-        for(let equipmentType in currentEquipment) {    
-
-            switch(equipmentType as CS_EquipmentTypes) {
-
-                case "longRangeWeapon": equipmentInstance = new LongRangeWeapon(currentEquipment["longRangeWeapon"]);break
-                case "meleeWeapon":     equipmentInstance = new MeleeWeapon(currentEquipment["meleeWeapon"])        ;break
-                case "helmet":          equipmentInstance = new Helmet(currentEquipment["helmet"])                  ;break
-                case "bodyArmor":       equipmentInstance = new BodyArmor(currentEquipment["bodyArmor"])            ;break
-                case "gloves":          equipmentInstance = new Gloves(currentEquipment["gloves"])                  ;break
-                case "boots":           equipmentInstance = new Boots(currentEquipment["boots"])                    ;break
-
-                default: throw Error(`Error: Entity class, "calculateStatsFromEquips": equipment type not recognized`)
-            }
-
-            if(equipmentInstance instanceof Armor) {
-                this.bonusFromArmor(equipmentInstance)
-            }
-
-            if(equipmentInstance instanceof Weapon) {
-                this.bonusFromWeapon(equipmentInstance)
-            }
-        }
+        CS_Math.equipmentStatsCalculation(this)
     }
 
-    bonusFromArmor(armor: Armor): void{
-
-        const attributes = this.getAttributes()
-        const stats = this.getArmorStats()
-
-        let equipMultipliers: CS_Weapon_Multipliers | CS_Armor_Multipliers
-        
-        equipMultipliers  = armor.multipliers as CS_Armor_Multipliers
-
-        stats.hp             += attributes.vitality       * equipMultipliers.vitality
-        stats.evasion        += attributes.agility        * equipMultipliers.agility
-
-        stats.fisicalDefense += attributes.strenght       * equipMultipliers.strenght
-        stats.fireDefense    += attributes.intelligence   * equipMultipliers.fireDefense
-        stats.iceDefense     += attributes.intelligence   * equipMultipliers.iceDefense
-        stats.thunderDefense += attributes.intelligence   * equipMultipliers.thunderDefense
-        stats.poisonDefense  += attributes.intelligence   * equipMultipliers.poisonDefense
+    calculateStatsFromBuffs(): void {
+        CS_Math.buffStatsCalculation(this)
     }
 
-    bonusFromWeapon(weapon: Weapon): void{
+    registerBuff(buff: CS_BuffData): void {
+        this._buffs[buff.name] = buff
+    }
 
-        const attributes = this.getAttributes()
-        let equipMultipliers: CS_Weapon_Multipliers | CS_Armor_Multipliers
-        let stats: CS_Stats
-
-        weapon instanceof LongRangeWeapon
-        ? stats = this.getLongRangeStats()
-        : stats = this.getMeleeStats()
-
-        equipMultipliers  = weapon.multipliers as CS_Weapon_Multipliers
-        
-        stats.fisicalDamage += (
-            attributes.agility      * equipMultipliers.agility  +
-            attributes.strenght     * equipMultipliers.strenght
-        )
-        
-        stats.fireDamage        += attributes.intelligence  * equipMultipliers.fireDamage
-        stats.iceDamage         += attributes.intelligence  * equipMultipliers.iceDamage
-        stats.thunderDamage     += attributes.intelligence  * equipMultipliers.thunderDamage
-        stats.poisonDamage      += attributes.intelligence  * equipMultipliers.poisonDamage
+    deleteBuff(buffName: CS_Catalog_Habilities): void {
+        delete this._buffs[buffName]
     }
 }
