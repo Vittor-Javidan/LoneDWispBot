@@ -17,11 +17,8 @@
     - add an additional contioning to recover HP and Mana only when player has FIRE_PIT primary state.
 
 ## Habilities
-+ Only one habilitie per equipment
-    - habilities spend mana.
-    - Habilitie are equipable, like runes.
-	- Habilitie object must have a name and rank.
-	- Each habilitie will have it's own function definition
++ habilities spend mana.
++ Habilities must implemented their rank on their effectiveness.
 
 ## Habilities, item and equipment Search algorithm
 + When the player tries to find something and access the desired menu, respective items must show first as single letters.
