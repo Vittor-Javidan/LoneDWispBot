@@ -2,7 +2,7 @@ import { CS_DataPayload, CS_Equipments } from "../../Globals/moduleTypes.js"
 
 import SendMessage_UI from "../../Classes/SendMessage.js"
 import Travel from "../../Classes/Travel.js"
-import { EQUIPMENT_TYPES_ARRAY } from "../../Globals/EQUIPMENTS_ENTRY.js"
+import { EQUIPMENT_TYPES_ARRAY } from "../../Globals/ENTRIES/EQUIPMENTS_ENTRY.js"
 
 export default function UI_Equipments(data: CS_DataPayload) {
 

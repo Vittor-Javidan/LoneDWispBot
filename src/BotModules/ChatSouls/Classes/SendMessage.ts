@@ -1,3 +1,4 @@
+import Emote from "../../../Twitch/Emotes.js"
 import sendMessage from "../../../Twitch/sendMessageHandler.js"
 import Battle from "./Battle.js"
 import Player from "./EntityChilds/Player.js"
@@ -9,7 +10,7 @@ export default class SendMessage_UI {
         const playerName = player.getName()
     
         sendMessage(
-            `/w ${playerName} ${menuMessage} 
+            `/w ${playerName} ${Emote._Getcamped_} ${menuMessage} 
             | 0. Levantar da fogueira
             | 1. Statísticas 
             | 2. Ver Equipamento 
@@ -22,7 +23,7 @@ export default class SendMessage_UI {
         const playerName = player.getName()
     
         sendMessage(
-            `/w ${playerName} ${menuMessage} 
+            `/w ${playerName} ${Emote._GlitchNRG_} ${menuMessage} 
             | 0. Voltar 
             | 1. Ver Atributos 
             | 2. Upar Atributos 
@@ -38,7 +39,7 @@ export default class SendMessage_UI {
         const upgradeCost = playerInstance.getLevelUpgradeCost()
     
         sendMessage(
-            `/w ${playerName} ${menuMessage} 
+            `/w ${playerName} ${Emote._GlitchNRG_} ${menuMessage} 
             | Seu Level: ${level} 
             | Suas Almas: ${souls} 
             | Custo Upgrade: ${upgradeCost} almas 
@@ -58,7 +59,7 @@ export default class SendMessage_UI {
         const playerName = playerInstance.getName()
     
         sendMessage(
-            `/w ${playerName} ${menuMessage} 
+            `/w ${playerName} ${Emote._EarthDay_} ${menuMessage} 
             | 0. Voltar a fogueira
             | 1. Explorar 
             | 2. Procurar por recursos (Em progresso)
@@ -74,12 +75,28 @@ export default class SendMessage_UI {
         const playerName = player.getName()
     
         sendMessage(
-            `/w ${playerName} ${menuMessage} ${battle.getBattleStatusString()}. 
+            `/w ${playerName} ${Emote._Squid_} ${menuMessage} ${battle.getBattleStatusString()}. 
             | 0. Fugir 
-            | 1. Atacar 
+            | 1. Ataque curto alcance
+            | 2. Ataque longo alcance
+            | 3. Habilidades
             |`
         )
         return
+    }
+
+    public static battle_habilities(player: Player, menuMessage: string): void {
+
+        const playerName = player.getName()
+        const habilitiesString = player.getHabilitiesString()
+        const playerMana = player.getCurrentMana()
+        const playerMaxMana = player.getBaseStats().mana + player.getArmorStats().mana
+
+        sendMessage(
+            `/w ${playerName} ${Emote._Squid_} ${menuMessage}. ${playerMana}/${playerMaxMana} Mana. 
+            | 0. Voltar ${habilitiesString}
+            |`
+        )
     }
 
     public static equipments(player: Player, menuMessage: string): void {
@@ -87,7 +104,7 @@ export default class SendMessage_UI {
         const playerName = player.getName()
     
         sendMessage(
-            `/w ${playerName} ${menuMessage}. 
+            `/w ${playerName} ${Emote._SirShield_} ${menuMessage}. 
             | 0. Voltar 
             | 1. Arma Corpo a Corpo 
             | 2. Arma Longo alcance 
@@ -106,7 +123,7 @@ export default class SendMessage_UI {
         const playerName = player.getName()
     
         sendMessage(
-            `/w ${playerName} ${menuMessage} 
+            `/w ${playerName} ${Emote._SirShield_}  ${menuMessage} 
             | 0. Voltar
             | 1. Equipar
             | 2. Ver detalhes
@@ -137,7 +154,7 @@ export default class SendMessage_UI {
         }
 
         sendMessage(
-            `/w @${playerName} ${menuMessage}: 
+            `/w ${playerName} ${Emote._SirShield_} ${menuMessage}: 
             | 0. Voltar ${equipments}
             |`
         )

@@ -1,28 +1,20 @@
-import { ENTITY_DEFAULT } from '../Globals/ENTITY_DEFAULT.js'
-import { GAME_BALANCE } from '../Globals/GAME_BALANCE.js'
-import Armor from './Equipments/Armor.js'
-import BodyArmor from './Equipments/BodyArmor.js'
-import Boots from './Equipments/Boots.js'
-import Equipment from './Equipments/Equipment.js'
-import Gloves from './Equipments/Gloves.js'
-import Helmet from './Equipments/Helmet.js'
-import LongRangeWeapon from './Equipments/LongRangeWeapon.js'
-import MeleeWeapon from './Equipments/MeleeWeapon.js'
-import Weapon from './Equipments/Weapon.js'
+import { ENTITY_DEFAULT } from '../Globals/DEFAULT_VALUES/ENTITY_DEFAULT.js'
 
-import { EQUIPMENT_TYPES_ARRAY } from '../Globals/EQUIPMENTS_ENTRY.js'
+import { EQUIPMENT_TYPES_ARRAY } from '../Globals/ENTRIES/EQUIPMENTS_ENTRY.js'
 import {
     CS_Attributes,
     CS_AttributeTypes,
-    CS_EquipmentData,
+    CS_BuffData, CS_Catalog_Habilities, CS_EquipmentData,
     CS_EquipmentInventory_Object,
     CS_Equipments,
     CS_EquipmentTypes,
+    CS_HabilitiesSlots,
     CS_Inventory,
     CS_Inventory_Equipments,
     CS_Inventory_Resources, CS_ResourceData,
     CS_Stats
 } from '../Globals/moduleTypes.js'
+import CS_Math from './CS_Math.js'
 
 export default class Entity {
 
@@ -35,12 +27,17 @@ export default class Entity {
     private _souls: number = ENTITY_DEFAULT.SOULS
     private _level: number = ENTITY_DEFAULT.LEVEL
     private _currentHP: number = ENTITY_DEFAULT.CURRENT_HP
+    private _currentMana: number = ENTITY_DEFAULT.CURRENT_MANA
     private _attributes: CS_Attributes = structuredClone(ENTITY_DEFAULT.ATTRIBUTES)
     private _currentEquipment: CS_Equipments = structuredClone(ENTITY_DEFAULT.EQUIPMENT)
+    private _currentHabilities: CS_HabilitiesSlots = structuredClone(ENTITY_DEFAULT.HABILITIES)
     private _inventory: CS_Inventory = structuredClone(ENTITY_DEFAULT.INVENTORY)
-    private _totalStats: CS_Stats = structuredClone(ENTITY_DEFAULT.TOTAL_STATS)
-    private _baseStats: CS_Stats = structuredClone(ENTITY_DEFAULT.BASE_STATS)
-    private _statsFromEquips: CS_Stats = structuredClone(ENTITY_DEFAULT.STATS_FROM_EQUIPS)
+    private _baseStats: CS_Stats = structuredClone(ENTITY_DEFAULT.EMPTY_STATS)
+    private _statsFromArmor: CS_Stats = structuredClone(ENTITY_DEFAULT.EMPTY_STATS)
+    private _statsFromMelee: CS_Stats = structuredClone(ENTITY_DEFAULT.EMPTY_STATS)
+    private _statsFromLongRange: CS_Stats = structuredClone(ENTITY_DEFAULT.EMPTY_STATS)
+    private _statsFromBuffs: CS_Stats = structuredClone(ENTITY_DEFAULT.EMPTY_STATS)
+    private _buffs: Record<string, CS_BuffData> = {}
 
     //=================================================================================================
     // CONSTRUCTOR ====================================================================================
@@ -71,6 +68,13 @@ export default class Entity {
         
         this._currentHP = value
     }
+
+    getCurrentMana(): number { return this._currentMana }
+    setCurrentMana(value: number): void {
+        
+        this._currentMana = value
+    }
+
 
     getSouls(): number { return this._souls }
     setSouls(amount: number): void {
@@ -113,6 +117,12 @@ export default class Entity {
         this._currentEquipment[equipment.type] = structuredClone(equipment)
     }
 
+    getCurrentHabilities(): CS_HabilitiesSlots { return this._currentHabilities }
+    setCurrentHabilities(habilities: CS_HabilitiesSlots): void {
+        
+        this._currentHabilities = habilities
+    }
+
     getInventory(): CS_Inventory { return this._inventory }
     setInventory(inventoryObject: CS_Inventory): void {
 
@@ -143,23 +153,37 @@ export default class Entity {
         this._inventory.resources = structuredClone(object) 
     }
 
-    getTotalStats(): CS_Stats { return this._totalStats }
-    setTotalStats(object: CS_Stats): void {
-        
-        this._totalStats = structuredClone(object) 
-    }
-
     getBaseStats(): CS_Stats { return this._baseStats }
     setBaseStats(object: CS_Stats): void {
 
         this._baseStats = structuredClone(object) 
     }
 
-    getEquipmentStats(): CS_Stats { return this._statsFromEquips }
-    setEquipmentStats(object: CS_Stats): void {
+    getLongRangeStats(): CS_Stats { return this._statsFromLongRange }
+    setLongRangeStats(object: CS_Stats): void {
         
-        this._statsFromEquips = structuredClone(object)
+        this._statsFromLongRange = structuredClone(object)
     }
+    
+    getMeleeStats(): CS_Stats { return this._statsFromMelee }
+    setMeleeStats(object: CS_Stats): void {
+        
+        this._statsFromMelee = structuredClone(object)
+    }
+    
+    getArmorStats(): CS_Stats { return this._statsFromArmor }
+    setArmorStats(object: CS_Stats): void {
+        
+        this._statsFromArmor = structuredClone(object)
+    }
+
+    getBuffStats(): CS_Stats { return this._statsFromBuffs }
+    setBuffStats(object: CS_Stats): void {
+        
+        this._statsFromBuffs = structuredClone(object)
+    }
+
+    getBuffs(): Record<string, CS_BuffData> { return this._buffs }
 
     //=================================================================================================
     // INSTANCE METHODS ===============================================================================
@@ -244,7 +268,7 @@ export default class Entity {
 
         const itemToUnequip = this.getAllCurrentEquipments()[equipmentType]
         this.pushToInventory(itemToUnequip)
-        this.setCurrentEquipment({ name: "Empty", type: equipmentType })
+        this.setCurrentEquipment({ name: "Empty", type: equipmentType})
         this.sortInventoryEquipments(equipmentType)
     }
 
@@ -281,6 +305,45 @@ export default class Entity {
         return equipmentListString
     }
 
+    getHabilitsAmount(): number {
+
+        const habilities = this.getHabilitiesNames()
+        return habilities.length
+    }
+
+    getHabilitiesString(): string {
+
+        const habilities = this.getHabilitiesNames()
+        let message = ''
+
+        habilities.forEach((habilitieName, index) => {
+            message += `| ${index + 1}. ${habilitieName} `
+        })
+
+        if(message === '') {
+            return `Sem habilidades equipadas`
+        }
+
+        return message
+    }
+
+    getHabilitiesNames(): CS_Catalog_Habilities[] {
+
+        const habilities = this.getCurrentHabilities()
+        let habilitiesArray: CS_Catalog_Habilities[] = []
+
+        for(const equipmentType in habilities) {
+
+            const habilitieName = habilities[equipmentType as CS_EquipmentTypes].name
+
+            if(habilitieName !== "Empty") {
+                habilitiesArray.push(habilitieName)
+            }
+        }
+
+        return habilitiesArray
+    }
+
     addResources(resourceObject: CS_ResourceData): void {
 
         const inventoryResources = this.getInventoryResources()[resourceObject.name]
@@ -308,9 +371,30 @@ export default class Entity {
         }
     }
 
-    recoverHP(): void {
+    recoverHP(value: number | "maxHP"): void {
+
+        const maxHP = this.getBaseStats().hp + this.getArmorStats().hp
+        let totalHP = 0
+
+        if (value === "maxHP") {
+            totalHP = maxHP
+            this.setCurrentHP(totalHP)
+            return
+        }
+
+        totalHP = this.getCurrentHP() + value
         
-        this.setCurrentHP(this.getTotalStats().hp)
+        if(totalHP > maxHP) {
+            totalHP = maxHP
+        } 
+
+        this.setCurrentHP(totalHP)
+    }
+
+    recoverMana(): void {
+
+        const totalMana = this.getBaseStats().mana + this.getArmorStats().mana
+        this.setCurrentMana(totalMana)
     }
 
     inflictDamage(value: number): void {
@@ -324,102 +408,34 @@ export default class Entity {
     }
 
     ressurrect(): void {
-        
         this.setIsAlive(true)
     }
 
     kill(): void {
-        
         this.setIsAlive(false)
     }
 
     calculateBaseStats(): void {
-
-        const balanceStatsValues = GAME_BALANCE.STATS_WEIGHT
-        const attributes = this.getAttributes()
-
-        this.setBaseStats({
-            hp:             attributes.vitality     * balanceStatsValues.HP,
-            evasion:        attributes.agility      * balanceStatsValues.EVASION,
-            fisicalDamage:  attributes.strenght     * balanceStatsValues.FISICAL_DMG,
-            fisicalDefense: attributes.strenght     * balanceStatsValues.FISICAL_DEF,
-            magicalDamage:  attributes.intelligence * balanceStatsValues.MAGICAL_DMG,
-            magicalDefense: attributes.intelligence * balanceStatsValues.MAGICAL_DEF
-        })
+        CS_Math.baseStatsCalculation(this)
     }
-
+    
     calculateStatsFromEquips(): void {
-
-        this.setEquipmentStats({
-            hp:             0,
-            evasion:        0,
-            fisicalDamage:  0,
-            fisicalDefense: 0,
-            magicalDamage:  0,
-            magicalDefense: 0
-        })
-
-        const classesArray = [
-            LongRangeWeapon, 
-            MeleeWeapon, 
-            Helmet, 
-            BodyArmor, 
-            Gloves, 
-            Boots
-        ]
-
-        EQUIPMENT_TYPES_ARRAY.forEach((type, index) => {
-            this.bonusFromEquippment(classesArray[index], type)
-        })
+        CS_Math.equipmentStatsCalculation(this)
     }
 
-    bonusFromEquippment(EquipmentClass: any , equipmentType: CS_EquipmentTypes): void{
-
-        const currentEquipment = this.getAllCurrentEquipments()
-
-        if(!currentEquipment[equipmentType].name) return
-        
-        const equipmentInstance: Equipment = new EquipmentClass(currentEquipment[equipmentType])
-        const equipMultipliers = equipmentInstance.multipliers
-        const statsWeightValues = GAME_BALANCE.STATS_WEIGHT
-        const attributes = this.getAttributes()
-
-        const stats = this.getEquipmentStats()
-
-        stats.hp           += attributes.vitality        * equipMultipliers.vitality   * statsWeightValues.HP
-        stats.evasion      += attributes.agility         * equipMultipliers.agility    * statsWeightValues.EVASION
-
-        switch (true) {
-
-            case equipmentInstance instanceof Weapon:
-                stats.fisicalDamage += attributes.strenght      * equipMultipliers.strenght     * statsWeightValues.FISICAL_DMG
-                stats.magicalDamage += attributes.intelligence  * equipMultipliers.intelligence * statsWeightValues.MAGICAL_DMG
-                break
-            //
-                
-            case equipmentInstance instanceof Armor:
-                stats.fisicalDefense += attributes.strenght     * equipMultipliers.strenght     * statsWeightValues.FISICAL_DEF
-                stats.magicalDefense += attributes.intelligence * equipMultipliers.intelligence * statsWeightValues.MAGICAL_DEF
-                break
-            //
-        }
+    calculateStatsFromBuffs(): void {
+        CS_Math.buffStatsCalculation(this)
     }
 
-    calculateStats(): void {
+    registerBuff(buff: CS_BuffData): void {
+        this._buffs[buff.name] = buff
+    }
 
-        this.calculateBaseStats()
-        this.calculateStatsFromEquips()
+    deleteBuff(buffName: CS_Catalog_Habilities): void {
+        delete this._buffs[buffName]
+    }
 
-        const baseStats = this.getBaseStats()
-        const equipmentStats = this.getEquipmentStats()
-
-        this.setTotalStats({
-            hp:             baseStats.hp               + equipmentStats.hp,
-            evasion:        baseStats.evasion          + equipmentStats.evasion,
-            fisicalDamage:  baseStats.fisicalDamage    + equipmentStats.fisicalDamage,
-            fisicalDefense: baseStats.fisicalDefense   + equipmentStats.fisicalDefense,
-            magicalDamage:  baseStats.magicalDamage    + equipmentStats.magicalDamage,
-            magicalDefense: baseStats.magicalDefense   + equipmentStats.magicalDefense
-        })
+    deletAllBuffs(): void {
+        this._buffs = {}
     }
 }

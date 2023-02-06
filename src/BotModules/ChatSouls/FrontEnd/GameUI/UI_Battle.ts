@@ -1,5 +1,6 @@
 import Battle from "../../Classes/Battle.js";
 import SendMessage_UI from "../../Classes/SendMessage.js";
+import Travel from "../../Classes/Travel.js";
 import { CS_DataPayload } from "../../Globals/moduleTypes.js";
 
 export default function UI_Battle(data: CS_DataPayload): void {
@@ -18,8 +19,10 @@ export default function UI_Battle(data: CS_DataPayload): void {
     
 	switch (commandCode) {
 
-		case 0: battle.flee()	;break
-		case 1: battle.attack() ;break
+		case 0: battle.playerAction("Flee")			 			;break
+		case 1: battle.playerAction("Melee")					;break
+		case 2: battle.playerAction("LongRange") 				;break
+		case 3: Travel.to_HabilitiesMenu(player) 				;break
 
 		default: SendMessage_UI.battle(battle,`opção inválida`)	;break
 	}

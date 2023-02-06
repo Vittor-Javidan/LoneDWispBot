@@ -7,7 +7,9 @@ import SendMessage_UI from "./SendMessage.js"
 export default class Travel {
 
     public static to_Explore(player: Player, menuMessage: string): void                 {_Explore.to_Explore(player, menuMessage)}
-    public static to_Battle(player: Player)                                             {_Explore.to_Battle(player)}
+    public static to_NewBattle(player: Player)                                          {_Explore.to_NewBattle(player)}
+    public static to_HabilitiesMenu(player: Player)                                     {_Explore.to_HabilitiesMenu(player)}
+    public static to_CurrentBattle(player: Player)                                      {_Explore.to_CurrentBattle(player)}
 
     public static to_FirePit(player: Player, menuMessage: string): void                 {_FirePit.to_FirePit(player, menuMessage)}
     public static to_StatisticsMenu(player: Player, menuMessage: string)                {_FirePit.to_StatisticsMenu(player, menuMessage)}
@@ -28,8 +30,8 @@ class _FirePit {
 
     public static to_FirePit(player: Player, menuMessage: string): void {
     
-        player.recoverHP()
-
+        player.recoverHP("maxHP")
+        player.ressurrect()
         player.setCurrentState({
             primary: "FIRE_PIT",
             secondary: "RESTING_ON_FIRE_PIT"
@@ -66,7 +68,7 @@ class _Explore {
         SendMessage_UI.idle(player, menuMessage)
     }
 
-    public static to_Battle(player: Player) {
+    public static to_NewBattle(player: Player) {
     
         player.setCurrentState({
             primary: "EXPLORING",
@@ -75,7 +77,7 @@ class _Explore {
 
         const enemie = Enemie.instantiateRandomEnemie(player)
         const enemieName = enemie.getName()
-        const battle = Battle.startBattle(player, enemie)
+        const battle = Battle.initializeBattle(player, enemie)
         const turn = battle.getTurn()
 
         let advantageMessage = ""
@@ -87,6 +89,32 @@ class _Explore {
         const message = `Você encontrou um ${enemieName} ${advantageMessage}`
         
         SendMessage_UI.battle(battle, message)
+    }
+
+    public static to_CurrentBattle(player: Player) {
+
+        const battle = Battle.getBattleByName(player.getName())
+
+        player.setCurrentState({
+            primary: "EXPLORING",
+            secondary: "BATTLE"
+        })
+
+        const message = `Você voltou ao menu de batalha`
+        
+        SendMessage_UI.battle(battle, message)
+    }
+
+    public static to_HabilitiesMenu(player: Player) {
+
+        player.setCurrentState({
+            primary: "EXPLORING",
+            secondary: "BATTLE_HABILITIES"
+        })
+
+        SendMessage_UI.battle_habilities(player, `
+            Escolha uma habilidade
+        `)
     }
 }
 

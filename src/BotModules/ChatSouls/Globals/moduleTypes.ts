@@ -1,12 +1,19 @@
 import Player from "../Classes/EntityChilds/Player.js"
+import { AREA_MAPS_ARRAY } from "./ENTRIES/AREA_MAPS_ENTRY.js"
+import { ATTRIBUTES_ARRAY } from "./ENTRIES/ATTRIBUTES_ENTRY.js"
+import { BUFFY_TYPES_ARRAY } from "./ENTRIES/BUFF_TYPES_ENTRY.js"
+import { TEST_AREA_ENEMIES_ARRAY, THE_WOODS_ENEMIES_ARRAY } from "./ENTRIES/ENEMIES_ENTRY.js"
 import {
     BODY_ARMOR_ARRAY,
     BOOTS_ARRAY,
     EQUIPMENT_TYPES_ARRAY,
+    GENERIC_EQUIPMENTS_ARRAY,
     GLOVES_ARRAY,
     HELMET_ARRAY,
     LONG_RANGE_ARRAY, MELEE_ARRAY
-} from "./EQUIPMENTS_ENTRY.js"
+} from "./ENTRIES/EQUIPMENTS_ENTRY.js"
+import { BODY_ARMOR_HABILITIES_ARRAY, BOOTS_HABILITIES_ARRAY, GLOVES_HABILITIES_ARRAY, HELMET_HABILITIES_ARRAY, LONG_RANGE_HABILITIES_ARRAY, MELEE_HABILITIES_ARRAY } from "./ENTRIES/HABILITIES_ENTRY.js"
+import { EQUIPMENTS_MENU_STATES_ARRAY, EQUIPMENT_INVENTORY_STATES_ARRAY, EXPLORING_STATES_ARRAY, FIRE_PIT_STATES_ARRAY } from "./ENTRIES/SECONDARY_STATES_ENTRY.js"
 
 //=============================================================================================
 // UI PAYLOAD TYPE ============================================================================
@@ -50,37 +57,6 @@ export type CS_DataBase_Gloves = Record<CS_Catalog_Gloves, CS_GlovesData>
 export type CS_DataBase_Boots = Record<CS_Catalog_Boots, CS_BootsData>
 
 //=============================================================================================
-// ENTITY TYPES ===============================================================================
-//=============================================================================================
-
-export type CS_PlayerState = {
-    primary: "FIRE_PIT",
-    secondary: (
-        CS_SecondaryState_FIRE_PIT | 
-        CS_SecondaryState_EQUIPMENTS_MENU | 
-        CS_SecondaryStates_EQUIPMENT_INVENTORY | 
-        CS_SecondaryState_EQUIPMENTS_MENU
-    )
-} | {
-    primary: "EXPLORING",
-    secondary: (
-        CS_SecondaryState_EXPLORING | 
-        CS_SecondaryState_EQUIPMENTS_MENU | 
-        CS_SecondaryStates_EQUIPMENT_INVENTORY | 
-        CS_SecondaryState_EQUIPMENTS_MENU
-    )
-}
-
-export type CS_EntityData = {
-    name: string,
-    souls: number,
-    level: number,
-    attributes: CS_Attributes,
-    equipment: CS_Equipments,
-    inventory: CS_Inventory
-}
-
-//=============================================================================================
 // INVENTORY TYPES ============================================================================
 //=============================================================================================
 
@@ -105,6 +81,15 @@ export type CS_Inventory_Equipments = {
     bodyArmor: CS_BodyArmorInventory_Object,
     gloves: CS_GlovesInventory_Object,
     boots: CS_BootsInventory_Object,
+}
+
+export type CS_HabilitiesSlots = {
+    longRangeWeapon: CS_HabilitieData_LongRange,
+    meleeWeapon: CS_HabilitieData_Melee,
+    helmet: CS_HabilitieData_Helmet,
+    bodyArmor: CS_HabilitieData_BodyArmor,
+    gloves: CS_HabilitieData_Gloves,
+    boots: CS_HabilitieData_Boots
 }
 
 export type CS_EquipmentInventory_Object = (
@@ -152,6 +137,16 @@ export type CS_Inventory_Resources = Record<string, CS_ResourceData>
 // DATA TYPES =================================================================================
 //=============================================================================================
 
+export type CS_EntityData = {
+    name: string,
+    souls: number,
+    level: number,
+    attributes: CS_Attributes,
+    equipment: CS_Equipments,
+    habilities: CS_HabilitiesSlots,
+    inventory: CS_Inventory
+}
+
 export type CS_Attributes = {
     vitality: number,
     agility: number,
@@ -159,13 +154,46 @@ export type CS_Attributes = {
     intelligence: number
 }
 
+export type CS_Weapon_Multipliers = {
+
+    agility: number,
+    strenght: number,
+    fireDamage: number,
+    iceDamage: number,
+    thunderDamage: number,
+    poisonDamage: number
+}
+
+export type CS_Armor_Multipliers = {
+
+    agility: number,
+    vitality: number,
+    strenght: number,
+    mana: number,
+    fireDefense: number,
+    iceDefense: number,
+    thunderDefense: number,
+    poisonDefense: number
+}
+
 export type CS_Stats = {
+    
     hp: number,
+    mana: number,
     evasion: number,
+    accuracy: number,
+
     fisicalDamage: number,
+    fireDamage: number,
+    iceDamage: number,
+    thunderDamage: number,
+    poisonDamage: number,
+
     fisicalDefense: number,
-    magicalDamage: number,
-    magicalDefense: number
+    fireDefense: number,
+    iceDefense: number,
+    thunderDefense: number,
+    poisonDefense: number
 }
 
 export type CS_EquipmentData = (
@@ -207,6 +235,51 @@ export type CS_BootsData = {
     type: "boots"
 }
 
+export type CS_HabilitieData = (
+    CS_HabilitieData_LongRange |
+    CS_HabilitieData_Melee |
+    CS_HabilitieData_Helmet |
+    CS_HabilitieData_BodyArmor |
+    CS_HabilitieData_Gloves |
+    CS_HabilitieData_Boots
+)
+
+export type CS_HabilitieData_LongRange = {
+    name: CS_Catalog_Habilities_LongRange,
+    type: "longRangeWeapon",
+    rank: number
+}
+
+export type CS_HabilitieData_Melee = {
+    name: CS_Catalog_Habilities_Melee,
+    type: "meleeWeapon",
+    rank: number
+}
+
+export type CS_HabilitieData_Helmet = {
+    name: CS_Catalog_Habilities_Helmet,
+    type: "helmet",
+    rank: number
+}
+
+export type CS_HabilitieData_BodyArmor = {
+    name: CS_Catalog_Habilities_BodyArmor,
+    type: "bodyArmor",
+    rank: number
+}
+
+export type CS_HabilitieData_Gloves = {
+    name: CS_Catalog_Habilities_Gloves,
+    type: "gloves",
+    rank: number
+}
+
+export type CS_HabilitieData_Boots = {
+    name: CS_Catalog_Habilities_Boots,
+    type: "boots",
+    rank: number
+}
+
 export type CS_ResourceData = {
     name: string,
     amount: number
@@ -215,73 +288,70 @@ export type CS_ResourceData = {
     dropChance?: number
 }
 
+export type CS_BuffData = {
+    name: CS_Catalog_Habilities,
+    type: CS_BuffTypes,
+    buffStats: CS_Stats,
+    turns: number,
+}
+
 //=============================================================================================
 // TYPES ======================================================================================
 //=============================================================================================
 
 export type CS_EquipmentTypes = typeof EQUIPMENT_TYPES_ARRAY[number]
-export type CS_AttributeTypes = (
-    "vitality"                      |
-    "agility"                       |
-    "strenght"                      |
-    "intelligence"
-)
-export type CS_Stats_Types = (
-    "hp"                        |
-    "evasion"                   |
-    "fisicalDamage"             |
-    "fisicalDefense"            |
-    "magicalDamage"             |
-    "magicalDefense"
-)
+export type CS_AttributeTypes = typeof ATTRIBUTES_ARRAY[number]
+export type CS_BuffTypes = typeof BUFFY_TYPES_ARRAY[number]
 
 //=============================================================================================
 // STATES =====================================================================================
 //=============================================================================================
 
-export type CS_SecondaryState_EXPLORING = (
-    "IDLE" | "BATTLE" | "FORAGING" | "TRAVEL" | "EQUIPMENT"  
-)
+export type CS_PlayerState = {
+    primary: "FIRE_PIT",
+    secondary: (
+        CS_SecondaryState_FIRE_PIT |  
+        CS_SecondaryStates_EQUIPMENT_INVENTORY | 
+        CS_SecondaryState_EQUIPMENTS_MENU
+    )
+} | {
+    primary: "EXPLORING",
+    secondary: (
+        CS_SecondaryState_EXPLORING | 
+        CS_SecondaryStates_EQUIPMENT_INVENTORY | 
+        CS_SecondaryState_EQUIPMENTS_MENU
+    )
+}
 
-export type CS_SecondaryState_FIRE_PIT = (
-    "RESTING_ON_FIRE_PIT" | "STATS_MENU" | "ATRIBUTE_UPGRADE" | "EQUIPMENT"    
-)
-
-export type CS_SecondaryState_EQUIPMENTS_MENU =  (
-    "longRangeWeapon menu"                      |
-    "meleeWeapon menu"                          |
-    "helmet menu"                               |
-    "bodyArmor menu"                            |
-    "gloves menu"                               |
-    "boots menu"
-)
-
-export type CS_SecondaryStates_EQUIPMENT_INVENTORY = (
-    "longRangeWeapon inventory"                         |
-    "meleeWeapon inventory"                             |
-    "helmet inventory"                                  |
-    "bodyArmor inventory"                               |
-    "gloves inventory"                                  |
-    "boots inventory"
-)
+export type CS_SecondaryState_EXPLORING = typeof EXPLORING_STATES_ARRAY[number]
+export type CS_SecondaryState_FIRE_PIT = typeof FIRE_PIT_STATES_ARRAY[number]
+export type CS_SecondaryState_EQUIPMENTS_MENU = typeof EQUIPMENTS_MENU_STATES_ARRAY[number]
+export type CS_SecondaryStates_EQUIPMENT_INVENTORY = typeof EQUIPMENT_INVENTORY_STATES_ARRAY[number]
 
 //=============================================================================================
 // CATALOGS ===================================================================================
 //=============================================================================================
 
-export type CS_Catalog_MapAreas = "testArea" | "theWoods"
+export type CS_Catalog_MapAreas = typeof AREA_MAPS_ARRAY[number]
+export type CS_Catalog_TheWoods_Enemies = typeof THE_WOODS_ENEMIES_ARRAY[number]
+export type CS_Catalog_TestArea_Enemies = typeof TEST_AREA_ENEMIES_ARRAY[number]
 
-export type CS_Catalog_TheWoods_Enemies = (
-    "Javali" | "Bandido" | "Lobo" | "Esqueleto"
+export type CS_Catalog_Habilities = (
+    CS_Catalog_Habilities_LongRange |
+    CS_Catalog_Habilities_Melee |
+    CS_Catalog_Habilities_Helmet |
+    CS_Catalog_Habilities_BodyArmor |
+    CS_Catalog_Habilities_Gloves |
+    CS_Catalog_Habilities_Boots
 )
-export type CS_Catalog_TestArea_Enemies = (
-    "Dummy Enemie"
-)
+export type CS_Catalog_Habilities_LongRange = typeof LONG_RANGE_HABILITIES_ARRAY[number]
+export type CS_Catalog_Habilities_Melee = typeof MELEE_HABILITIES_ARRAY[number]
+export type CS_Catalog_Habilities_Helmet = typeof HELMET_HABILITIES_ARRAY[number]
+export type CS_Catalog_Habilities_BodyArmor = typeof BODY_ARMOR_HABILITIES_ARRAY[number]
+export type CS_Catalog_Habilities_Gloves = typeof GLOVES_HABILITIES_ARRAY[number]
+export type CS_Catalog_Habilities_Boots = typeof BOOTS_HABILITIES_ARRAY[number]
 
-export type CS_Catalog_GenericEquips = (
-    "Dummy Equipment" | "Empty"
-)
-
+export type CS_Catalog_GenericEquips = typeof GENERIC_EQUIPMENTS_ARRAY[number]
 export type CS_Catalog_LongRange = typeof LONG_RANGE_ARRAY[number]
 export type CS_Catalog_Melee     = typeof MELEE_ARRAY[number]
 export type CS_Catalog_Helmet    = typeof HELMET_ARRAY[number]

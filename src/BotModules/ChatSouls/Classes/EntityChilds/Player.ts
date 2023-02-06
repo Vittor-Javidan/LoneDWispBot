@@ -1,6 +1,6 @@
 import CS_DbSystem from "../../database/CS_DbSystem.js"
+import { PLAYER_DEFAULT } from "../../Globals/DEFAULT_VALUES/PLAYER_DEFAULT.js"
 import { CS_AttributeTypes, CS_Catalog_MapAreas, CS_PlayerState } from "../../Globals/moduleTypes.js"
-import { PLAYER_DEFAULT } from "../../Globals/PLAYER_DEFAULT.js"
 import Entity from "../Entity.js"
 
 export default class Player extends Entity {
@@ -84,16 +84,18 @@ export default class Player extends Entity {
 
     static startGame(userName: string): Player {
 
-        const playerInstance = new Player(userName)
+        const player = new Player(userName)
 
-        this.registerPlayer(playerInstance)
-        this.loginPlayerInstance(playerInstance)
+        this.registerPlayer(player)
+        this.loginPlayerInstance(player)
 
-        playerInstance.load()
-        playerInstance.calculateStats()
-        playerInstance.recoverHP()
+        player.load()
+        player.calculateBaseStats()
+        player.calculateStatsFromEquips()
+        player.recoverHP("maxHP")
+        player.recoverMana()
 
-        return playerInstance
+        return player
     }
 
     static isLogged(userName: string): boolean {
@@ -160,6 +162,7 @@ export default class Player extends Entity {
         this.setlevel(playerSavedData.level)
         this.setAttributes(playerSavedData.attributes)
         this.setAllCurrentEquipments(playerSavedData.equipment)
+        this.setCurrentHabilities(playerSavedData.habilities)
         this.setInventory(playerSavedData.inventory)
     }
 
@@ -172,7 +175,8 @@ export default class Player extends Entity {
             level:      this.getlevel(),
             attributes: this.getAttributes(),
             equipment:  this.getAllCurrentEquipments(),
-            inventory:  this.getInventory()
+            inventory:  this.getInventory(),
+            habilities: this.getCurrentHabilities()
         }, playerName)
     }
 
@@ -187,8 +191,9 @@ export default class Player extends Entity {
         this.decreaseSouls(upgradeCost)
         this.addAttributes(attributeType)
         this.addLevel()
-        this.calculateStats()
-        this.recoverHP()
+        this.calculateBaseStats()
+        this.calculateStatsFromEquips()
+        this.recoverHP("maxHP")
         this.save()
     }
 

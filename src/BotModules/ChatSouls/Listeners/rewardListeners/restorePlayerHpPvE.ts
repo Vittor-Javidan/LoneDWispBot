@@ -47,7 +47,7 @@ function lalauCurseMuahaha(player: Player, userName: string): void {
 
 function recoverPlayerHP(player: Player, targetPlayer: string, userName: string) {
 
-    player.recoverHP()
+    player.recoverHP("maxHP")
     sendMessage(`/w ${targetPlayer} ${userName} acabou de restaurar sua vida!!!`)
     sendMessage(`${userName} restaurou a vida de ${targetPlayer} durante sua batalha :/`)
 }
