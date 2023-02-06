@@ -44,7 +44,7 @@ export default class Habilities {
             rawDamage = 0
         }
 
-        const effectiveDamage = CS_Math.returnEffectiveDamage(rawDamage, CS_Math.getLuckNumber())
+        const effectiveDamage = CS_Math.returnEffectiveDamage(rawDamage)
 
         caster instanceof Player
         ? battle.logBattleHistory(`${Emote._SirUwU_} ${Emote._StinkyGlitch_} Sua abilidade "Disparo de Fogo" acertou causando ${effectiveDamage}!!`)
@@ -80,7 +80,7 @@ export default class Habilities {
             rawDamage = 0
         }
 
-        const effectiveDamage = CS_Math.returnEffectiveDamage(rawDamage, CS_Math.getLuckNumber())
+        const effectiveDamage = CS_Math.returnEffectiveDamage(rawDamage)
 
         caster instanceof Player
         ? battle.logBattleHistory(`${Emote._SirUwU_} ${Emote._bleedPurple_} Sua abilidade "Podridão" acertou causando ${effectiveDamage}!!`)

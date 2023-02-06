@@ -1,6 +1,6 @@
 import Emote from '../../../Twitch/Emotes.js';
 import sendMessage from '../../../Twitch/sendMessageHandler.js';
-import { CS_Catalog_Habilities, CS_ResourceData } from '../Globals/moduleTypes.js';
+import { CS_BuffData, CS_Catalog_Habilities, CS_ResourceData } from '../Globals/moduleTypes.js';
 import CS_Math from './CS_Math.js';
 import Entity from './Entity.js';
 import Enemie from './EntityChilds/Enemie.js';
@@ -50,17 +50,21 @@ export default class Battle {
 
         if(this._turn === PLAYER_TURN) {
             
-            this.buffRound(enemie)
-            this.buffRound(player)
+            this.buffRound(enemie, "Usage")
+            this.buffRound(player, "Usage")
             this.playerRound(attackType)
             this.enemieRound()
+            this.buffRound(enemie, "Charge Consumption")
+            this.buffRound(player, "Charge Consumption")
             
         } else {
             
-            this.buffRound(player)
-            this.buffRound(enemie)
+            this.buffRound(player, "Usage")
+            this.buffRound(enemie, "Usage")
             this.enemieRound()
             this.playerRound(attackType)
+            this.buffRound(enemie, "Charge Consumption")
+            this.buffRound(player, "Charge Consumption")
         }
 
         this.sendMessageAndStateChange()
@@ -282,43 +286,58 @@ export default class Battle {
         this.checkDeath(player)
     }
 
-    private buffRound(entity: Entity) {
+    private buffRound(entity: Entity, mode: "Usage" | "Charge Consumption"): void {
 
-        const entityBuffs = entity.getBuffs()
+        const entityBuffsArray = Object.values(entity.getBuffs())
 
-        for(const buffName in entityBuffs) {
+        if(mode === "Usage") {
+            entityBuffsArray.forEach(buff => {
+                this.useBuffs(buff, entity)
+            })
+            return
+        }
 
-            const buff = entityBuffs[buffName]
-
-            if(buff.type === 'Damage') {
-                
-                const enemieDefenses = CS_Math.sumStatsObjects([entity.getBaseStats(), entity.getArmorStats()])
-                const rawDamage = CS_Math.rawDamageReceived(buff.buffStats, enemieDefenses)
-                const effectiverDamage = CS_Math.returnEffectiveDamage(rawDamage, CS_Math.getLuckNumber())
-                
-                entity.inflictDamage(effectiverDamage)
-
-                entity instanceof Player
-                ? this.logBattleHistory(`${Emote._SMOrc_} ${Emote._bleedPurple_} ${this.getEnemie().getName()} sofreu ${effectiverDamage} de dano para ${buff.name}.`)
-                : this.logBattleHistory(`${Emote._SirMad_} ${Emote._bleedPurple_} Você sofreu ${effectiverDamage} de dano para ${buff.name}.`)
-
-                this.checkDeath(entity)
-            }
-
-            buff.turns -= 1
-            
-            if(buff.turns <= 0) {
-                entity.deleteBuff(buffName as CS_Catalog_Habilities)
-
-                entity instanceof Player
-                ? this.logBattleHistory(`${Emote._SirPrise_} ${Emote._Jebaited_} ${buff.name} Expirou.`)
-                : this.logBattleHistory(`${Emote._SMOrc_} ${Emote._Jebaited_} ${buff.name} Expirou.`)
-
-                entity.calculateStatsFromBuffs()
-            }
+        if(mode === "Charge Consumption") {
+            entityBuffsArray.forEach(buff => {
+                this.consumeBuffs(buff, entity)
+            })
+            return
         }
     }
     
+    private useBuffs(buff: CS_BuffData, entity: Entity): void {
+
+        if(buff.type === 'Damage') {
+            
+            const effectiverDamage = CS_Math.returnEffectiveDamage(
+                CS_Math.buffRawDamageCalculation(entity, buff)
+            )
+            
+            entity.inflictDamage(effectiverDamage)
+
+            entity instanceof Player
+            ? this.logBattleHistory(`${Emote._SMOrc_} ${Emote._bleedPurple_} ${this.getEnemie().getName()} sofreu ${effectiverDamage} de dano para ${buff.name}.`)
+            : this.logBattleHistory(`${Emote._SirMad_} ${Emote._bleedPurple_} Você sofreu ${effectiverDamage} de dano para ${buff.name}.`)
+
+            this.checkDeath(entity)
+        }
+    }
+
+    private consumeBuffs(buff: CS_BuffData, entity: Entity): void {
+
+        buff.turns -= 1
+            
+        if(buff.turns > 0) {
+            return
+        }
+        
+        entity instanceof Player
+        ? this.logBattleHistory(`${Emote._SirPrise_} ${Emote._Jebaited_} ${buff.name} Expirou.`)
+        : this.logBattleHistory(`${Emote._SMOrc_} ${Emote._Jebaited_} ${buff.name} Expirou.`)
+        
+        entity.deleteBuff(buff.name)
+        entity.calculateStatsFromBuffs()
+    }
 
     private attackAttempt(options: {
         attacker: Entity, 

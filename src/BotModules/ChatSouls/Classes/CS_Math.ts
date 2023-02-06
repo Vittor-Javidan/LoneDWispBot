@@ -1,6 +1,6 @@
 import { ENTITY_DEFAULT } from "../Globals/DEFAULT_VALUES/ENTITY_DEFAULT.js"
 import { GAME_BALANCE } from "../Globals/GAME_BALANCE.js"
-import { CS_Armor_Multipliers, CS_EquipmentTypes, CS_Stats, CS_Weapon_Multipliers } from "../Globals/moduleTypes.js"
+import { CS_Armor_Multipliers, CS_BuffData, CS_EquipmentTypes, CS_Stats, CS_Weapon_Multipliers } from "../Globals/moduleTypes.js"
 import Entity from "./Entity.js"
 import Armor from "./Equipments/Armor.js"
 import BodyArmor from "./Equipments/BodyArmor.js"
@@ -89,7 +89,15 @@ export default class CS_Math {
         return Math.floor(totalRawDamage)
     }
 
-    public static returnEffectiveDamage(damageValue: number, luck: number): number {
+    public static buffRawDamageCalculation(entity: Entity, buff: CS_BuffData): number {
+        
+        const entityDefenses = this.sumStatsObjects([entity.getBaseStats(), entity.getArmorStats()])
+        return this.rawDamageReceived(buff.buffStats, entityDefenses)
+    }
+
+    public static returnEffectiveDamage(damageValue: number): number {
+
+        const luck = this.getLuckNumber()
 
         if(damageValue < 0) {
             throw Error(`ERROR: damageValue must be a valid and positive number`)
