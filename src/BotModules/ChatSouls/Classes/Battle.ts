@@ -167,10 +167,10 @@ export default class Battle {
     //=================================================================================================
 
     private determineFirstTurn(): void {
-        CS_Math.evasionEventSucced({
+        CS_Math.agilityEventSucced({
             from: this._player, 
             against: this._enemie, 
-            evasionWeight: 1
+            accuracyWeight: 1
         }) ? this._turn = PLAYER_TURN : this._turn = ENEMIE_TURN
     }
 
@@ -356,17 +356,19 @@ export default class Battle {
         }
     
         //When a weapon attack is choosed
-        if(CS_Math.evasionEventSucced({
-            from: target,
-            against: attacker,
-            evasionWeight: config.ATTACK.EVASION_WEIGHT
+        if(CS_Math.agilityEventSucced({
+            from: attacker,
+            against: target,
+            accuracyWeight: config.ATTACK.EVASION_WEIGHT
         })) {
-            attacker instanceof Player
-            ? this.logBattleHistory(`${Emote._SirPrise_} ${Emote._SirSad_} Você errou seu ataque!`)
-            : this.logBattleHistory(`${Emote._SirPrise_} ${Emote._SirUwU_} Você conseguiu se esquivar!`)
+            this.causeDamage(attacker, target, attackType)
             return
         }
-        this.causeDamage(attacker, target, attackType)
+
+        //Attack miss
+        attacker instanceof Player
+        ? this.logBattleHistory(`${Emote._SirPrise_} ${Emote._SirSad_} Você errou seu ataque!`)
+        : this.logBattleHistory(`${Emote._SirPrise_} ${Emote._SirUwU_} Você conseguiu se esquivar!`)
     }
 
     private fleeAttempt(coward: Entity) {
@@ -377,26 +379,27 @@ export default class Battle {
         ? bully = this.getEnemie()
         : bully = this.getPlayer()
 
-        if(CS_Math.evasionEventSucced({
-            from: coward,
-            against: bully,
-            evasionWeight: 1.5
+        if(CS_Math.agilityEventSucced({
+            from: bully,
+            against: coward,
+            accuracyWeight: 0.75
         })) {
-
-            if(coward instanceof Player) {
-                this.logBattleHistory(`${Emote._SirUwU_} Você conseguiu fugir com sucesso!`)
-                this._playerFleed = true
-                return
-            }
             
-            this.logBattleHistory(`${Emote._SMOrc_} ${coward.getName()} Fugiu da batalha!`)
-            this._enemieFleed = true
+            coward instanceof Player
+            ? this.logBattleHistory(`${Emote._SirSad_} Sua fuga falhou!`)
+            : this.logBattleHistory(`${Emote._SMOrc_} ${coward.getName()} tentou fugir e falhou!`)
             return
         }
-
-        coward instanceof Player
-        ? this.logBattleHistory(`${Emote._SirSad_} Sua fuga falhou!`)
-        : this.logBattleHistory(`${Emote._SMOrc_} ${coward.getName()} tentou fugir e falhou!`)
+        
+        if(coward instanceof Player) {
+            this.logBattleHistory(`${Emote._SirUwU_} Você conseguiu fugir com sucesso!`)
+            this._playerFleed = true
+            return
+        }
+        
+        this.logBattleHistory(`${Emote._SMOrc_} ${coward.getName()} Fugiu da batalha!`)
+        this._enemieFleed = true
+        return
     }
 
     private checkDeath(entity: Entity): void {
@@ -442,6 +445,7 @@ export default class Battle {
             return
         }
         
+        this.getPlayer().deletAllBuffs()
         Battle.deleteBattle(this._player.getName())
     }
 

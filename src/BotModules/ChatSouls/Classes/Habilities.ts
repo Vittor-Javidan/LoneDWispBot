@@ -21,72 +21,72 @@ export default class Habilities {
         
         const { caster, target, battle } = config
 
-        if(CS_Math.evasionEventSucced({
+        if(CS_Math.agilityEventSucced({
             from: caster,
             against: target,
-            evasionWeight: 0.75
+            accuracyWeight: 1.25
         })) {
 
+            const HABILITIE_POWER = 20
+            const fireDamage = caster.getAttributes().intelligence * HABILITIE_POWER
+            const targetFireDefense = target.getBaseStats().fireDefense + target.getArmorStats().fireDefense
+            
+            let rawDamage = fireDamage - targetFireDefense
+            
+            if(rawDamage < 0) {
+                rawDamage = 0
+            }
+    
+            const effectiveDamage = CS_Math.returnEffectiveDamage(rawDamage)
+    
             caster instanceof Player
-            ? battle.logBattleHistory(`${Emote._SirMad_} ${Emote._SirSad_} Sua abilidade "Disparo de Fogo" Falhou!!`)
-            : battle.logBattleHistory(`${Emote._SirPrise_} ${Emote._StinkyGlitch_} Você esquivou de um "Disparo de Fogo"!!`)
+            ? battle.logBattleHistory(`${Emote._SirUwU_} ${Emote._StinkyGlitch_} Sua abilidade "Disparo de Fogo" acertou causando ${effectiveDamage}!!`)
+            : battle.logBattleHistory(`${Emote._SirMad_} ${Emote._StinkyGlitch_} Você sofreu ${effectiveDamage} de dano da habilidade "Disparo de Fogo"!!`)
+    
+            target.inflictDamage(effectiveDamage)
+            
             return
         }
-
         
-        const HABILITIE_POWER = 20
-        const fireDamage = caster.getAttributes().intelligence * HABILITIE_POWER
-        const targetFireDefense = target.getBaseStats().fireDefense + target.getArmorStats().fireDefense
-        
-        let rawDamage = fireDamage - targetFireDefense
-        
-        if(rawDamage < 0) {
-            rawDamage = 0
-        }
-
-        const effectiveDamage = CS_Math.returnEffectiveDamage(rawDamage)
-
         caster instanceof Player
-        ? battle.logBattleHistory(`${Emote._SirUwU_} ${Emote._StinkyGlitch_} Sua abilidade "Disparo de Fogo" acertou causando ${effectiveDamage}!!`)
-        : battle.logBattleHistory(`${Emote._SirMad_} ${Emote._StinkyGlitch_} Você sofreu ${effectiveDamage} de dano da habilidade "Disparo de Fogo"!!`)
-
-        target.inflictDamage(effectiveDamage)
+        ? battle.logBattleHistory(`${Emote._SirMad_} ${Emote._SirSad_} Sua abilidade "Disparo de Fogo" Falhou!!`)
+        : battle.logBattleHistory(`${Emote._SirPrise_} ${Emote._StinkyGlitch_} Você esquivou de um "Disparo de Fogo"!!`)
     }
 
     static podridao(config: Config): void {
 
         const { caster, target, battle } = config
 
-        if(CS_Math.evasionEventSucced({
+        if(CS_Math.agilityEventSucced({
             from: caster,
             against: target,
-            evasionWeight: 0.75
+            accuracyWeight: 1.25
         })) {
 
+            const HABILITIE_POWER = 20
+            const attackValue = caster.getAttributes().intelligence * HABILITIE_POWER
+            const targetDefense = target.getBaseStats().poisonDefense + target.getArmorStats().poisonDefense
+            
+            let rawDamage = attackValue - targetDefense
+    
+            if(rawDamage < 0) {
+                rawDamage = 0
+            }
+    
+            const effectiveDamage = CS_Math.returnEffectiveDamage(rawDamage)
+    
             caster instanceof Player
-            ? battle.logBattleHistory(`${Emote._SirMad_} ${Emote._bleedPurple_} Sua abilidade "Podridão" Falhou!!`)
-            : battle.logBattleHistory(`${Emote._SirPrise_} ${Emote._bleedPurple_} Você esquivou de uma ""Podridão""!!`)
-
+            ? battle.logBattleHistory(`${Emote._SirUwU_} ${Emote._bleedPurple_} Sua abilidade "Podridão" acertou causando ${effectiveDamage}!!`)
+            : battle.logBattleHistory(`${Emote._SirMad_} ${Emote._bleedPurple_} Você sofreu ${effectiveDamage} de dano da habilidade "Podridão"!!`)
+    
+            target.inflictDamage(effectiveDamage)
+            
             return
         }
-
-        const HABILITIE_POWER = 20
-        const attackValue = caster.getAttributes().intelligence * HABILITIE_POWER
-        const targetDefense = target.getBaseStats().poisonDefense + target.getArmorStats().poisonDefense
         
-        let rawDamage = attackValue - targetDefense
-
-        if(rawDamage < 0) {
-            rawDamage = 0
-        }
-
-        const effectiveDamage = CS_Math.returnEffectiveDamage(rawDamage)
-
         caster instanceof Player
-        ? battle.logBattleHistory(`${Emote._SirUwU_} ${Emote._bleedPurple_} Sua abilidade "Podridão" acertou causando ${effectiveDamage}!!`)
-        : battle.logBattleHistory(`${Emote._SirMad_} ${Emote._bleedPurple_} Você sofreu ${effectiveDamage} de dano da habilidade "Podridão"!!`)
-
-        target.inflictDamage(effectiveDamage)
+        ? battle.logBattleHistory(`${Emote._SirMad_} ${Emote._bleedPurple_} Sua abilidade "Podridão" Falhou!!`)
+        : battle.logBattleHistory(`${Emote._SirPrise_} ${Emote._bleedPurple_} Você esquivou de uma ""Podridão""!!`)
     }
 
     static precisao(config: Config): void {
@@ -123,6 +123,8 @@ export default class Habilities {
         caster instanceof Player
         ? battle.logBattleHistory(`${Emote._SirUwU_} ${Emote._PowerUpL_} ${Emote._PowerUpR_} Você usou "Precisão"!!`)
         : battle.logBattleHistory(`${Emote._SMOrc_} ${Emote._PowerUpL_} ${Emote._PowerUpR_} ${caster.getName()} usou "Precisão"!!`)
+
+        caster.calculateStatsFromBuffs()
     }
 
     static adrenalina(config: Config): void {
@@ -168,6 +170,8 @@ export default class Habilities {
         caster instanceof Player
         ? battle.logBattleHistory(`${Emote._SirUwU_} ${Emote._PowerUpL_} Você usou "Adrenalina" ${Emote._PowerUpR_} !!`)
         : battle.logBattleHistory(`${Emote._SMOrc_} ${Emote._PowerUpL_} ${caster.getName()} usou "Adrenalina" ${Emote._PowerUpR_} !!`)
+
+        caster.calculateStatsFromBuffs()
     }
 
     static reflexoFelino(config: Config): void {
@@ -204,6 +208,8 @@ export default class Habilities {
         caster instanceof Player
         ? battle.logBattleHistory(`${Emote._SirUwU_} ${Emote._PowerUpL_} Você usou "Reflexo Felino" ${Emote._PowerUpR_} !!`)
         : battle.logBattleHistory(`${Emote._SMOrc_} ${Emote._PowerUpL_} ${caster.getName()} usou "Reflexo Felino" ${Emote._PowerUpR_} !!`)
+
+        caster.calculateStatsFromBuffs()
     }
 
     static peleDeFerro(config: Config): void {
@@ -240,6 +246,8 @@ export default class Habilities {
         caster instanceof Player
         ? battle.logBattleHistory(`${Emote._SirUwU_} ${Emote._PowerUpL_} Você usou "Pele de Ferro" ${Emote._PowerUpR_} !!`)
         : battle.logBattleHistory(`${Emote._SMOrc_} ${Emote._PowerUpL_} ${caster.getName()} usou "Pele de Ferro" ${Emote._PowerUpR_} !!`)
+
+        caster.calculateStatsFromBuffs()
     }
 
     static primeirosSocorros(config: Config): void {

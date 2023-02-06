@@ -17,31 +17,29 @@ export default class CS_Math {
         return Math.floor((Math.random() * 6) + 1)
     }
 
-    public static evasionEventSucced(o: {
+    public static agilityEventSucced(o: {
         from: Entity,
         against: Entity,
-        evasionWeight: number
+        accuracyWeight: number
     }): boolean {
 
-        const NOT_ZERO = 100 // Easy value to unit test
-        const { from, against, evasionWeight } = o
+        const NOT_ZERO = 1
+        const { from, against, accuracyWeight: evasionWeight } = o
 
-        const accuracy = from.getBaseStats().accuracy + from.getArmorStats().accuracy
-        const evasion = against.getBaseStats().evasion + against.getArmorStats().evasion 
-
+        let accuracy = from.getBaseStats().accuracy + from.getArmorStats().accuracy + from.getBuffStats().accuracy
+        let evasion = against.getBaseStats().evasion + against.getArmorStats().evasion + against.getBuffStats().evasion
         let sumEvasionAccuracy = evasion + accuracy
 
-        if(sumEvasionAccuracy <= 0) {
+        if(accuracy < 0) accuracy = 0
+        if(evasion < 0) evasion = 0
+        if(evasion + accuracy <= 0) {
             sumEvasionAccuracy = NOT_ZERO
         }
 
-        const evasionChance = (evasion * evasionWeight) / (sumEvasionAccuracy)
-        const randomNumber = Math.random()
+        const hitChance = Math.floor((accuracy * evasionWeight) / (sumEvasionAccuracy) * 100) 
+        const hitRNG = Math.floor(Math.random() * 100)
 
-        if(evasionChance >= randomNumber) {
-            return true
-        }
-        return false
+        return hitRNG <= hitChance
     }
 
     public static rawDamage_Melee(attacker: Entity, defender:Entity): number {
@@ -227,19 +225,22 @@ export default class CS_Math {
 
     static buffStatsCalculation(entity: Entity) {
         
-        const entityBuffs = entity.getBuffs()
+        const entityBuffs = Object.values(entity.getBuffs())
         
         let newBuffStats = structuredClone(ENTITY_DEFAULT.EMPTY_STATS)
 
-        for(const buffName in entityBuffs) {
+        entityBuffs.forEach(buff => {
 
-            if(entityBuffs[buffName].type === 'Buff/Debuff') {
+            if(buff.type === 'Buff/Debuff') {
+                
                 newBuffStats = (CS_Math.sumStatsObjects([
                     newBuffStats, 
-                    entityBuffs[buffName].buffStats
+                    buff.buffStats
                 ]))
             }
-        }
+        }) 
+
+        entity.setBuffStats(newBuffStats)
     }
 
     static sumStatsObjects(statsArray: CS_Stats[]): CS_Stats {

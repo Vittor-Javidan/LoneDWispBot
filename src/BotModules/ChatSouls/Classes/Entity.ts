@@ -434,4 +434,8 @@ export default class Entity {
     deleteBuff(buffName: CS_Catalog_Habilities): void {
         delete this._buffs[buffName]
     }
+
+    deletAllBuffs(): void {
+        this._buffs = {}
+    }
 }
