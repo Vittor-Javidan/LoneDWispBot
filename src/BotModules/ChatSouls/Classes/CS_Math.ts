@@ -45,14 +45,14 @@ export default class CS_Math {
     public static rawDamage_Melee(attacker: Entity, defender:Entity): number {
         
         const offensiveStats = this.sumStatsObjects([attacker.getBaseStats(), attacker.getMeleeStats()]) 
-        const defensiveStats = this.sumStatsObjects([defender.getBaseStats(), defender.getArmorStats()])
+        const defensiveStats = this.sumStatsObjects([defender.getBaseStats(), defender.getArmorStats(), defender.getBuffStats()])
         return this.rawDamageReceived(offensiveStats, defensiveStats)
     }
 
     public static rawDamage_LongRange(attacker: Entity, defender:Entity): number {
 
         const offensiveStats = this.sumStatsObjects([attacker.getBaseStats(), attacker.getLongRangeStats()])
-        const defensiveStats = this.sumStatsObjects([defender.getBaseStats(), defender.getArmorStats()])
+        const defensiveStats = this.sumStatsObjects([defender.getBaseStats(), defender.getArmorStats(), defender.getBuffStats()])
         return this.rawDamageReceived(offensiveStats, defensiveStats)
     }
 
@@ -89,7 +89,7 @@ export default class CS_Math {
 
     public static buffRawDamageCalculation(entity: Entity, buff: CS_BuffData): number {
         
-        const entityDefenses = this.sumStatsObjects([entity.getBaseStats(), entity.getArmorStats()])
+        const entityDefenses = this.sumStatsObjects([entity.getBaseStats(), entity.getArmorStats(), entity.getBuffStats()])
         return this.rawDamageReceived(buff.buffStats, entityDefenses)
     }
 

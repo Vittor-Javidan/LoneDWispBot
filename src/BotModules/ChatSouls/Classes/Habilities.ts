@@ -44,7 +44,34 @@ export default class Habilities {
             : battle.logBattleHistory(`${Emote._SirMad_} ${Emote._StinkyGlitch_} Você sofreu ${effectiveDamage} de dano da habilidade "Disparo de Fogo"!!`)
     
             target.inflictDamage(effectiveDamage)
+
+            const fireTickDMG = Math.floor(rawDamage * 0.2)
+
+            caster.registerBuff({
+                name: "Disparo de Fogo",
+                type: "Damage",
+                turns: 3,
+                buffStats: {
+                    hp:             0,
+                    mana:           0,
+                    evasion:        0,
+                    accuracy:       0,
             
+                    fisicalDamage:  0,
+                    fireDamage:     fireTickDMG,
+                    iceDamage:      0,
+                    thunderDamage:  0,
+                    poisonDamage:   0,
+            
+                    fisicalDefense: 0,
+                    fireDefense:    0,
+                    iceDefense:     0,
+                    thunderDefense: 0,
+                    poisonDefense:  0
+                }
+            })
+            
+            caster.calculateStatsFromBuffs()
             return
         }
         
@@ -80,7 +107,34 @@ export default class Habilities {
             : battle.logBattleHistory(`${Emote._SirMad_} ${Emote._bleedPurple_} Você sofreu ${effectiveDamage} de dano da habilidade "Podridão"!!`)
     
             target.inflictDamage(effectiveDamage)
+
+            const poisonTickDMG = Math.floor(rawDamage * 0.2)
+
+            caster.registerBuff({
+                name: "Podridão",
+                type: "Damage",
+                turns: 3,
+                buffStats: {
+                    hp:             0,
+                    mana:           0,
+                    evasion:        0,
+                    accuracy:       0,
             
+                    fisicalDamage:  0,
+                    fireDamage:     0,
+                    iceDamage:      0,
+                    thunderDamage:  0,
+                    poisonDamage:   poisonTickDMG,
+            
+                    fisicalDefense: 0,
+                    fireDefense:    0,
+                    iceDefense:     0,
+                    thunderDefense: 0,
+                    poisonDefense:  0
+                }
+            })
+            
+            caster.calculateStatsFromBuffs()
             return
         }
         
