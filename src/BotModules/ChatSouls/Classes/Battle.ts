@@ -307,7 +307,7 @@ export default class Battle {
     
     private useBuffs(buff: CS_BuffData, entity: Entity): void {
 
-        if(buff.type === 'Damage') {
+        if(buff.type === 'Debuff/TickDamage') {
             
             const effectiverDamage = CS_Math.returnEffectiveDamage(
                 CS_Math.buffRawDamageCalculation(entity, buff)

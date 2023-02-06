@@ -49,7 +49,7 @@ export default class Habilities {
 
             caster.registerBuff({
                 name: "Disparo de Fogo",
-                type: "Damage",
+                type: "Debuff/TickDamage",
                 turns: 3,
                 buffStats: {
                     hp:             0,
@@ -71,7 +71,6 @@ export default class Habilities {
                 }
             })
             
-            caster.calculateStatsFromBuffs()
             return
         }
         
@@ -112,7 +111,7 @@ export default class Habilities {
 
             caster.registerBuff({
                 name: "Podridão",
-                type: "Damage",
+                type: "Debuff/TickDamage",
                 turns: 3,
                 buffStats: {
                     hp:             0,
@@ -134,7 +133,6 @@ export default class Habilities {
                 }
             })
             
-            caster.calculateStatsFromBuffs()
             return
         }
         
@@ -152,7 +150,7 @@ export default class Habilities {
 
         caster.registerBuff({
             name: "Precisão",
-            type: "Buff/Debuff",
+            type: "Buff/Enhacement",
             turns: 3,
             buffStats: {
                 hp:             0,
@@ -199,7 +197,7 @@ export default class Habilities {
 
         caster.registerBuff({
             name: "Adrenalina",
-            type: "Buff/Debuff",
+            type: "Buff/Enhacement",
             turns: 5,
             buffStats: {
                 hp:             0,
@@ -237,7 +235,7 @@ export default class Habilities {
 
         caster.registerBuff({
             name: "Reflexo Felino",
-            type: "Buff/Debuff",
+            type: "Buff/Enhacement",
             turns: 3,
             buffStats: {
                 hp:             0,
@@ -275,7 +273,7 @@ export default class Habilities {
 
         caster.registerBuff({
             name: "Pele de Ferro",
-            type: "Buff/Debuff",
+            type: "Buff/Enhacement",
             turns: 5,
             buffStats: {
                 hp:             0,

@@ -44,14 +44,14 @@ export default class CS_Math {
 
     public static rawDamage_Melee(attacker: Entity, defender:Entity): number {
         
-        const offensiveStats = this.sumStatsObjects([attacker.getBaseStats(), attacker.getMeleeStats()]) 
+        const offensiveStats = this.sumStatsObjects([attacker.getBaseStats(), attacker.getMeleeStats(), attacker.getBuffStats()]) 
         const defensiveStats = this.sumStatsObjects([defender.getBaseStats(), defender.getArmorStats(), defender.getBuffStats()])
         return this.rawDamageReceived(offensiveStats, defensiveStats)
     }
 
     public static rawDamage_LongRange(attacker: Entity, defender:Entity): number {
 
-        const offensiveStats = this.sumStatsObjects([attacker.getBaseStats(), attacker.getLongRangeStats()])
+        const offensiveStats = this.sumStatsObjects([attacker.getBaseStats(), attacker.getLongRangeStats(), attacker.getBuffStats()])
         const defensiveStats = this.sumStatsObjects([defender.getBaseStats(), defender.getArmorStats(), defender.getBuffStats()])
         return this.rawDamageReceived(offensiveStats, defensiveStats)
     }
@@ -231,7 +231,9 @@ export default class CS_Math {
 
         entityBuffs.forEach(buff => {
 
-            if(buff.type === 'Buff/Debuff') {
+            if(
+                buff.type === 'Buff/Enhacement'
+            ) {
                 
                 newBuffStats = (CS_Math.sumStatsObjects([
                     newBuffStats, 
