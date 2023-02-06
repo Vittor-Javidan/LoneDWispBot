@@ -19,7 +19,7 @@ export default function UI_Battle(data: CS_DataPayload): void {
     
 	switch (commandCode) {
 
-		case 0: battle.playerFleeScenario()			 			;break
+		case 0: battle.playerAction("Flee")			 			;break
 		case 1: battle.playerAction("Melee")					;break
 		case 2: battle.playerAction("LongRange") 				;break
 		case 3: Travel.to_HabilitiesMenu(player) 				;break

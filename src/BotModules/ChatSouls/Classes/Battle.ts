@@ -26,6 +26,8 @@ export default class Battle {
     private static _battlesList: Record<string, Battle> = {}
     private _player: Player
     private _enemie: Enemie
+    private _playerFleed: boolean = false
+    private _enemieFleed: boolean = false
     
     private _turn: 1 | 2 | undefined = undefined
     private _earnedResources: CS_ResourceData[] = []
@@ -41,7 +43,7 @@ export default class Battle {
     // PUBLIC METHODS =================================================================================
     //=================================================================================================
 
-    public playerAction(attackType: "Melee" | "LongRange" | CS_Catalog_Habilities) {
+    public playerAction(attackType: "Flee" | "Melee" | "LongRange" | CS_Catalog_Habilities) {
 
         const player = this.getPlayer()
         const enemie = this.getEnemie()
@@ -61,30 +63,6 @@ export default class Battle {
             this.playerRound(attackType)
         }
 
-        this.sendMessageAndStateChange()
-    }
-
-    public playerFleeScenario() {
-
-        const player = this.getPlayer()
-        const enemie = this.getEnemie()
-
-        if(CS_Math.evasionEventSucced({
-            from: player,
-            against: enemie,
-            evasionWeight: 1.5
-        })) {
-            this.logBattleHistory(`${Emote._SirUwU_} Você conseguiu fugir com sucesso!`)
-            Battle.deleteBattle(player.getName())
-            Travel.to_Explore(player, this.buildLogMessage())
-            return
-        }
-        this.logBattleHistory(`${Emote._SirSad_} Sua fuga falhou!`)
-
-        this.buffRound(player)
-        this.buffRound(enemie)
-        this.enemieRound()
-        
         this.sendMessageAndStateChange()
     }
 
@@ -253,12 +231,17 @@ export default class Battle {
         return `${enemieHPString}`
     }
 
-    private playerRound(attackType: "Melee" | "LongRange" | CS_Catalog_Habilities) {
+    private playerRound(attackType: "Flee" | "Melee" | "LongRange" | CS_Catalog_Habilities) {
 
         const player = this.getPlayer()
         const enemie = this.getEnemie()
 
-        if(!player.getIsAlive()) {
+        if(!player.getIsAlive() || this._enemieFleed) {
+            return
+        }
+
+        if(attackType === 'Flee') {
+            this.fleeAttempt(player)
             return
         }
 
@@ -275,7 +258,7 @@ export default class Battle {
         const player = this.getPlayer()
         const enemie = this.getEnemie()
 
-        if(!enemie.getIsAlive()) {
+        if(!enemie.getIsAlive() || this._playerFleed) {
             return 
         }
 
@@ -336,6 +319,7 @@ export default class Battle {
         }
     }
     
+
     private attackAttempt(options: {
         attacker: Entity, 
         target: Entity, 
@@ -364,6 +348,36 @@ export default class Battle {
             return
         }
         this.causeDamage(attacker, target, attackType)
+    }
+
+    private fleeAttempt(coward: Entity) {
+
+        let bully
+        
+        coward instanceof Player
+        ? bully = this.getEnemie()
+        : bully = this.getPlayer()
+
+        if(CS_Math.evasionEventSucced({
+            from: coward,
+            against: bully,
+            evasionWeight: 1.5
+        })) {
+
+            if(coward instanceof Player) {
+                this.logBattleHistory(`${Emote._SirUwU_} Você conseguiu fugir com sucesso!`)
+                this._playerFleed = true
+                return
+            }
+            
+            this.logBattleHistory(`${Emote._SMOrc_} ${coward.getName()} Fugiu da batalha!`)
+            this._enemieFleed = true
+            return
+        }
+
+        coward instanceof Player
+        ? this.logBattleHistory(`${Emote._SirSad_} Sua fuga falhou!`)
+        : this.logBattleHistory(`${Emote._SMOrc_} ${coward.getName()} tentou fugir e falhou!`)
     }
 
     private checkDeath(entity: Entity): void {
@@ -435,21 +449,20 @@ export default class Battle {
 
         const player = this.getPlayer()
         const enemie = this.getEnemie()
-        
-        if(this.isBothAlive()){
-            SendMessage_UI.battle(this, this.buildLogMessage())
-            this.resetBattleHistory()
-            return
-        }
 
-        if(enemie.getIsAlive()) {
-            Travel.to_FirePit(player, this.buildLogMessage())
-            return
-        }
+        switch (true) {
 
-        if(player.getIsAlive()) {
-            Travel.to_Explore(player, this.buildLogMessage())
-            return
+            case this._playerFleed: Travel.to_Explore(player, this.buildLogMessage())    ;break
+            case this._enemieFleed: Travel.to_Explore(player, this.buildLogMessage())    ;break
+            case !player.getIsAlive(): Travel.to_FirePit(player, this.buildLogMessage()) ;break
+            case !enemie.getIsAlive(): Travel.to_Explore(player, this.buildLogMessage()) ;break
+
+            case this.isBothAlive():
+                SendMessage_UI.battle(this, this.buildLogMessage())
+                this.resetBattleHistory()
+                break
+
+            default: throw Error(`ERROR: Battle class "sendMessageAndStateChange": a not considerer case was catch.`)
         }
     }
 
