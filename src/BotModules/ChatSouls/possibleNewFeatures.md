@@ -24,3 +24,6 @@
 + When the player tries to find something and access the desired menu, respective items must show first as single letters.
     - These letter must be only respective by items players have in their inventory, no whole alphabet by default.
     - after selet the letter desired, the game must show the player all equipments that has this letter as a initial in their names.
+
+## Resources
++ discouple dropchance from resource data, and create a database with only dropchances probabilities.

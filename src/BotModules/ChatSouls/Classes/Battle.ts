@@ -169,23 +169,18 @@ export default class Battle {
     public static returnStringWithAllBattles(): string {
 
         const battlesList = this._battlesList
-        const playersOnBattle = Object.keys(battlesList)
+        const battles = Object.values(battlesList)
+
         let message = 'Jogadores em batalha nesse momento: '
 
-        if(playersOnBattle.length === 0){
-            message += '| Nenhum |'
-            return message
+        if(battles.length === 0){
+            return message + '| Nenhum |'
         }
-        
-        for(const player in battlesList) {
 
-            const battle = battlesList[player]
-            const playerString = battle.getPlayerStatus()
-            const enemieString = battle.getEnemieStatus()
-            message += `| ${playerString} vs ${enemieString} `
-        }
+        battles.forEach(battle => {
+            message += `| ${battle.getPlayerStatus()} vs ${battle.getEnemieStatus()} `
+        }); message += '|'
         
-        message += "|"
         return message
     }
 
@@ -197,13 +192,9 @@ export default class Battle {
             message += `nenhum :(`
         }
 
-        for(let i = 0; i < this._earnedResources.length; i++) {
-
-            const earnedResource = this._earnedResources[i]
-            const amount = earnedResource.amount
-            const resourceName = earnedResource.name
-            message += `${amount}x ${resourceName}, `
-        }
+        this._earnedResources.forEach(resource => {
+            message += `${resource.amount}x ${resource.name}, `
+        })
 
         return message.slice(0, -2)
     }
@@ -213,14 +204,11 @@ export default class Battle {
     //=================================================================================================
 
     private determineFirstTurn(): void {
-
-        const playerInstance = this._player
-        const enemieInstance = this._enemie
         CS_Math.evasionEventSucced({
-            from: playerInstance, 
-            against: enemieInstance, 
+            from: this._player, 
+            against: this._enemie, 
             evasionWeight: 1
-        }) ? this._turn = 1 : this._turn = 2
+        }) ? this._turn = PLAYER_TURN : this._turn = ENEMIE_TURN
     }
 
     private registerBattle(): void {
@@ -228,17 +216,10 @@ export default class Battle {
     }
 
     private calculateRewards(): void {
-        
-        const resources = this._enemie.getInventoryResources()
-        const resourceKeys = Object.keys(resources)
 
-        resourceKeys.forEach(resourceName => {
-
-            const resourceData = resources[resourceName]
-            const randomNumber = Math.random()
-            this.calculateLoot(resourceData, randomNumber)
+        Object.values(this._enemie.getInventoryResources()).forEach(resource => {
+            this.calculateLoot(resource, Math.random())
         })
-        
         this._player.addSouls(this._enemie.getSouls())
     }
 
@@ -248,15 +229,17 @@ export default class Battle {
             throw Error(`ERROR: Battle Class, "calculateLoot": Enemie resource without dropchance`)
         }
         
-        if(resources.dropChance >= randomNumber) {
-            const newResourceObject = {
-                name: resources.name,
-                amount: resources.amount,
-                type: resources.type
-            }
-            this._player.addResources(newResourceObject)
-            this._earnedResources.push(structuredClone(newResourceObject))
+        if(resources.dropChance < randomNumber) {
+            return
         }
+        
+        const newResourceObject = {
+            name: resources.name,
+            amount: resources.amount,
+            type: resources.type
+        }
+        this._player.addResources(newResourceObject)
+        this._earnedResources.push(structuredClone(newResourceObject))
     }
 
     /**
@@ -268,10 +251,8 @@ export default class Battle {
         
         const playerName = this._player.getName()
         const playerHP = this._player.getCurrentHP()
-        const playerMana = this._player.getCurrentMana()
         const playerMaxHP = this._player.getBaseStats().hp + this._player.getArmorStats().hp
-        const playerMaxMana = this._player.getBaseStats().mana + this._player.getArmorStats().mana
-        const playerHPString = `${playerName}: ${playerHP}/${playerMaxHP} HP, ${playerMana}/${playerMaxMana} Mana`
+        const playerHPString = `${playerName}: ${playerHP}/${playerMaxHP} HP`
 
         return `${playerHPString}`
     }
@@ -350,6 +331,11 @@ export default class Battle {
             
             if(buff.turns <= 0) {
                 entity.deleteBuff(buffName as CS_Catalog_Habilities)
+
+                entity instanceof Player
+                ? this.logBattleHistory(`${Emote._SirPrise_} ${Emote._Jebaited_} ${buff.name} Expirou.`)
+                : this.logBattleHistory(`${Emote._SMOrc_} ${Emote._Jebaited_} ${buff.name} Expirou.`)
+
                 entity.calculateStatsFromBuffs()
             }
         }
