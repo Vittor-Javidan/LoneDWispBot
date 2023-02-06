@@ -21,6 +21,7 @@ export default class Enemie extends Entity{
         enemie.calculateBaseStats()
         enemie.calculateStatsFromEquips()
         enemie.recoverHP("maxHP")
+        enemie.recoverMana()
         
         return enemie
     }
