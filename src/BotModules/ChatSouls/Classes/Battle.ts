@@ -1,6 +1,6 @@
 import Emote from '../../../Twitch/Emotes.js';
 import sendMessage from '../../../Twitch/sendMessageHandler.js';
-import { CS_Catalog_Habilities, CS_EquipmentTypes, CS_HabilitieData, CS_ResourceData } from '../Globals/moduleTypes.js';
+import { CS_Catalog_Habilities, CS_ResourceData } from '../Globals/moduleTypes.js';
 import CS_Math from './CS_Math.js';
 import Entity from './Entity.js';
 import Enemie from './EntityChilds/Enemie.js';
@@ -41,7 +41,7 @@ export default class Battle {
     // PUBLIC METHODS =================================================================================
     //=================================================================================================
 
-    public playerFisicalAttackScenario(attackType: "Melee" | "LongRange") {
+    public playerAction(attackType: "Melee" | "LongRange" | CS_Catalog_Habilities) {
 
         const player = this.getPlayer()
         const enemie = this.getEnemie()
@@ -61,25 +61,6 @@ export default class Battle {
             this.playerRound(attackType)
         }
 
-        this.sendMessageAndStateChange()
-    }
-
-    public playerHabilitieUsageScenario(habilitieName: CS_Catalog_Habilities): void {
-        
-        const player = this.getPlayer()
-        const enemie = this.getEnemie()
-        
-        Habilities.useHabilitie(habilitieName, {
-            caster: player,
-            target: enemie,
-            battle: this
-        })
-        this.checkDeath(enemie)
-        
-        this.buffRound(enemie)
-        this.buffRound(player)
-        this.enemieRound()
-        
         this.sendMessageAndStateChange()
     }
 
@@ -272,7 +253,7 @@ export default class Battle {
         return `${enemieHPString}`
     }
 
-    private playerRound(attackType: "Melee" | "LongRange") {
+    private playerRound(attackType: "Melee" | "LongRange" | CS_Catalog_Habilities) {
 
         const player = this.getPlayer()
         const enemie = this.getEnemie()
@@ -281,7 +262,11 @@ export default class Battle {
             return
         }
 
-        this.weaponAttackAttempt(player, enemie, attackType)
+        this.attackAttempt({
+            attacker: player,
+            target: enemie,
+            attackType: attackType
+        })
         this.checkDeath(enemie)
     }
 
@@ -294,13 +279,23 @@ export default class Battle {
             return 
         }
 
-        const CAST_CHANCE = 25
-        const rngChance = Math.floor(Math.random() * 100) + 1
+        const randomAction = enemie.randomAction({
+            castChance: 25,
+            weaponChance: 50,
+        })
 
-        rngChance <= CAST_CHANCE
-        ? this.enemieHabilitieUsageAttempt()
-        : this.weaponAttackAttempt(enemie, player, this.decideEnemieWeapon()) 
-        
+        randomAction === "Habilitie"
+        ? this.attackAttempt({
+            attacker: enemie,
+            target: player,
+            attackType: enemie.chooseRandomHabilitie()
+        })
+        : this.attackAttempt({
+            attacker: enemie,
+            target: player,
+            attackType: randomAction
+        })
+
         this.checkDeath(player)
     }
 
@@ -340,66 +335,24 @@ export default class Battle {
             }
         }
     }
+    
+    private attackAttempt(options: {
+        attacker: Entity, 
+        target: Entity, 
+        attackType: "Melee" | "LongRange" | CS_Catalog_Habilities, 
+    }): void {
 
-    private decideEnemieWeapon(): "Melee" | "LongRange" {
+        const { attacker, target, attackType} = options
 
-        const enemieEquipment = this._enemie.getAllCurrentEquipments()
-        const enemieMelee = enemieEquipment["meleeWeapon"]
-        const enemieLongRange = enemieEquipment["longRangeWeapon"]
-
-        if(enemieMelee.name !== "Empty" && enemieLongRange.name !== "Empty") {
-
-            const WEAPON_CHOOSE_CHANCE = 50
-            const rngChance = Math.floor(Math.random() * 100) + 1
-                
-            if(rngChance <= WEAPON_CHOOSE_CHANCE){
-                return "Melee"
-            } else {
-                return "LongRange"
-            }
-        }
-
-        if(enemieLongRange.name !== 'Empty') {
-            return "LongRange"
-        } else {
-            return "Melee"
-        }
-    }
-
-    private enemieHabilitieUsageAttempt(): void {
-
-        const enemie = this.getEnemie()
-
-        const enemiesHabilities = enemie.getCurrentHabilities()
-        const habilities: CS_HabilitieData[] = []
-
-        for(const equipmentType in enemiesHabilities) {
-
-            const habilitie =  enemiesHabilities[equipmentType as CS_EquipmentTypes]
-            
-            if(habilitie.name !== 'Empty') {
-                habilities.push(habilitie)
-            }
-        }
-
-        const habilitiesAmount = habilities.length
-        const indexChoosed = Math.floor(Math.random() * habilitiesAmount)
-
-        const noHabilityEquipped = habilities.length === 0
-        if(noHabilityEquipped) {
-            this.weaponAttackAttempt(enemie, this.getPlayer(), this.decideEnemieWeapon()) 
+        //When a habilitie is choosed
+        if(attackType !== 'Melee' && attackType !== "LongRange"){
+            attacker instanceof Player
+            ? Habilities.useHabilitie(attackType, {caster: attacker, target: this.getEnemie(), battle: this})
+            : Habilities.useHabilitie(attackType, {caster: attacker, target: this.getPlayer(), battle: this})
             return
         }
-        
-        Habilities.useHabilitie(habilities[indexChoosed].name, {
-            caster: enemie,
-            target: this.getPlayer(),
-            battle: this
-        })
-    }
     
-    private weaponAttackAttempt(attacker: Entity, target: Entity, attackType: "Melee" | "LongRange") {
-    
+        //When a weapon attack is choosed
         if(CS_Math.evasionEventSucced({
             from: target,
             against: attacker,

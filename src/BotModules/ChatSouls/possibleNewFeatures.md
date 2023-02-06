@@ -1,5 +1,8 @@
 # POSSIBLE NEXT NEW FEATURES
 
+## Global
++ Refactor all literals to put inside a entry file.
+
 ## Consumables
 + each consumable will have it's own function definition
 

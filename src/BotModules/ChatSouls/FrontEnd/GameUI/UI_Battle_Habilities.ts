@@ -35,7 +35,7 @@ function useHabilitie(commandCode: number, player: Player ,battle: Battle): void
 	
 	const habilitieIndex = commandCode - 1
 	const habilitieName = player.getHabilitiesNames()[habilitieIndex]
-	battle.playerHabilitieUsageScenario(habilitieName)
+	battle.playerAction(habilitieName)
 	
 	if(Battle.doesBattleExist(player.getName())) {
 		player.setCurrentState({

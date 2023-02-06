@@ -2,8 +2,6 @@ import { ENTITY_DEFAULT } from "../Globals/DEFAULT_VALUES/ENTITY_DEFAULT.js"
 import { GAME_BALANCE } from "../Globals/GAME_BALANCE.js"
 import { CS_Armor_Multipliers, CS_EquipmentTypes, CS_Stats, CS_Weapon_Multipliers } from "../Globals/moduleTypes.js"
 import Entity from "./Entity.js"
-import Enemie from "./EntityChilds/Enemie.js"
-import Player from "./EntityChilds/Player.js"
 import Armor from "./Equipments/Armor.js"
 import BodyArmor from "./Equipments/BodyArmor.js"
 import Boots from "./Equipments/Boots.js"
@@ -20,8 +18,8 @@ export default class CS_Math {
     }
 
     public static evasionEventSucced(o: {
-        from: Player | Enemie,
-        against: Player | Enemie,
+        from: Entity,
+        against: Entity,
         evasionWeight: number
     }): boolean {
 
@@ -46,14 +44,14 @@ export default class CS_Math {
         return false
     }
 
-    public static rawDamage_Melee(attacker: Player | Enemie, defender: Player | Enemie): number {
+    public static rawDamage_Melee(attacker: Entity, defender:Entity): number {
         
         const offensiveStats = this.sumStatsObjects([attacker.getBaseStats(), attacker.getMeleeStats()]) 
         const defensiveStats = this.sumStatsObjects([defender.getBaseStats(), defender.getArmorStats()])
         return this.rawDamageReceived(offensiveStats, defensiveStats)
     }
 
-    public static rawDamage_LongRange(attacker: Player | Enemie, defender: Player | Enemie): number {
+    public static rawDamage_LongRange(attacker: Entity, defender:Entity): number {
 
         const offensiveStats = this.sumStatsObjects([attacker.getBaseStats(), attacker.getLongRangeStats()])
         const defensiveStats = this.sumStatsObjects([defender.getBaseStats(), defender.getArmorStats()])
