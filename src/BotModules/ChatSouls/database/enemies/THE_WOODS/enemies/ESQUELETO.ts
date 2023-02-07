@@ -38,35 +38,29 @@ export function get_ESQUELETO(): CS_EntityData {
             }
         },
         habilities: {
-            longRangeWeapon: {
+            1: {
                 name: "Empty",
                 rank: 0,
-                type: "longRangeWeapon"
             },
-            meleeWeapon: {
+            2: {
                 name: "Empty",
                 rank: 0,
-                type: "meleeWeapon"
             },
-            helmet: {
+            3: {
                 name: "Empty",
                 rank: 0,
-                type: "helmet"
             },
-            bodyArmor: {
+            4: {
                 name: "Empty",
                 rank: 0,
-                type: "bodyArmor"
             },
-            gloves: {
+            5: {
                 name: "Empty",
                 rank: 0,
-                type: "gloves"
             },
-            boots: {
+            6: {
                 name: "Empty",
                 rank: 0,
-                type: "boots"
             }
         },
         inventory: {
