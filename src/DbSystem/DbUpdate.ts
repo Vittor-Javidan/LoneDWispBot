@@ -57,4 +57,5 @@ class ChatSoulsUpdated {
     }
 }
 
+//REMEBER TO COMPILE THE TS FILES TO JAVASCRIPT FILES WHEN USE ON PRODUCTION!!!
 ChatSoulsUpdated.updateHabilitiesSlots(true)
