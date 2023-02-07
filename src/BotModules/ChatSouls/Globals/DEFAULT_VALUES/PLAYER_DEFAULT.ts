@@ -40,35 +40,29 @@ export const PLAYER_DEFAULT: {
         }
     },
     HABILITIES: {
-        longRangeWeapon: {
+        1: {
             name: "Disparo de Fogo",
             rank: 1,
-            type: "longRangeWeapon"
         },
-        meleeWeapon: {
+        2: {
             name: "Podridão",
             rank: 1,
-            type: "meleeWeapon"
         },
-        helmet: {
+        3: {
             name: "Precisão",
             rank: 1,
-            type: "helmet"
         },
-        bodyArmor: {
+        4: {
             name: "Reflexo Felino",
             rank: 1,
-            type: "bodyArmor"
         },
-        gloves: {
+        5: {
             name: "Primeiros Socorros",
             rank: 1,
-            type: "gloves"
         },
-        boots: {
+        6: {
             name: "Passos Rápidos",
             rank: 1,
-            type: "boots"
         }
     },
     STATES: {
