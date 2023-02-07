@@ -44,35 +44,29 @@ export function get_DUMMY_ENEMIE(): CS_EntityData {
             }
         },
         habilities: {
-            longRangeWeapon: {
+            1: {
                 name: "Dummy Habilitie",
                 rank: 1,
-                type: "longRangeWeapon"
             },
-            meleeWeapon: {
+            2: {
                 name: "Dummy Habilitie",
-                rank: 1,
-                type: "meleeWeapon"
+                rank: 1
             },
-            bodyArmor: {
+            3: {
                 name: "Dummy Habilitie",
                 rank: 1,
-                type: "bodyArmor"
             },
-            helmet: {
+            4: {
                 name: "Dummy Habilitie",
                 rank: 1,
-                type:"helmet"
             },
-            gloves: {
+            5: {
                 name: "Dummy Habilitie",
                 rank: 1,
-                type: "gloves"
             },
-            boots: {
+            6: {
                 name: "Dummy Habilitie",
                 rank: 1,
-                type: "boots"
             },
         },
         inventory: {

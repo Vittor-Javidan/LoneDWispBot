@@ -1,7 +1,9 @@
+import Emote from "../../../../Twitch/Emotes.js";
 import Battle from "../../Classes/Battle.js";
 import Player from "../../Classes/EntityChilds/Player.js";
 import SendMessage_UI from "../../Classes/SendMessage.js";
 import Travel from "../../Classes/Travel.js";
+import { habilititesDatabase_ManaCost } from "../../database/habilities/manaCost.js";
 import { CS_DataPayload } from "../../Globals/moduleTypes.js";
 
 export default function UI_Battle_Habilities(data: CS_DataPayload): void {
@@ -31,12 +33,16 @@ export default function UI_Battle_Habilities(data: CS_DataPayload): void {
 	}
 }
 
-function useHabilitie(commandCode: number, player: Player ,battle: Battle): void {
+function useHabilitie(commandCode: number, player: Player, battle: Battle): void {
 	
 	const habilitieIndex = commandCode - 1
 	const habilitieName = player.getHabilitiesNames()[habilitieIndex]
-	battle.playerAction(habilitieName)
-	
+	const habilitieCost = habilititesDatabase_ManaCost[habilitieName]
+
+	player.canSpendManaValue(habilitieCost)
+	? battle.playerAction(habilitieName)
+	: SendMessage_UI.battle(battle, `Você não tem mana suficiente para usar essa habilidade ${Emote._SirSad_}`)
+
 	if(Battle.doesBattleExist(player.getName())) {
 		player.setCurrentState({
 			primary: "EXPLORING",

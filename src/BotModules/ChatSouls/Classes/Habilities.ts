@@ -1,5 +1,6 @@
 import Emote from "../../../Twitch/Emotes.js";
-import { CS_Catalog_Habilities, CS_Catalog_Habilities_BodyArmor, CS_Catalog_Habilities_Boots, CS_Catalog_Habilities_Gloves, CS_Catalog_Habilities_Helmet, CS_Catalog_Habilities_LongRange, CS_Catalog_Habilities_Melee } from "../Globals/moduleTypes.js";
+import { habilititesDatabase_ManaCost } from "../database/habilities/manaCost.js";
+import { CS_Catalog_Habilities } from "../Globals/moduleTypes.js";
 import Battle from "./Battle.js";
 import CS_Math from "./CS_Math.js";
 import Entity from "./Entity.js";
@@ -14,12 +15,13 @@ type Config = {
 export default class Habilities {
 
     static useHabilitie(habilitieName: CS_Catalog_Habilities, config: Config): void {
-        habilitieDatabase[habilitieName](config)
+        habilitiesDefinitionDatabase[habilitieName](config)
     }
 
     static disparoDeFogo(config: Config): void {
         
         const { caster, target, battle } = config
+        caster.consumeMana(habilititesDatabase_ManaCost["Disparo de Fogo"])
 
         if(CS_Math.agilityEventSucced({
             from: caster,
@@ -82,6 +84,7 @@ export default class Habilities {
     static podridao(config: Config): void {
 
         const { caster, target, battle } = config
+        caster.consumeMana(habilititesDatabase_ManaCost["Podridão"])
 
         if(CS_Math.agilityEventSucced({
             from: caster,
@@ -144,10 +147,11 @@ export default class Habilities {
     static precisao(config: Config): void {
 
         const { caster, battle } = config
-
+        caster.consumeMana(habilititesDatabase_ManaCost["Precisão"])
+        
         const ACCURACY_BONUS_PERCENTAGE = 0.5
         const accuracyBonus = Math.floor((caster.getBaseStats().accuracy + caster.getArmorStats().accuracy) * ACCURACY_BONUS_PERCENTAGE)
-
+        
         caster.registerBuff({
             name: "Precisão",
             type: "Buff/Enhacement",
@@ -182,6 +186,7 @@ export default class Habilities {
     static adrenalina(config: Config): void {
 
         const { caster, battle } = config
+        caster.consumeMana(habilititesDatabase_ManaCost["Adrenalina"])
 
         const meleeFisicalDmg = caster.getMeleeStats().fisicalDamage
         const longRangeFisicalDmg = caster.getLongRangeStats().fisicalDamage
@@ -229,6 +234,7 @@ export default class Habilities {
     static reflexoFelino(config: Config): void {
 
         const { caster, battle } = config
+        caster.consumeMana(habilititesDatabase_ManaCost["Reflexo Felino"])
 
         const EVASION_BONUS_PERCENTAGE = 0.5
         const evasionBonus = Math.floor((caster.getBaseStats().evasion + caster.getArmorStats().evasion) * EVASION_BONUS_PERCENTAGE)
@@ -267,6 +273,7 @@ export default class Habilities {
     static peleDeFerro(config: Config): void {
 
         const { caster, battle } = config
+        caster.consumeMana(habilititesDatabase_ManaCost["Pele de Ferro"])
 
         const DEFENSE_BONUS_PERCENTAGE = 0.33
         const fisicalDefenseBonus = Math.floor((caster.getBaseStats().fisicalDefense + caster.getArmorStats().fisicalDefense) * DEFENSE_BONUS_PERCENTAGE)
@@ -305,6 +312,7 @@ export default class Habilities {
     static primeirosSocorros(config: Config): void {
 
         const { caster, battle } = config
+        caster.consumeMana(habilititesDatabase_ManaCost["Primeiros Socorros"])
 
         const MAXHP_HEAL_AMOUNT = 0.2
         const healingAmount = Math.floor((caster.getBaseStats().hp + caster.getArmorStats().hp) * MAXHP_HEAL_AMOUNT)
@@ -318,6 +326,7 @@ export default class Habilities {
     static passosRapidos(config: Config): void {
 
         const { caster, battle } = config
+        caster.consumeMana(habilititesDatabase_ManaCost["Passos Rápidos"])
 
         if(caster instanceof Player) {
             battle.setTurn("PlayerFirst")
@@ -333,14 +342,7 @@ export default class Habilities {
 function emptyHabilitie() {}
 function dummyHabilitie() {}
 
-const habilitieDatabase: Record<
-    CS_Catalog_Habilities_LongRange |
-    CS_Catalog_Habilities_Melee |
-    CS_Catalog_Habilities_Helmet |
-    CS_Catalog_Habilities_BodyArmor |
-    CS_Catalog_Habilities_Gloves |
-    CS_Catalog_Habilities_Boots
-, Function> = {
+const habilitiesDefinitionDatabase: Record<CS_Catalog_Habilities, Function> = {
     "Dummy Habilitie": dummyHabilitie,
     "Empty": emptyHabilitie,
     "Disparo de Fogo": Habilities.disparoDeFogo,

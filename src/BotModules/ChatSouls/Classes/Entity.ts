@@ -72,6 +72,10 @@ export default class Entity {
     getCurrentMana(): number { return this._currentMana }
     setCurrentMana(value: number): void {
         
+        if(value < 0) {
+            throw Error('Error: Entity class, mana cannot be negative')
+        }
+
         this._currentMana = value
     }
 
@@ -332,9 +336,9 @@ export default class Entity {
         const habilities = this.getCurrentHabilities()
         let habilitiesArray: CS_Catalog_Habilities[] = []
 
-        for(const equipmentType in habilities) {
-
-            const habilitieName = habilities[equipmentType as CS_EquipmentTypes].name
+        for(const slot in habilities) {
+            
+            const habilitieName = habilities[slot].name
 
             if(habilitieName !== "Empty") {
                 habilitiesArray.push(habilitieName)
@@ -395,6 +399,21 @@ export default class Entity {
 
         const totalMana = this.getBaseStats().mana + this.getArmorStats().mana
         this.setCurrentMana(totalMana)
+    }
+
+    consumeMana(value: number): void {
+        
+        const mana = this.getCurrentMana() - value
+
+        if(mana < 0) {
+            throw Error(`ERROR: Entity class, "consumeMana": you cannot use more mana than you has!`)
+        }
+
+        this.setCurrentMana(mana)
+    }
+
+    canSpendManaValue(value: number): boolean {
+        return this.getCurrentMana() - value > 0
     }
 
     inflictDamage(value: number): void {
