@@ -336,9 +336,9 @@ export default class Entity {
         const habilities = this.getCurrentHabilities()
         let habilitiesArray: CS_Catalog_Habilities[] = []
 
-        for(const equipmentType in habilities) {
-
-            const habilitieName = habilities[equipmentType as CS_EquipmentTypes].name
+        for(const slot in habilities) {
+            
+            const habilitieName = habilities[slot].name
 
             if(habilitieName !== "Empty") {
                 habilitiesArray.push(habilitieName)
