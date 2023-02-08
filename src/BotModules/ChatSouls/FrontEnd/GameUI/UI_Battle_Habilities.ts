@@ -4,21 +4,21 @@ import Player from "../../Classes/EntityChilds/Player.js";
 import SendMessage_UI from "../../Classes/SendMessage.js";
 import Travel from "../../Classes/Travel.js";
 import { habilititesDatabase_ManaCost } from "../../database/habilities/manaCost.js";
-import { CS_DataPayload } from "../../Globals/moduleTypes.js";
+import { CS_Catalog_Habilities, CS_DataPayload } from "../../Globals/moduleTypes.js";
 
 export default function UI_Battle_Habilities(data: CS_DataPayload): void {
 	
-    const commandWord = data.message.split(" ")[0]
-	const player = data.playerInstance
-	const battle = Battle.getBattleByName(player.getName())
+    const commandWord: string = data.messageWords[0]
+	const player: Player = data.playerInstance
+	const battle: Battle = Battle.getBattleByName(player.getName())
 
     if (commandWord === '!cs') {
 		
-        SendMessage_UI.battle_habilities(player, `Você está em batalha olhando suas habilidades`)
+        SendMessage_UI.battle_habilitiesUsage(player, `Você está em batalha olhando suas habilidades`)
 		return
 	}
 
-	const commandCode = Number(commandWord)
+	const commandCode: number = Number(commandWord)
     
 	switch (true) {
 
@@ -29,15 +29,15 @@ export default function UI_Battle_Habilities(data: CS_DataPayload): void {
 			break
 		//
 
-		default: SendMessage_UI.battle_habilities(player, `opção inválida`)	;break
+		default: SendMessage_UI.battle_habilitiesUsage(player, `opção inválida`)	;break
 	}
 }
 
 function useHabilitie(commandCode: number, player: Player, battle: Battle): void {
 	
-	const habilitieIndex = commandCode - 1
-	const habilitieName = player.getHabilitiesNames()[habilitieIndex]
-	const habilitieCost = habilititesDatabase_ManaCost[habilitieName]
+	const habilitieIndex: number = commandCode - 1
+	const habilitieName: CS_Catalog_Habilities = player.getHabilitiesNames(false)[habilitieIndex]
+	const habilitieCost: number = habilititesDatabase_ManaCost[habilitieName]
 
 	player.canSpendManaValue(habilitieCost)
 	? battle.playerAction(habilitieName)

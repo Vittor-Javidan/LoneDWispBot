@@ -4,6 +4,9 @@ import UI_EquipmentInventory from "../GameUI/UI_EquipmentInventory.js";
 import UI_EquipmentMenu from "../GameUI/UI_EquipmentMenu.js";
 import UI_Equipments from "../GameUI/UI_Equipments.js";
 import UI_firePit from "../GameUI/UI_FirePit.js";
+import UI_HabilitieEquipMenu from "../GameUI/UI_HabilitieEquipMenu.js";
+import UI_HabilitieManagementMenu from "../GameUI/UI_HabilitieManagementMenu.js";
+import UI_HabilitieUnequipMenu from "../GameUI/UI_HabilitieUnequipMenu.js";
 import UI_StatisticsMenu from "../GameUI/UI_StatisticsMenu.js";
 
 export default function UI_FirePit_Handler(data: CS_DataPayload): void {
@@ -17,6 +20,10 @@ export default function UI_FirePit_Handler(data: CS_DataPayload): void {
     switch(states.secondary) {
         
         case "RESTING_ON_FIRE_PIT":         UI_firePit(data)                ;break
+
+        case "HABILITIE_MAIN_MENU":         UI_HabilitieManagementMenu(data);break
+        case "HABILITIE_EQUIP_MENU":        UI_HabilitieEquipMenu(data)     ;break
+        case "HABILITIE_UNEQUIP_MENU":      UI_HabilitieUnequipMenu(data)   ;break
 
         case "STATS_MENU":                  UI_StatisticsMenu(data)         ;break
         case "ATRIBUTE_UPGRADE":            UI_AttributeUpgradeMenu(data)   ;break

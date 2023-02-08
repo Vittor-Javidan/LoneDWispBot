@@ -149,6 +149,7 @@ export function get_DUMMY_ENEMIE(): CS_EntityData {
                     type: "boots"
                 }
             },
+            habilities: [],
             resources: {
                 "Dummy Resource": {
                     name: "Dummy Resource",

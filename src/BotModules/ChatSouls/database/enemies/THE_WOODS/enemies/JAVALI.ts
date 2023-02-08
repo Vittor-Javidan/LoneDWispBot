@@ -90,6 +90,7 @@ export function get_JAVALI(): CS_EntityData {
                     type: "boots"
                 }
             },
+            habilities: [],
             resources: {
                 "Couro de Javali": {
                     name: "Couro de Javali",

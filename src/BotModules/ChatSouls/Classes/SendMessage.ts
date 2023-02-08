@@ -14,6 +14,41 @@ export default class SendMessage_UI {
             | 0. Levantar da fogueira
             | 1. Statísticas 
             | 2. Ver Equipamento 
+            | 3. Menu de habilidades
+            |`
+        )
+    }
+
+    public static habilitieManagementMenu(player: Player, menuMessage: string): void {
+
+        const playerName = player.getName()
+        sendMessage(
+            `/w ${playerName} ${Emote._GlitchNRG_} ${menuMessage} 
+            | 0. Voltar 
+            | 1. Equipar Habilidade 
+            | 2. Desequipar Habilidade 
+            |`
+        )
+    }
+
+    public static habilitieEquipMenu(player: Player, menuMessage: string): void {
+
+        const playerName = player.getName()
+        sendMessage(
+            `/w ${playerName} ${Emote._GlitchNRG_} ${menuMessage}
+            | Digite <número do item> <número do slot a equipar>
+            | ${player.getEmptySlotString()}
+            | 0. Voltar ${player.getHabilitiesInventoryString()}
+            |`
+        )
+    }
+
+    public static habilitieUnequipMenu(player: Player, menuMessage: string): void {
+
+        const playerName = player.getName()
+        sendMessage(
+            `/w ${playerName} ${Emote._GlitchNRG_} ${menuMessage}
+            | 0. Voltar ${player.getHabilitiesString(true)}
             |`
         )
     }
@@ -85,10 +120,10 @@ export default class SendMessage_UI {
         return
     }
 
-    public static battle_habilities(player: Player, menuMessage: string): void {
+    public static battle_habilitiesUsage(player: Player, menuMessage: string): void {
 
         const playerName = player.getName()
-        const habilitiesString = player.getHabilitiesString()
+        const habilitiesString = player.getHabilitiesString(false)
         const playerMana = player.getCurrentMana()
         const playerMaxMana = player.getBaseStats().mana + player.getArmorStats().mana
 
