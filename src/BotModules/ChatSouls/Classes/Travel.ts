@@ -8,10 +8,13 @@ export default class Travel {
 
     public static to_Explore(player: Player, menuMessage: string): void                 {_Explore.to_Explore(player, menuMessage)}
     public static to_NewBattle(player: Player)                                          {_Explore.to_NewBattle(player)}
-    public static to_HabilitiesMenu(player: Player)                                     {_Explore.to_HabilitiesMenu(player)}
+    public static to_HabilitiesUsageMenu(player: Player)                                {_Explore.to_HabilitiesUsageMenu(player)}
     public static to_CurrentBattle(player: Player)                                      {_Explore.to_CurrentBattle(player)}
 
     public static to_FirePit(player: Player, menuMessage: string): void                 {_FirePit.to_FirePit(player, menuMessage)}
+    public static to_HabilitieManagementMenu(player: Player, menuMessage: string): void {_FirePit.to_HabilitieManagementMenu(player, menuMessage)}
+    public static to_HabilitieEquipMenu(player: Player, menuMessage: string): void      {_FirePit.to_HabilitieEquipMenu(player, menuMessage)}
+    public static to_HabilitieUnequipMenu(player: Player, menuMessage: string): void    {_FirePit.to_HabilitieUnequipMenu(player, menuMessage)}
     public static to_StatisticsMenu(player: Player, menuMessage: string)                {_FirePit.to_StatisticsMenu(player, menuMessage)}
     public static to_AttributeUpgradeMenu(player: Player, menuMessage: string): void    {_FirePit.to_AttributeUpgradeMenu(player, menuMessage)}
 
@@ -37,6 +40,33 @@ class _FirePit {
             secondary: "RESTING_ON_FIRE_PIT"
         })
         SendMessage_UI.firePit(player, menuMessage)
+    }
+
+    public static to_HabilitieManagementMenu(player: Player, menuMessage: string): void {
+
+        player.setCurrentState({
+            primary: "FIRE_PIT",
+            secondary: "HABILITIE_MAIN_MENU"
+        })
+        SendMessage_UI.habilitieManagementMenu(player, menuMessage)
+    }
+
+    public static to_HabilitieEquipMenu(player: Player, menuMessage: string): void {
+        
+        player.setCurrentState({
+            primary: "FIRE_PIT",
+            secondary: "HABILITIE_EQUIP_MENU"
+        })
+        SendMessage_UI.habilitieEquipMenu(player, menuMessage)
+    }
+
+    public static to_HabilitieUnequipMenu(player: Player, menuMessage: string): void {
+
+        player.setCurrentState({
+            primary: "FIRE_PIT",
+            secondary: "HABILITIE_UNEQUIP_MENU"
+        })
+        SendMessage_UI.habilitieUnequipMenu(player, menuMessage)
     }
 
     public static to_StatisticsMenu(player: Player, menuMessage: string) {
@@ -105,14 +135,14 @@ class _Explore {
         SendMessage_UI.battle(battle, message)
     }
 
-    public static to_HabilitiesMenu(player: Player) {
+    public static to_HabilitiesUsageMenu(player: Player) {
 
         player.setCurrentState({
             primary: "EXPLORING",
             secondary: "BATTLE_HABILITIES"
         })
 
-        SendMessage_UI.battle_habilities(player, `
+        SendMessage_UI.battle_habilitiesUsage(player, `
             Escolha uma habilidade
         `)
     }

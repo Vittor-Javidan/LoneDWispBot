@@ -12,16 +12,16 @@ import { return_CS_EquipmentTypes } from "../../Globals/typesUtilsFunctions.js"
 
 export default function UI_EquipmentMenu(data: CS_DataPayload) {
    
-    const words = data.message.split(" ")
-	const player = data.playerInstance
+    const commandWord: string = data.messageWords[0]
+	const player: Player = data.playerInstance
 
-	if (words[0] === '!cs') {
+	if (commandWord === '!cs') {
 		
         SendMessage_UI.equipmentMenu(player, 'Você está no menu de capacetes')
         return
     }
 
-	let itemCode = Number(words[0])
+	let itemCode: number = Number(commandWord)
 	switch (itemCode) {
 
 		case 0: 	Travel.to_Equipments(player, 			`Você voltou para o menu de equipamentos`)	;break
@@ -50,9 +50,13 @@ class _UI_Option {
 
 	public static unequip(player: Player): void {
 
-		const equipmentType = return_CS_EquipmentTypes(player.getCurrentState().secondary.split(" ")[0])
-		const currentEquipment = player.getCurrentEquipment(equipmentType)
-		const message = _UI.choseUnequipMessageByEquipmentType(equipmentType)
+		const equipmentType: CS_EquipmentTypes = return_CS_EquipmentTypes(player.getCurrentState().secondary.split(" ")[0])
+		const currentEquipment: CS_EquipmentData = player.getCurrentEquipment(equipmentType)
+		
+		const message: { 
+			noEquipment: string,
+			withEquipment: string
+		} = _UI.choseUnequipMessageByEquipmentType(equipmentType)
 	
 		if(currentEquipment.name === "Empty"){
 			SendMessage_UI.equipmentMenu(player, message.noEquipment)
@@ -75,7 +79,7 @@ class _UI {
 
 	public static getEquipmentDetails(currentEquipment: CS_EquipmentData) {
 
-		let detailsString = undefined
+		let detailsString: string | undefined = undefined
 	
 		switch(currentEquipment.type) {
 			
@@ -97,7 +101,11 @@ class _UI {
 		withEquipment: string
 	} {
 	
-		let message = undefined
+		let message: {
+			noEquipment: string,
+			withEquipment: string
+		} | undefined = undefined
+		
 		switch(equipmentType) {
 	
 			case "longRangeWeapon": message = {
