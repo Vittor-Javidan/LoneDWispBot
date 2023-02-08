@@ -175,8 +175,8 @@ export default class Player extends Entity {
             level:      this.getlevel(),
             attributes: this.getAttributes(),
             equipment:  this.getAllCurrentEquipments(),
-            inventory:  this.getInventory(),
-            habilities: this.getCurrentHabilities()
+            habilities: this.getCurrentHabilities(),
+            inventory:  this.getInventory()
         }, playerName)
     }
 

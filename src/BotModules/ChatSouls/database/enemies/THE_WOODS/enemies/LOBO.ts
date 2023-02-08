@@ -90,6 +90,7 @@ export function get_LOBO(): CS_EntityData {
                     type: "boots"
                 }
             },
+            habilities: [],
             resources: {
                 "Couro de Lobo": {
                     name: "Couro de Lobo",

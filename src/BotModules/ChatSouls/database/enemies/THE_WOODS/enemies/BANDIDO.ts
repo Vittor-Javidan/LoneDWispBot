@@ -90,6 +90,7 @@ export function get_BANDIDO(): CS_EntityData {
                     type: "boots"
                 }
             },
+            habilities: [],
             resources: {
                 "Dados viciados": {
                     name: "Dados viciados",
