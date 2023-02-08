@@ -7,15 +7,15 @@ import { CS_AttributeTypes, CS_DataPayload } from "../../Globals/moduleTypes.js"
 
 export default function UI_AttributeUpgradeMenu(data: CS_DataPayload): void {
 
-    const commandWord = data.message.split(" ")[0]
-    const player = data.playerInstance
+    const commandWord: string = data.messageWords[0]
+    const player: Player = data.playerInstance
     
 	if (commandWord === '!cs') {
 		SendMessage_UI.attributeUpgradeMenu(player, `Você está no menu de attributos`)
 		return
 	}
 
-	const commandCode = Number(commandWord)
+	const commandCode: number = Number(commandWord)
 	switch(commandCode){
 				
 		case 0: Travel.to_StatisticsMenu(player, `Você voltou ao menu de estatísticas`)									;break
@@ -84,10 +84,10 @@ class _UI {
 		
 		player.upgradeAttributeProcessHandler(attribute)
 		
-		const playerName = player.getName()
-		const souls = player.getSouls()
-		const level = player.getlevel()
-		const nextUpgradeCost = player.getLevelUpgradeCost()
+		const playerName: string = player.getName()
+		const souls: number = player.getSouls()
+		const level: number = player.getlevel()
+		const nextUpgradeCost: number = player.getLevelUpgradeCost()
 	
 		sendMessage(`@${playerName} upou para o nível ${level}!!`)
 		

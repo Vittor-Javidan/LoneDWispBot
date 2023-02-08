@@ -99,6 +99,7 @@ export const ENTITY_DEFAULT: {
                 type: "boots"
             }
         },
+        habilities: [],
         resources: {},
     },
     EMPTY_STATS: {

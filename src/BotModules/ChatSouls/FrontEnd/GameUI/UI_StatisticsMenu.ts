@@ -1,11 +1,12 @@
+import Player from "../../Classes/EntityChilds/Player.js";
 import SendMessage_UI from "../../Classes/SendMessage.js";
 import Travel from "../../Classes/Travel.js";
-import { CS_DataPayload } from "../../Globals/moduleTypes.js";
+import { CS_Attributes, CS_DataPayload } from "../../Globals/moduleTypes.js";
 
 export default function UI_StatisticsMenu(data: CS_DataPayload): void {
 
-    const commandWord = data.message.split(" ")[0]
-    const player = data.playerInstance
+    const commandWord: string = data.messageWords[0]
+    const player: Player = data.playerInstance
 
 	if (commandWord === '!cs') {
         SendMessage_UI.statisticsMenu(player, `Você está no menu de estatísticas`); return
@@ -26,11 +27,11 @@ class _UI_Option {
 
     public static consultAttributes(data: CS_DataPayload, menuMessage: string): void {
 
-        const playerAttributes = data.playerInstance.getAttributes()
-        const vitality = playerAttributes.vitality
-        const agility = playerAttributes.agility
-        const strenght = playerAttributes.strenght
-        const intelligence = playerAttributes.intelligence
+        const playerAttributes: CS_Attributes = data.playerInstance.getAttributes()
+        const vitality: number = playerAttributes.vitality
+        const agility: number = playerAttributes.agility
+        const strenght: number = playerAttributes.strenght
+        const intelligence: number = playerAttributes.intelligence
         
         SendMessage_UI.statisticsMenu(data.playerInstance, 
             `${menuMessage}. Seus attributos:

@@ -8,6 +8,7 @@ import {
     CS_EquipmentInventory_Object,
     CS_Equipments,
     CS_EquipmentTypes,
+    CS_HabilitieData,
     CS_HabilitiesSlots,
     CS_Inventory,
     CS_Inventory_Equipments,
@@ -131,6 +132,7 @@ export default class Entity {
     setInventory(inventoryObject: CS_Inventory): void {
 
         this.setAllInventoryEquipments(inventoryObject.equipments)
+        this.setInventoryHabilities(inventoryObject.habilities)
         this.setInventoryResources(inventoryObject.resources)
     }
 
@@ -149,6 +151,11 @@ export default class Entity {
 
         //@ts-ignore: Read "knowIssues.md"
         this._inventory.equipments[inventoryEquipmentsObject.type] = structuredClone(inventoryEquipmentsObject)
+    }
+
+    getInventoryHabilitie(index: number): CS_HabilitieData { return this._inventory.habilities[index] }
+    setInventoryHabilities(habilitieInventory: CS_HabilitieData[]): void {
+        this._inventory.habilities = habilitieInventory
     }
 
     getInventoryResources(): CS_Inventory_Resources { return this._inventory.resources }
@@ -271,7 +278,7 @@ export default class Entity {
     unequip(equipmentType: CS_EquipmentTypes): void {
 
         const itemToUnequip = this.getAllCurrentEquipments()[equipmentType]
-        this.pushToInventory(itemToUnequip)
+        this.pushToEquipmentInventory(itemToUnequip)
         this.setCurrentEquipment({ name: "Empty", type: equipmentType})
         this.sortInventoryEquipments(equipmentType)
     }
@@ -289,12 +296,63 @@ export default class Entity {
         this.equip(itemToEquip)
     }
 
-    pushToInventory(equipmentObject: CS_EquipmentData): void {
+    pushToEquipmentInventory(equipmentObject: CS_EquipmentData): void {
   
         this._inventory.equipments[equipmentObject.type].array.push(
             //@ts-ignore: Read "knowIssues.md"
             structuredClone(equipmentObject)
         )
+    }
+
+    equipHabilitie(habilitieData: CS_HabilitieData, slot: number): void {
+
+        if(this.isHabilitieSlotOccupied(slot)) {
+            this.unequipHabilitie(slot)
+        }
+        this.setHabilities(habilitieData, slot)
+    }
+
+    isHabilitieSlotOccupied(slot: number) {
+        return this._currentHabilities[slot].name !== "Empty"
+    }
+
+    setHabilities(habilitieData: CS_HabilitieData, slot: number): void {
+        this._currentHabilities[slot] = habilitieData
+    }
+
+    unequipHabilitie(slot: number): void {
+        this._inventory.habilities.push(this._currentHabilities[slot])
+        this._currentHabilities[slot] = {
+            name: "Empty",
+            rank: 0
+        }
+    }
+
+    equipHabilitieFromInventory(habilitieIndex: number, slotToEquip: number): void {
+
+        if(
+            habilitieIndex >= this.getHabilitiesInventoryAmount() || 
+            habilitieIndex < 0
+        ) {
+            throw Error(`ERROR: Entity class, "equipHabilitieFromInventory": habilitieIndex out of boundaries`)
+        }
+
+        const itemToEquip = this._inventory.habilities.splice(habilitieIndex, 1)[0]        
+        this.equipHabilitie(itemToEquip, slotToEquip)
+    }
+
+    isInvetoryHabilitiesEmpty(): boolean {
+        return this.getHabilitiesInventoryAmount() <= 0
+    }
+
+    getHabilitsAmount(): number {
+
+        const habilities = this.getHabilitiesNames(false)
+        return habilities.length
+    }
+
+    getHabilitiesInventoryAmount(): number {
+        return this._inventory.habilities.length
     }
 
     getAllEquipmentInventoryString(equipmentType: CS_EquipmentTypes): string {
@@ -309,15 +367,9 @@ export default class Entity {
         return equipmentListString
     }
 
-    getHabilitsAmount(): number {
+    getHabilitiesString(includeEmpty: boolean): string {
 
-        const habilities = this.getHabilitiesNames()
-        return habilities.length
-    }
-
-    getHabilitiesString(): string {
-
-        const habilities = this.getHabilitiesNames()
+        const habilities = this.getHabilitiesNames(includeEmpty)
         let message = ''
 
         habilities.forEach((habilitieName, index) => {
@@ -331,7 +383,22 @@ export default class Entity {
         return message
     }
 
-    getHabilitiesNames(): CS_Catalog_Habilities[] {
+    getHabilitiesInventoryString(): string {
+
+        let message = ''
+
+        this._inventory.habilities.forEach((habilitieData, index) => {
+            message += `| ${index + 1}. ${habilitieData.name} `
+        })
+
+        if(message === '') {
+            throw Error(`ERROR: Entity class, "getHabilitiesInventoryString": no habilities inside inventory.`)
+        }
+
+        return message
+    }
+
+    getHabilitiesNames(includeEmpty: boolean): CS_Catalog_Habilities[] {
 
         const habilities = this.getCurrentHabilities()
         let habilitiesArray: CS_Catalog_Habilities[] = []
@@ -340,12 +407,35 @@ export default class Entity {
             
             const habilitieName = habilities[slot].name
 
-            if(habilitieName !== "Empty") {
+            if(includeEmpty === false && habilitieName !== "Empty") {
+                habilitiesArray.push(habilitieName)
+                continue
+            }
+
+            if(includeEmpty === true) {
                 habilitiesArray.push(habilitieName)
             }
         }
 
         return habilitiesArray
+    }
+
+    getEmptySlotString(): string {
+
+        let message: string = "Slots vazios: "
+        const habilities: CS_HabilitiesSlots = this.getCurrentHabilities()
+
+        for(const slot in habilities) {
+            if(habilities[slot].name === "Empty"){
+                message += `${slot}, `
+            }
+        }
+
+        if(message === "Slots vazios: ") {
+            message += "Nenhum"
+            return message
+        }
+        return message.slice(0, -2)
     }
 
     addResources(resourceObject: CS_ResourceData): void {

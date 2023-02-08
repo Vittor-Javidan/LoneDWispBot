@@ -18,6 +18,7 @@
 + new runes slots
     - Each rune its an isolated object, with name, type, rank, and effect.
     - add an additional contioning to recover HP and Mana only when player has FIRE_PIT primary state.
++ fix the negative index possibilitie when equip something.
 
 ## Habilities
 + habilities spend mana.

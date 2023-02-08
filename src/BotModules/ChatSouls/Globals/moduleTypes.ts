@@ -21,7 +21,7 @@ import { EQUIPMENTS_MENU_STATES_ARRAY, EQUIPMENT_INVENTORY_STATES_ARRAY, EXPLORI
 
 export type CS_DataPayload = {
     playerInstance: Player,
-    message: string
+    messageWords: string[]
 }
 
 //=============================================================================================
@@ -29,11 +29,6 @@ export type CS_DataPayload = {
 //=============================================================================================
 
 export type CS_Database = Record<string, CS_EntityData>
-export type CS_Database_Key = {
-    Description: string
-    key: number,
-    dinamicKey: number,
-}
 
 export type CS_Database_AreaMaps = {
     "testArea": Record<CS_Catalog_TestArea_Enemies, CS_EntityData>,
@@ -62,7 +57,8 @@ export type CS_DataBase_Boots = Record<CS_Catalog_Boots, CS_BootsData>
 
 export type CS_Inventory = {
     equipments: CS_Inventory_Equipments,
-    resources: CS_Inventory_Resources
+    habilities: CS_HabilitieData[]
+    resources: CS_Inventory_Resources,
 }
 
 export type CS_Equipments = {

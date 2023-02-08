@@ -6,7 +6,7 @@ import { EQUIPMENT_TYPES_ARRAY } from "../../Globals/ENTRIES/EQUIPMENTS_ENTRY.js
 
 export default function UI_Equipments(data: CS_DataPayload) {
 
-	const commandWord = data.message.split(" ")[0]
+	const commandWord = data.messageWords[0]
 	const playerInstance = data.playerInstance
 
 	if (commandWord === '!cs') {
@@ -24,7 +24,7 @@ export default function UI_Equipments(data: CS_DataPayload) {
         case 4: Travel.to_BodyArmorMenu(playerInstance, `Você está no menu de armaduras`)			;break
         case 5: Travel.to_GlovesMenu(playerInstance,	`Você está no menu de luvas`)				;break
         case 6: Travel.to_BootsMenu(playerInstance,    	`Você está no menu de botas`)				;break
-		case 7: _UI_Option.checkCurrentEquipments(data,  `Você ainda está no menu de quipamentos`)  ;break
+		case 7: _UI_Option.checkCurrentEquipments(data, `Você ainda está no menu de quipamentos`)  ;break
 
 		default: SendMessage_UI.equipments(playerInstance, `Código inválido`)
 	}

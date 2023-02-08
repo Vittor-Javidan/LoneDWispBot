@@ -90,6 +90,7 @@ export function get_ESQUELETO(): CS_EntityData {
                     type: "boots"
                 }
             },
+            habilities: [],
             resources: {
                 "Ossos": {
                     name: "Ossos",

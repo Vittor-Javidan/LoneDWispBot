@@ -18,7 +18,7 @@ export default function chatSoulsWhisperListeners(data: TwitchDataPayload): void
 
     const newData: CS_DataPayload = {
         playerInstance: Player.getPlayerInstance(userName),
-        message: message
+        messageWords: message.split(" ")
     }
 
     switch (true) {
@@ -27,7 +27,7 @@ export default function chatSoulsWhisperListeners(data: TwitchDataPayload): void
         case (message.startsWith('!cs souls')):     checkSouls(newData.playerInstance)  ;break
         case (
             message.startsWith('!cs') || 
-            !isNaN(Number(message))
+            !isNaN(Number(message[0]))
         ):                                          gameUIHandler(newData)              ;break
     }
 }

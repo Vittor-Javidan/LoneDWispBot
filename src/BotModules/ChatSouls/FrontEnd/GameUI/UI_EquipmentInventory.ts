@@ -1,7 +1,7 @@
 import Player from "../../Classes/EntityChilds/Player.js"
 import SendMessage_UI from "../../Classes/SendMessage.js"
 import Travel from "../../Classes/Travel.js"
-import { CS_DataPayload, CS_EquipmentData, CS_EquipmentTypes } from "../../Globals/moduleTypes.js"
+import { CS_DataPayload, CS_EquipmentData, CS_EquipmentTypes, CS_PlayerState } from "../../Globals/moduleTypes.js"
 import { return_CS_EquipmentTypes } from "../../Globals/typesUtilsFunctions.js"
 
 /**
@@ -13,9 +13,9 @@ import { return_CS_EquipmentTypes } from "../../Globals/typesUtilsFunctions.js"
  */
 export default function UI_EquipmentInventory(data: CS_DataPayload): void {
 
-    const commandWord = data.message.split(" ")[0]
-	const player = data.playerInstance
-    const equipmentType = return_CS_EquipmentTypes(player.getCurrentState().secondary.split(" ")[0])
+    const commandWord: string = data.messageWords[0]
+	const player: Player = data.playerInstance
+    const equipmentType: CS_EquipmentTypes = return_CS_EquipmentTypes(player.getCurrentState().secondary.split(" ")[0])
 
 	if (commandWord === '!cs') {
         SendMessage_UI.equipmentInventory(player, `O que deseja equipar?`)
@@ -32,7 +32,7 @@ export default function UI_EquipmentInventory(data: CS_DataPayload): void {
 
         case (commandCode <= player.getEquipmentInventoryAmount(equipmentType)):
 
-            const itemIndex = commandCode - 1
+            const itemIndex: number = commandCode - 1
 
             _UI_Option.equipAndReturn(player, itemIndex)
 
@@ -50,8 +50,8 @@ class _UI_Option {
 
     public static equipAndReturn(player: Player, itemIndex: number): void {
 
-        const playerState = player.getCurrentState()
-        const equipmentType = return_CS_EquipmentTypes(playerState.secondary.split(" ")[0])
+        const playerState: CS_PlayerState = player.getCurrentState()
+        const equipmentType: CS_EquipmentTypes = return_CS_EquipmentTypes(playerState.secondary.split(" ")[0])
     
         player.equipFromInventory(itemIndex, equipmentType)
         player.calculateBaseStats()
@@ -64,7 +64,7 @@ class _UI_Option {
             secondary: `${equipmentType} menu`
         })
     
-        const equippedEquipment = player.getCurrentEquipment(equipmentType)
+        const equippedEquipment: CS_EquipmentData = player.getCurrentEquipment(equipmentType)
         
         SendMessage_UI.equipmentMenu(player, `
             ${_UI.returnEquippingMessage(equippedEquipment)}. 
@@ -77,7 +77,7 @@ class _UI {
 
     public static getReturnMessage(equipmentType: CS_EquipmentTypes): string {
 
-        let message = undefined
+        let message: string | undefined = undefined
     
         switch(equipmentType) {
     
@@ -96,7 +96,7 @@ class _UI {
 
     public static returnMenuEquipmentMessageByType(equipmentType: CS_EquipmentTypes): string {
 
-        let message = undefined
+        let message: string | undefined = undefined
     
         switch(equipmentType) {
     
