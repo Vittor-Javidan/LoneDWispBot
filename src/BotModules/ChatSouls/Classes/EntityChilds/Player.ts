@@ -18,6 +18,7 @@ export default class Player extends Entity {
         super(name)
         this.setAttributes(structuredClone(PLAYER_DEFAULT.ATTRIBUTES))
         this.setAllCurrentEquipments(structuredClone(PLAYER_DEFAULT.EQUIPMENTS))
+        this.setCurrentHabilities(structuredClone(PLAYER_DEFAULT.HABILITIES))
     }
 
     //=================================================================================================
